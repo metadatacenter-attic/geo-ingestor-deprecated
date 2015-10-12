@@ -1,7 +1,7 @@
 GEO2CEDAR
 =========
 
-Custom utility for converting the metadata in GEO spreadsheets to instances in the CEDAR studies model.
+Custom utility for converting the metadata in GEO spreadsheets to instances in the CEDAR study model.
 
 #### Building Prerequisites
 
