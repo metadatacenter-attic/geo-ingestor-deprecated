@@ -1,4 +1,4 @@
-package org.metadatacenter.converters.geo.metadata;
+package org.metadatacenter.ingestors.geo.metadata;
 
 import java.util.Optional;
 

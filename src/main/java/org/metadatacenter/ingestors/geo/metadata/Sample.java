@@ -1,4 +1,4 @@
-package org.metadatacenter.converters.geo.metadata;
+package org.metadatacenter.ingestors.geo.metadata;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,9 +13,9 @@ public class Sample
   private final String sampleName;
   private final String title;
   private final List<String> rawDataFiles;
-  private final String celFile;
-  private final String expFile;
-  private final String chpFile;
+  private final Optional<String> celFile;
+  private final Optional<String> expFile;
+  private final Optional<String> chpFile;
   private final String sourceName;
   private final List<String> organisms;
   private final Map<String, String> characteristics; // characteristic -> value
@@ -25,9 +25,10 @@ public class Sample
   private final String description;
   private final String platform;
 
-  public Sample(String sampleName, String title, List<String> rawDataFiles, String celFile, String expFile,
-    String chpFile, String sourceName, List<String> organisms, Map<String, String> characteristics,
-    Optional<String> biomaterialProvider, String molecule, String label, String description, String platform)
+  public Sample(String sampleName, String title, List<String> rawDataFiles, Optional<String> celFile,
+    Optional<String> expFile, Optional<String> chpFile, String sourceName, List<String> organisms,
+    Map<String, String> characteristics, Optional<String> biomaterialProvider, String molecule, String label,
+    String description, String platform)
   {
     this.sampleName = sampleName;
     this.title = title;
@@ -60,17 +61,17 @@ public class Sample
     return rawDataFiles;
   }
 
-  public String getCELFile()
+  public Optional<String> getCELFile()
   {
     return celFile;
   }
 
-  public String getEXPFile()
+  public Optional<String> getEXPFile()
   {
     return expFile;
   }
 
-  public String getCHPFile()
+  public Optional<String> getCHPFile()
   {
     return chpFile;
   }

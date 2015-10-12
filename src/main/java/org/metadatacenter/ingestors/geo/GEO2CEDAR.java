@@ -1,4 +1,4 @@
-package org.metadatacenter.converters.geo;
+package org.metadatacenter.ingestors.geo;
 
 public class GEO2CEDAR
 {

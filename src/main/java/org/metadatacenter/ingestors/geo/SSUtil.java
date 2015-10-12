@@ -1,4 +1,4 @@
-package org.metadatacenter.converters.geo;
+package org.metadatacenter.ingestors.geo;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -84,6 +84,19 @@ public class SSUtil
       throw new GEOConverterException("Invalid format for workbook " + e.getMessage(), e);
     } catch (IOException e) {
       throw new GEOConverterException("IO error opening workbook " + e.getMessage(), e);
+    }
+  }
+
+  public static Workbook createReadonlyWorkbook(InputStream inputStream) throws GEOConverterException
+  {
+    try {
+      return WorkbookFactory.create(inputStream);
+    } catch (InvalidFormatException e) {
+      throw new GEOConverterException("Invalid format for workbook " + e.getMessage(), e);
+    } catch (IOException e) {
+      throw new GEOConverterException("IO error opening workbook " + e.getMessage(), e);
+    } finally {
+      IOUtils.closeQuietly(inputStream);
     }
   }
 

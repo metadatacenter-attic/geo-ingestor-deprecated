@@ -1,4 +1,4 @@
-package org.metadatacenter.converters.geo;
+package org.metadatacenter.ingestors.geo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ public class GEONames
   public final static String SERIES_VARIABLE_FIELD_NAME = "variable";
   public final static String SERIES_REPEAT_FIELD_NAME = "repeat";
 
-  public final static String SAMPLES_SAMPLE_FIELD_NAME = "Sample name";
+  public final static String SAMPLES_NAME_FIELD_NAME = "Sample name";
   public final static String SAMPLES_TITLE_FIELD_NAME = "title";
   public final static String SAMPLES_RAW_DATA_FILE_FIELD_NAME = "raw data file";
   public final static String SAMPLES_CEL_FILE_FIELD_NAME = "CEL file";
@@ -63,11 +63,13 @@ public class GEONames
   public final static String PLATFORM_CONTRIBUTOR_FIELD_NAME = "contributor";
   public final static String PLATFORM_PUBMED_ID_FIELD_NAME = "pubmed id";
 
+  public final static String CHARACTERISTICS_FIELD_PREFIX = "characteristics: ";
+
   public final static String[] SERIES_FIELD_NAMES = { SERIES_TITLE_FIELD_NAME, SERIES_SUMMARY_FIELD_NAME,
     SERIES_OVERALL_DESIGN_FIELD_NAME, SERIES_CONTRIBUTOR_FIELD_NAME, SERIES_WEB_LINK_FIELD_NAME,
     SERIES_PUBMED_ID_FIELD_NAME, SERIES_VARIABLE_FIELD_NAME, SERIES_REPEAT_FIELD_NAME };
 
-  public final static String[] SAMPLES_COLUMN_NAMES = { SAMPLES_SAMPLE_FIELD_NAME, SAMPLES_TITLE_FIELD_NAME,
+  public final static String[] SAMPLES_COLUMN_NAMES = { SAMPLES_NAME_FIELD_NAME, SAMPLES_TITLE_FIELD_NAME,
     SAMPLES_RAW_DATA_FILE_FIELD_NAME, SAMPLES_CEL_FILE_FIELD_NAME, SAMPLES_EXP_FILE_FIELD_NAME,
     SAMPLES_CHP_FILE_FIELD_NAME, SAMPLES_SOURCE_NAME_FIELD_NAME, SAMPLES_ORGANISM_FIELD_NAME,
     SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME, SAMPLES_MOLECULE_FIELD_NAME, SAMPLES_LABEL_FIELD_NAME,
