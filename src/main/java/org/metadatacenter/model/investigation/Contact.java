@@ -11,17 +11,19 @@ import java.util.Optional;
 public class Contact extends MetadataTemplateElement
 {
   private final StringValueElement firstName;
-  private final StringValueElement middleInitial;
+  private final Optional<StringValueElement> middleInitial;
   private final StringValueElement lastName;
-  private final StringValueElement address;
-  private final EmailValueElement email;
-  private final PhoneValueElement phone;
-  private final PhoneValueElement fax;
-  private final StringValueElement role;
+  private final Optional<StringValueElement> address;
+  private final Optional<EmailValueElement> email;
+  private final Optional<PhoneValueElement> phone;
+  private final Optional<PhoneValueElement> fax;
+  private final Optional<StringValueElement> role;
+  private final Optional<Organization> organization;
 
   public Contact(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement firstName,
-      StringValueElement middleInitial, StringValueElement lastName, StringValueElement address,
-      EmailValueElement email, PhoneValueElement phone, PhoneValueElement fax, StringValueElement role)
+    Optional<StringValueElement> middleInitial, StringValueElement lastName, Optional<StringValueElement> address,
+    Optional<EmailValueElement> email, Optional<PhoneValueElement> phone, Optional<PhoneValueElement> fax,
+    Optional<StringValueElement> role, Optional<Organization> organization)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this.firstName = firstName;
@@ -32,5 +34,6 @@ public class Contact extends MetadataTemplateElement
     this.phone = phone;
     this.fax = fax;
     this.role = role;
+    this.organization = organization;
   }
 }
