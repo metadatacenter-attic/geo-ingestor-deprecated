@@ -29,23 +29,23 @@ public class SSUtil
 
   private static final short HIGHLIGHT_CELL_COLOR = IndexedColors.YELLOW.getIndex();
 
-  public static InputStream openSpreadsheetInputStream(String fileName) throws GEOConverterException
+  public static InputStream openSpreadsheetInputStream(String fileName) throws GEOIngestorException
   {
     checkForXLSOrXLSXExtension(fileName);
 
     try {
       return new FileInputStream(fileName);
     } catch (IOException e) {
-      throw new GEOConverterException("Error opening spreadsheet " + fileName + ": " + e.getMessage(), e);
+      throw new GEOIngestorException("Error opening spreadsheet " + fileName + ": " + e.getMessage(), e);
     }
   }
 
-  public static void checkForXLSOrXLSXExtension(String fileName) throws GEOConverterException
+  public static void checkForXLSOrXLSXExtension(String fileName) throws GEOIngestorException
   {
     checkForExtension(fileName, XLS_EXTENSION, XLSX_EXTENSION);
   }
 
-  public static void checkForExtension(String fileName, String... allowedExtensions) throws GEOConverterException
+  public static void checkForExtension(String fileName, String... allowedExtensions) throws GEOIngestorException
   {
     String upperCase = fileName.toUpperCase(Locale.US);
     for (String extension : allowedExtensions) {
@@ -61,75 +61,75 @@ public class SSUtil
     if (prettyList.length() > 0)
       prettyList.setLength(prettyList.length() - 2); // trim trailing ", "
 
-    throw new GEOConverterException(
+    throw new GEOIngestorException(
       String.format("Invalid file extension for '%s'; expected one of: %s", fileName, prettyList));
   }
 
-  public static OutputStream openSpreadsheetOutputStream(String fileName) throws GEOConverterException
+  public static OutputStream openSpreadsheetOutputStream(String fileName) throws GEOIngestorException
   {
     checkForXLSOrXLSXExtension(fileName);
 
     try {
       return new FileOutputStream(fileName);
     } catch (IOException e) {
-      throw new GEOConverterException("Error opening spreadsheet " + fileName + ": " + e.getMessage(), e);
+      throw new GEOIngestorException("Error opening spreadsheet " + fileName + ": " + e.getMessage(), e);
     }
   }
 
-  public static Workbook createWorkbook(InputStream inputStream) throws GEOConverterException
+  public static Workbook createWorkbook(InputStream inputStream) throws GEOIngestorException
   {
     try {
       return WorkbookFactory.create(inputStream);
     } catch (InvalidFormatException e) {
-      throw new GEOConverterException("Invalid format for workbook " + e.getMessage(), e);
+      throw new GEOIngestorException("Invalid format for workbook " + e.getMessage(), e);
     } catch (IOException e) {
-      throw new GEOConverterException("IO error opening workbook " + e.getMessage(), e);
+      throw new GEOIngestorException("IO error opening workbook " + e.getMessage(), e);
     }
   }
 
-  public static Workbook createReadonlyWorkbook(InputStream inputStream) throws GEOConverterException
+  public static Workbook createReadonlyWorkbook(InputStream inputStream) throws GEOIngestorException
   {
     try {
       return WorkbookFactory.create(inputStream);
     } catch (InvalidFormatException e) {
-      throw new GEOConverterException("Invalid format for workbook " + e.getMessage(), e);
+      throw new GEOIngestorException("Invalid format for workbook " + e.getMessage(), e);
     } catch (IOException e) {
-      throw new GEOConverterException("IO error opening workbook " + e.getMessage(), e);
+      throw new GEOIngestorException("IO error opening workbook " + e.getMessage(), e);
     } finally {
       IOUtils.closeQuietly(inputStream);
     }
   }
 
-  public static void writeWorkbook(Workbook workbook, String fileName) throws GEOConverterException
+  public static void writeWorkbook(Workbook workbook, String fileName) throws GEOIngestorException
   {
     OutputStream os = openSpreadsheetOutputStream(fileName);
 
     try {
       workbook.write(os);
     } catch (IOException e) {
-      throw new GEOConverterException("Error writing workbook to file " + fileName + ": " + e.getMessage(), e);
+      throw new GEOIngestorException("Error writing workbook to file " + fileName + ": " + e.getMessage(), e);
     } finally {
       IOUtils.closeQuietly(os);
     }
   }
 
   public static void highlightCell(Workbook workbook, String sheetName, int columnIndex, int rowNumber)
-    throws GEOConverterException
+    throws GEOIngestorException
   {
     Sheet sheet = workbook.getSheet(sheetName);
 
     if (sheet == null)
-      throw new GEOConverterException("Internal error: no sheet " + sheetName + " in workbook");
+      throw new GEOIngestorException("Internal error: no sheet " + sheetName + " in workbook");
 
     Row row = sheet.getRow(rowNumber);
 
     if (row == null)
-      throw new GEOConverterException("Internal error: no row " + rowNumber + " in sheet " + sheet.getSheetName());
+      throw new GEOIngestorException("Internal error: no row " + rowNumber + " in sheet " + sheet.getSheetName());
 
     Cell cell = row.getCell(columnIndex);
 
     if (cell == null)
-      throw new GEOConverterException(
+      throw new GEOIngestorException(
         "Internal error: no column " + columnIndex + " at row " + rowNumber + " in sheet " + sheet.getSheetName());
 
     // setFillBackgroundColor will not take unless setFillForegroundColor is called first!!!
@@ -161,17 +161,17 @@ public class SSUtil
     return convertIndex2ColString(columnIndex) + (rowIndex + 1);
   }
 
-  public static Sheet getSheet(Workbook workbook, String sheetName) throws GEOConverterException
+  public static Sheet getSheet(Workbook workbook, String sheetName) throws GEOIngestorException
   {
     Sheet sheet = workbook.getSheet(sheetName);
 
     if (sheet == null)
-      throw new GEOConverterException("Invalid sheet " + sheetName);
+      throw new GEOIngestorException("Invalid sheet " + sheetName);
 
     return sheet;
   }
 
-  public static boolean getCellValueAsBoolean(Cell cell, String trueValue) throws GEOConverterException
+  public static boolean getCellValueAsBoolean(Cell cell, String trueValue) throws GEOIngestorException
   {
     if (cell == null)
       return false;
@@ -184,7 +184,7 @@ public class SSUtil
       return false;
   }
 
-  public static String getStringCellValue(Cell cell, String defaultValue) throws GEOConverterException
+  public static String getStringCellValue(Cell cell, String defaultValue) throws GEOIngestorException
   {
     if (cell == null)
       return defaultValue;
@@ -194,7 +194,7 @@ public class SSUtil
       return defaultValue;
   }
 
-  public static String getStringCellValue(Cell cell) throws GEOConverterException
+  public static String getStringCellValue(Cell cell) throws GEOIngestorException
   {
     assertNonNullCell(cell);
     assertStringCellType(cell);
@@ -202,30 +202,30 @@ public class SSUtil
     return cell.getStringCellValue();
   }
 
-  public static void assertNonNullCell(Cell cell) throws GEOConverterException
+  public static void assertNonNullCell(Cell cell) throws GEOIngestorException
   {
     if (cell == null)
-      throw new GEOConverterException("No cell at location " + getCellLocation(cell));
+      throw new GEOIngestorException("No cell at location " + getCellLocation(cell));
   }
 
-  public static void assertStringCellType(Cell cell) throws GEOConverterException
+  public static void assertStringCellType(Cell cell) throws GEOIngestorException
   {
     if (!isStringCellType(cell))
-      throw new GEOConverterException(
+      throw new GEOIngestorException(
         "Cell at location " + getCellLocation(cell) + " is not a string; type is " + getCellTypeName(cell));
   }
 
-  public static double getNumericCellValue(Cell cell) throws GEOConverterException
+  public static double getNumericCellValue(Cell cell) throws GEOIngestorException
   {
     assertNumericCellType(cell);
 
     return cell.getNumericCellValue();
   }
 
-  public static void assertNumericCellType(Cell cell) throws GEOConverterException
+  public static void assertNumericCellType(Cell cell) throws GEOIngestorException
   {
     if (!isNumericCellType(cell))
-      throw new GEOConverterException(
+      throw new GEOIngestorException(
         "Cell at location " + getCellLocation(cell) + " is not a numeric; type is " + getCellTypeName(cell));
   }
 
@@ -269,7 +269,7 @@ public class SSUtil
   }
 
   public static Optional<Integer> findFieldRowNumber(Sheet sheet, String fieldName, int fieldColumnNumber)
-    throws GEOConverterException
+    throws GEOIngestorException
   {
     int firstRow = sheet.getFirstRowNum();
     int lastRow = sheet.getLastRowNum();
@@ -288,7 +288,7 @@ public class SSUtil
    * A field can have multiple values.
    */
   public static Map<String, List<String>> findFieldValues(Sheet sheet, int fieldNameColumnNumber,
-    int fieldValueColumnNumber, int startRowNumber, int finishRowNumber) throws GEOConverterException
+    int fieldValueColumnNumber, int startRowNumber, int finishRowNumber) throws GEOIngestorException
   {
     Map<String, List<String>> field2Values = new HashMap<>();
 
@@ -297,21 +297,21 @@ public class SSUtil
       Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
       if (fieldNameCell == null)
-        throw new GEOConverterException("empty field name at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
 
       Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
 
       if (fieldValueCell == null)
-        throw new GEOConverterException("empty field value at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
 
       String fieldName = SSUtil.getStringCellValue(fieldNameCell);
       if (fieldName.isEmpty())
-        throw new GEOConverterException("empty field name at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
 
       String fieldValue = SSUtil.getStringCellValue(fieldNameCell);
 
       if (fieldValue.isEmpty())
-        throw new GEOConverterException("empty field value at location " + getCellLocation(fieldValueCell));
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
 
       if (field2Values.containsKey(fieldName))
         field2Values.get(fieldName).add(fieldValue);
@@ -328,7 +328,7 @@ public class SSUtil
    * Duplicates not allowed.
    */
   public static Map<String, String> findFieldValue(Sheet sheet, int fieldNameColumnNumber, int fieldValueColumnNumber,
-    int startRowNumber, int finishRowNumber) throws GEOConverterException
+    int startRowNumber, int finishRowNumber) throws GEOIngestorException
   {
     Map<String, String> field2Value = new HashMap<>();
 
@@ -337,24 +337,24 @@ public class SSUtil
       Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
       if (fieldNameCell == null)
-        throw new GEOConverterException("empty field name at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
 
       Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
 
       if (fieldValueCell == null)
-        throw new GEOConverterException("empty field value at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
 
       String fieldName = SSUtil.getStringCellValue(fieldNameCell); // Check for null cell
       if (fieldName.isEmpty())
-        throw new GEOConverterException("empty field name at location " + getCellLocation(fieldNameCell));
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
 
       String fieldValue = SSUtil.getStringCellValue(fieldNameCell); // Check for null cell
 
       if (fieldValue.isEmpty())
-        throw new GEOConverterException("empty field value at location " + getCellLocation(fieldValueCell));
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
 
       if (field2Value.containsKey(fieldName))
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "duplicate field " + fieldName + " value at location " + getCellLocation(fieldValueCell));
       else {
         field2Value.put(fieldName, fieldValue);

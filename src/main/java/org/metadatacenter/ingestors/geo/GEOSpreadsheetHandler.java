@@ -74,12 +74,12 @@ public class GEOSpreadsheetHandler
 {
   private final String spreadsheetFileName;
 
-  public GEOSpreadsheetHandler(String spreadsheetFileName) throws GEOConverterException
+  public GEOSpreadsheetHandler(String spreadsheetFileName) throws GEOIngestorException
   {
     this.spreadsheetFileName = spreadsheetFileName;
   }
 
-  public GEOMetadata extractGEOMetadata() throws GEOConverterException
+  public GEOMetadata extractGEOMetadata() throws GEOIngestorException
   {
     InputStream spreadsheetStream = SSUtil.openSpreadsheetInputStream(spreadsheetFileName);
     Workbook workbook = SSUtil.createReadonlyWorkbook(spreadsheetStream);
@@ -88,7 +88,7 @@ public class GEOSpreadsheetHandler
     return extractGEOMetadata(geoMetadataSheet);
   }
 
-  private GEOMetadata extractGEOMetadata(Sheet geoMetadataSheet) throws GEOConverterException
+  private GEOMetadata extractGEOMetadata(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Series series = extractSeries(geoMetadataSheet);
     Map<String, Sample> samples = extractSamples(geoMetadataSheet);
@@ -98,7 +98,7 @@ public class GEOSpreadsheetHandler
     return new GEOMetadata(series, samples, procotol, platform);
   }
 
-  private Series extractSeries(Sheet geoMetadataSheet) throws GEOConverterException
+  private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, List<String>> seriesFields = extractSeriesFields(geoMetadataSheet);
     String title = getRequiredMultiValueFieldValue(seriesFields, SERIES_TITLE_FIELD_NAME, SERIES_HEADER_NAME);
@@ -114,29 +114,29 @@ public class GEOSpreadsheetHandler
   }
 
   private String getRequiredSingleValueFieldValue(Map<String, String> fields, String fieldName,
-    String fieldCollectionName) throws GEOConverterException
+    String fieldCollectionName) throws GEOIngestorException
   {
     Optional<String> fieldValue = getSingleValueFieldValue(fields, fieldName);
 
     if (fieldValue.isPresent())
       return fieldValue.get();
     else
-      throw new GEOConverterException("could not find required field " + fieldName + " in " + fieldCollectionName);
+      throw new GEOIngestorException("could not find required field " + fieldName + " in " + fieldCollectionName);
   }
 
   private String getRequiredMultiValueFieldValue(Map<String, List<String>> fields, String fieldName,
-    String fieldCollectionName) throws GEOConverterException
+    String fieldCollectionName) throws GEOIngestorException
   {
     Optional<String> fieldValue = getMultiValueFieldValue(fields, fieldName, fieldCollectionName);
 
     if (fieldValue.isPresent())
       return fieldValue.get();
     else
-      throw new GEOConverterException("could not find required field " + fieldName + " in " + fieldCollectionName);
+      throw new GEOIngestorException("could not find required field " + fieldName + " in " + fieldCollectionName);
   }
 
   private Optional<String> getSingleValueFieldValue(Map<String, String> fields, String fieldName)
-    throws GEOConverterException
+    throws GEOIngestorException
   {
     if (fields.containsKey(fieldName)) {
       return Optional.of(fields.get(fieldName));
@@ -145,20 +145,20 @@ public class GEOSpreadsheetHandler
   }
 
   private Optional<String> getMultiValueFieldValue(Map<String, List<String>> fields, String fieldName,
-    String fieldCollectionName) throws GEOConverterException
+    String fieldCollectionName) throws GEOIngestorException
   {
     if (fields.containsKey(fieldName)) {
       if (fields.get(fieldName).size() == 1)
         return Optional.of(fields.get(fieldName).iterator().next());
       else
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "not expecting multiple values for field " + fieldName + " in " + fieldCollectionName);
     } else
       return Optional.empty();
   }
 
   private List<String> getMultiValueFieldValues(Map<String, List<String>> fields, String fieldName)
-    throws GEOConverterException
+    throws GEOIngestorException
   {
     if (fields.containsKey(fieldName))
       return fields.get(fieldName);
@@ -167,15 +167,15 @@ public class GEOSpreadsheetHandler
   }
 
   private List<String> getRequiredMultiValueFieldValues(Map<String, List<String>> fields, String fieldName,
-    String fieldCollectionName) throws GEOConverterException
+    String fieldCollectionName) throws GEOIngestorException
   {
     if (fields.containsKey(fieldName))
       return fields.get(fieldName);
     else
-      throw new GEOConverterException("no values for field " + fieldName + " in " + fieldCollectionName);
+      throw new GEOIngestorException("no values for field " + fieldName + " in " + fieldCollectionName);
   }
 
-  private Map<String, List<String>> extractSeriesFields(Sheet geoMetadataSheet) throws GEOConverterException
+  private Map<String, List<String>> extractSeriesFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Optional<Integer> seriesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SERIES_HEADER_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
@@ -187,25 +187,25 @@ public class GEOSpreadsheetHandler
           FIELD_VALUES_COLUMN_NUMBER, seriesHeaderRowNumber.get() + 1, samplesHeaderRowNumber.get() - 1);
 
         if (fieldName2Values.isEmpty())
-          throw new GEOConverterException("no series fields found in metadata spreadsheet");
+          throw new GEOIngestorException("no series fields found in metadata spreadsheet");
 
         if (!SeriesFieldNames.containsAll(fieldName2Values.keySet()))
-          throw new GEOConverterException(
+          throw new GEOIngestorException(
             "unknown series fields " + fieldName2Values.keySet().removeAll(SeriesFieldNames));
 
         return fieldName2Values;
       } else
-        throw new GEOConverterException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
+        throw new GEOIngestorException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
     } else
-      throw new GEOConverterException("no series header field named " + SERIES_HEADER_NAME + " in metadata sheet");
+      throw new GEOIngestorException("no series header field named " + SERIES_HEADER_NAME + " in metadata sheet");
   }
 
-  private Protocol extractProtocol(Sheet geoMetadataSheet) throws GEOConverterException
+  private Protocol extractProtocol(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, String> protocolFields = extractProtocolFields(geoMetadataSheet);
 
     if (protocolFields.isEmpty())
-      throw new GEOConverterException("no protocols found in metadata sheet");
+      throw new GEOIngestorException("no protocols found in metadata sheet");
 
     Optional<String> growth = getSingleValueFieldValue(protocolFields, PROTOCOL_GROWTH_FIELD_NAME);
     Optional<String> treatment = getSingleValueFieldValue(protocolFields, PROTOCOL_TREATMENT_FIELD_NAME);
@@ -222,7 +222,7 @@ public class GEOSpreadsheetHandler
     return new Protocol(growth, treatment, extract, label, hyb, scan, dataProcessing, valueDefinition);
   }
 
-  private Optional<Platform> extractPlatform(Sheet geoMetadataSheet) throws GEOConverterException
+  private Optional<Platform> extractPlatform(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, List<String>> platformFields = extractPlatformFields(geoMetadataSheet);
 
@@ -257,7 +257,7 @@ public class GEOSpreadsheetHandler
       return Optional.empty();
   }
 
-  private Map<String, List<String>> extractPlatformFields(Sheet geoMetadataSheet) throws GEOConverterException
+  private Map<String, List<String>> extractPlatformFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Optional<Integer> platformHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, PLATFORM_HEADER_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
@@ -270,7 +270,7 @@ public class GEOSpreadsheetHandler
       if (!fieldName2Values.isEmpty()) {
 
         if (!PlatformFieldNames.containsAll(fieldName2Values.keySet()))
-          throw new GEOConverterException(
+          throw new GEOIngestorException(
             "unknown platform fields " + fieldName2Values.keySet().removeAll(PlatformFieldNames));
 
         return fieldName2Values;
@@ -280,7 +280,7 @@ public class GEOSpreadsheetHandler
       return Collections.emptyMap();
   }
 
-  private Map<String, String> extractProtocolFields(Sheet geoMetadataSheet) throws GEOConverterException
+  private Map<String, String> extractProtocolFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Optional<Integer> seriesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, PROTOCOLS_HEADER_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
@@ -290,19 +290,19 @@ public class GEOSpreadsheetHandler
         FIELD_VALUES_COLUMN_NUMBER, seriesHeaderRowNumber.get() + 1, geoMetadataSheet.getLastRowNum());
 
       if (fieldName2Value.isEmpty())
-        throw new GEOConverterException("no protocol fields found in metadata spreadsheet");
+        throw new GEOIngestorException("no protocol fields found in metadata spreadsheet");
 
       if (!SeriesFieldNames.containsAll(fieldName2Value.keySet()))
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "unknown series fields " + fieldName2Value.keySet().removeAll(SeriesFieldNames));
 
       return fieldName2Value;
     } else
-      throw new GEOConverterException(
+      throw new GEOIngestorException(
         "no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
   }
 
-  private Map<String, Sample> extractSamples(Sheet geoMetadataSheet) throws GEOConverterException
+  private Map<String, Sample> extractSamples(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, Sample> samples = new HashMap<>();
 
@@ -350,36 +350,36 @@ public class GEOSpreadsheetHandler
             organisms, characteristics, biomaterialProvider, molecule, label, description, platform);
 
           if (samples.containsKey(sampleName))
-            throw new GEOConverterException("multiple entires for sample " + sampleName);
+            throw new GEOIngestorException("multiple entires for sample " + sampleName);
 
           samples.put(sampleName, sample);
         }
       } else
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
     } else
-      throw new GEOConverterException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
+      throw new GEOIngestorException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
 
     if (samples.isEmpty())
-      throw new GEOConverterException("no samples found in metadata sheet");
+      throw new GEOIngestorException("no samples found in metadata sheet");
 
     return samples;
   }
 
   private List<String> getRequiredRepeatedValueFieldValues(Map<String, List<String>> sampleFields, String fieldName,
-    String fieldCollectionName) throws GEOConverterException
+    String fieldCollectionName) throws GEOIngestorException
   {
     if (sampleFields.containsKey(fieldName)) {
       if (!sampleFields.get(fieldName).isEmpty())
         return sampleFields.get(fieldName);
       else
-        throw new GEOConverterException("no values for required field " + fieldName + " in " + fieldCollectionName);
+        throw new GEOIngestorException("no values for required field " + fieldName + " in " + fieldCollectionName);
     } else
-      throw new GEOConverterException("no required field " + fieldName + " in " + fieldCollectionName);
+      throw new GEOIngestorException("no required field " + fieldName + " in " + fieldCollectionName);
   }
 
   private Map<String, String> extractCharacteristicsFromSampleFields(Map<String, List<String>> sampleFields)
-    throws GEOConverterException
+    throws GEOIngestorException
   {
     Map<String, String> characteristics = new HashMap<>();
 
@@ -387,12 +387,12 @@ public class GEOSpreadsheetHandler
       if (fieldName.startsWith(CHARACTERISTICS_FIELD_PREFIX)) {
         String characteristicName = fieldName.substring(CHARACTERISTICS_FIELD_PREFIX.length());
         if (characteristics.containsKey(characteristicName))
-          throw new GEOConverterException("repeated characteristic " + characteristicName + " in metadata spreadsheet");
+          throw new GEOIngestorException("repeated characteristic " + characteristicName + " in metadata spreadsheet");
 
         List<String> characteristicValues = sampleFields.get(fieldName);
         if (!characteristicValues.isEmpty()) {
           if (characteristicValues.size() > 1)
-            throw new GEOConverterException(
+            throw new GEOIngestorException(
               "multiple values for characteristic " + characteristicName + " in metadata spreadsheet");
           String characteristicValue = characteristicValues.get(0);
           characteristics.put(characteristicName, characteristicValue);
@@ -405,26 +405,26 @@ public class GEOSpreadsheetHandler
   // Returns: sample name -> (field name -> [field values])
   // Some sample columns can be repeated (e.g., raw data file).
   private Map<String, Map<String, List<String>>> extractSampleFields(Sheet geoMetadataSheet, int samplesHeaderRowNumber,
-    int sampledEndRowNumber) throws GEOConverterException
+    int sampledEndRowNumber) throws GEOIngestorException
   {
     Map<String, Map<String, List<String>>> sampleFields = new HashMap<>();
     List<String> headerFieldNames = new ArrayList<>();
     Row headerRow = geoMetadataSheet.getRow(samplesHeaderRowNumber);
 
     if (headerRow == null)
-      throw new GEOConverterException("could not find header row at row number " + samplesHeaderRowNumber);
+      throw new GEOIngestorException("could not find header row at row number " + samplesHeaderRowNumber);
 
     for (int currentColumnNumber = 0; currentColumnNumber < headerRow.getLastCellNum(); currentColumnNumber++) {
       Cell headerFieldCell = headerRow.getCell(currentColumnNumber);
 
       if (headerFieldCell == null)
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "invalid samples header cell at row " + samplesHeaderRowNumber + ", column " + currentColumnNumber);
 
       String headerFieldValue = getStringCellValue(headerFieldCell);
 
       if (headerFieldValue.isEmpty())
-        throw new GEOConverterException(
+        throw new GEOIngestorException(
           "empty samples header cell at row " + samplesHeaderRowNumber + ", column " + currentColumnNumber);
 
       headerFieldNames.add(headerFieldValue);
@@ -437,9 +437,9 @@ public class GEOSpreadsheetHandler
         Cell sampleNameCell = valueRow.getCell(0);
         String sampleName = getStringCellValue(sampleNameCell);
         if (sampleName.isEmpty())
-          throw new GEOConverterException("empty sample name at row " + currentRowNumber);
+          throw new GEOIngestorException("empty sample name at row " + currentRowNumber);
         if (sampleFields.containsKey(sampleName))
-          throw new GEOConverterException("duplicate sample name " + sampleName + " found at row " + currentRowNumber);
+          throw new GEOIngestorException("duplicate sample name " + sampleName + " found at row " + currentRowNumber);
 
         sampleFields.put(sampleName, new HashMap<>());
 
@@ -464,12 +464,12 @@ public class GEOSpreadsheetHandler
     return sampleFields;
   }
 
-  private Sheet getGEOMetadataSheet(Workbook workbook) throws GEOConverterException
+  private Sheet getGEOMetadataSheet(Workbook workbook) throws GEOIngestorException
   {
     Sheet metadataSheet = workbook.getSheet(GEO_METADATA_SHEET_NAME);
 
     if (metadataSheet == null)
-      throw new GEOConverterException(
+      throw new GEOIngestorException(
         "spreadsheet does not contain a GEO metadata template sheet called " + GEO_METADATA_SHEET_NAME);
     else
       return metadataSheet;

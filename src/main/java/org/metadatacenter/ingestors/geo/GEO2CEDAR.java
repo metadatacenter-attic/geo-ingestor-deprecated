@@ -1,5 +1,7 @@
 package org.metadatacenter.ingestors.geo;
 
+import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
+
 public class GEO2CEDAR
 {
   public static void main(String[] args)
@@ -7,9 +9,16 @@ public class GEO2CEDAR
     if (args.length != 2)
       Usage();
 
-    String geoFile = args[0];
-    String cedarFile = args[1];
-  }
+    String geoExcelFile = args[0];
+    String cedarJSONFile = args[1];
+
+    try {
+      GEOSpreadsheetHandler geoSpreadsheetHandler = new GEOSpreadsheetHandler(geoExcelFile);
+      GEOMetadata geoMetadata = geoSpreadsheetHandler.extractGEOMetadata();
+    } catch (GEOIngestorException e) {
+      e.printStackTrace();
+    }
+}
 
   private static void Usage()
   {

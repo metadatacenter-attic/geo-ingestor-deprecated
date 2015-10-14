@@ -6,6 +6,8 @@ import java.util.Optional;
 
 /**
  * Metadata for GEO. See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
+ *
+ * @see org.metadatacenter.ingestors.geo.GEOSpreadsheetHandler
  */
 public class GEOMetadata
 {
