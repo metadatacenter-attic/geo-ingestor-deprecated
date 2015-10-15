@@ -14,7 +14,7 @@ public class Contact extends MetadataTemplateElement
   public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Contact");
 
   private final StringValueElement firstName;
-  private final Optional<StringValueElement> middleInitial;
+  private final StringValueElement middleInitial;
   private final StringValueElement lastName;
   private final Optional<StringValueElement> address;
   private final Optional<EmailValueElement> email;
@@ -24,7 +24,7 @@ public class Contact extends MetadataTemplateElement
   private final Optional<Organization> organization;
 
   public Contact(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement firstName,
-    Optional<StringValueElement> middleInitial, StringValueElement lastName, Optional<StringValueElement> address,
+    StringValueElement middleInitial, StringValueElement lastName, Optional<StringValueElement> address,
     Optional<EmailValueElement> email, Optional<PhoneValueElement> phone, Optional<PhoneValueElement> fax,
     Optional<StringValueElement> role, Optional<Organization> organization)
   {
@@ -40,7 +40,7 @@ public class Contact extends MetadataTemplateElement
     this.organization = organization;
   }
 
-  public Contact(StringValueElement firstName, Optional<StringValueElement> middleInitial, StringValueElement lastName,
+  public Contact(StringValueElement firstName, StringValueElement middleInitial, StringValueElement lastName,
     Optional<StringValueElement> address, Optional<EmailValueElement> email, Optional<PhoneValueElement> phone,
     Optional<PhoneValueElement> fax, Optional<StringValueElement> role, Optional<Organization> organization)
   {
@@ -54,5 +54,19 @@ public class Contact extends MetadataTemplateElement
     this.fax = fax;
     this.role = role;
     this.organization = organization;
+  }
+
+  public Contact(StringValueElement firstName, StringValueElement middleInitial, StringValueElement lastName)
+  {
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    this.firstName = firstName;
+    this.middleInitial = middleInitial;
+    this.lastName = lastName;
+    this.address = Optional.empty();
+    this.email = Optional.empty();;
+    this.phone = Optional.empty();;
+    this.fax = Optional.empty();;
+    this.role = Optional.empty();;
+    this.organization = Optional.empty();;
   }
 }

@@ -35,4 +35,13 @@ public class Characteristic extends MetadataTemplateElement
     this.description = description;
     this.hasCharacteristicValue = characteristicValue;
   }
+
+  public Characteristic(StringValueElement name, Optional<CharacteristicValue> characteristicValue)
+
+  {
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    this.name = name;
+    this.description = Optional.empty();
+    this.hasCharacteristicValue = characteristicValue;
+  }
 }

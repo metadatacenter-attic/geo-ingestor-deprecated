@@ -12,13 +12,13 @@ public class Series
   private final String title;
   private final String summary;
   private final String overallDesign;
-  private final List<String> contributors;
+  private final List<ContributorName> contributors;
   private final List<String> pubmedIDs;
   private final Map<String, Map<String, String>> variables; // sample name -> (variable -> value)
   private final Map<String, List<String>> repeat; // sample name -> [repeat type]
 
-  public Series(String title, String summary, String overallDesign, List<String> contributors, List<String> pubmedIDs,
-    Map<String, Map<String, String>> variables, Map<String, List<String>> repeat)
+  public Series(String title, String summary, String overallDesign, List<ContributorName> contributors,
+    List<String> pubmedIDs, Map<String, Map<String, String>> variables, Map<String, List<String>> repeat)
   {
     this.title = title;
     this.summary = summary;
@@ -44,7 +44,7 @@ public class Series
     return overallDesign;
   }
 
-  public List<String> getContributors()
+  public List<ContributorName> getContributors()
   {
     return Collections.unmodifiableList(contributors);
   }

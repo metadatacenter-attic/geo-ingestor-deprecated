@@ -31,6 +31,11 @@ public class RepositoryFactory
       return Optional.empty();
   }
 
+  public static Optional<StringValueElement> createOptionalStringValueElement(String value)
+  {
+    return Optional.of(new StringValueElement(Collections.emptyList(), generateJSONLDIdentifier(), value));
+  }
+
   private static Optional<String> generateJSONLDIdentifier()
   {
     return Optional.of(UUID.randomUUID().toString());
@@ -68,7 +73,8 @@ public class RepositoryFactory
     return new BooleanValueElement(Collections.emptyList(), generateJSONLDIdentifier(), value);
   }
 
-  public static EmailValueElement createEmailValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
+  public static EmailValueElement createEmailValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier,
+    String value)
   {
     return new EmailValueElement(jsonLDTypes, jsonLDIdentifier, value);
   }
@@ -83,7 +89,8 @@ public class RepositoryFactory
     return new EmailValueElement(Collections.emptyList(), generateJSONLDIdentifier(), value);
   }
 
-  public static PhoneValueElement createPhoneValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
+  public static PhoneValueElement createPhoneValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier,
+    String value)
   {
     return new PhoneValueElement(jsonLDTypes, jsonLDIdentifier, value);
   }
@@ -98,7 +105,8 @@ public class RepositoryFactory
     return new PhoneValueElement(Collections.emptyList(), generateJSONLDIdentifier(), value);
   }
 
-  public static URIValueElement createURIValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
+  public static URIValueElement createURIValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier,
+    String value)
   {
     return new URIValueElement(jsonLDTypes, jsonLDIdentifier, value);
   }

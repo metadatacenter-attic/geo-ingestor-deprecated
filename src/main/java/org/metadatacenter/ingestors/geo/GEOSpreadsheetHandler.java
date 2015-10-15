@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.metadatacenter.ingestors.geo.metadata.ContributorName;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
@@ -17,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.metadatacenter.ingestors.geo.GEONames.CHARACTERISTICS_FIELD_PREFIX;
 import static org.metadatacenter.ingestors.geo.GEONames.FIELD_NAMES_COLUMN_NUMBER;
@@ -58,7 +61,6 @@ import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_ORGANISM_FIELD_N
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_SOURCE_NAME_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_CONTRIBUTOR_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_HEADER_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_OVERALL_DESIGN_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_PUBMED_ID_FIELD_NAME;
@@ -92,10 +94,10 @@ public class GEOSpreadsheetHandler
   {
     Series series = extractSeries(geoMetadataSheet);
     Map<String, Sample> samples = extractSamples(geoMetadataSheet);
-    Protocol procotol = extractProtocol(geoMetadataSheet);
+    Protocol protocol = extractProtocol(geoMetadataSheet);
     Optional<Platform> platform = extractPlatform(geoMetadataSheet);
 
-    return new GEOMetadata(series, samples, procotol, platform);
+    return new GEOMetadata(series, samples, protocol, platform);
   }
 
   private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException
@@ -105,12 +107,34 @@ public class GEOSpreadsheetHandler
     String summary = getRequiredMultiValueFieldValue(seriesFields, SERIES_SUMMARY_FIELD_NAME, SERIES_HEADER_NAME);
     String overallDesign = getRequiredMultiValueFieldValue(seriesFields, SERIES_OVERALL_DESIGN_FIELD_NAME,
       SERIES_HEADER_NAME);
-    List<String> contributors = getMultiValueFieldValues(seriesFields, SERIES_CONTRIBUTOR_FIELD_NAME);
+    List<ContributorName> contributors = extractContributorNames(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
     List<String> pubmedIDs = getMultiValueFieldValues(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
     Map<String, Map<String, String>> variables = new HashMap<>(); // TODO
     Map<String, List<String>> repeat = new HashMap<>(); // TODO
 
     return new Series(title, summary, overallDesign, contributors, pubmedIDs, variables, repeat);
+  }
+
+  private List<ContributorName> extractContributorNames(Map<String, List<String>> seriesFields,
+    String SERIES_CONTRIBUTOR_FIELD_NAME) throws GEOIngestorException
+  {
+    List<ContributorName> contributorNames = new ArrayList<>();
+    List<String> contributorNameFieldValues = getMultiValueFieldValues(seriesFields, SERIES_CONTRIBUTOR_FIELD_NAME);
+
+    String regexp = "([A-Za-z]+),\\s+([A-Za-z]+)\\s+([A-Za-z]+)";
+    Pattern pattern = Pattern.compile(regexp);
+    for (String contributorName : contributorNameFieldValues) {
+      Matcher matcher = pattern.matcher(contributorName);
+      if (matcher.matches()) {
+        String firstName = matcher.group(1);
+        String middleInitial = matcher.group(2);
+        String lastName = matcher.group(3);
+        contributorNames.add(new ContributorName(firstName, middleInitial, lastName));
+      } else { // Just add entire string as last name
+        contributorNames.add(new ContributorName("", "", contributorName));
+      }
+    }
+    return contributorNames;
   }
 
   private String getRequiredSingleValueFieldValue(Map<String, String> fields, String fieldName,
@@ -293,13 +317,11 @@ public class GEOSpreadsheetHandler
         throw new GEOIngestorException("no protocol fields found in metadata spreadsheet");
 
       if (!SeriesFieldNames.containsAll(fieldName2Value.keySet()))
-        throw new GEOIngestorException(
-          "unknown series fields " + fieldName2Value.keySet().removeAll(SeriesFieldNames));
+        throw new GEOIngestorException("unknown series fields " + fieldName2Value.keySet().removeAll(SeriesFieldNames));
 
       return fieldName2Value;
     } else
-      throw new GEOIngestorException(
-        "no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
+      throw new GEOIngestorException("no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
   }
 
   private Map<String, Sample> extractSamples(Sheet geoMetadataSheet) throws GEOIngestorException
