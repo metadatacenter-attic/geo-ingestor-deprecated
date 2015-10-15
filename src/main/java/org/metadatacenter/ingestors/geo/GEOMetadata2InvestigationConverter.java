@@ -5,7 +5,9 @@ import org.metadatacenter.ingestors.geo.metadata.Protocol;
 import org.metadatacenter.ingestors.geo.metadata.Sample;
 import org.metadatacenter.ingestors.geo.metadata.Series;
 import org.metadatacenter.models.investigation.Contact;
+import org.metadatacenter.models.investigation.Input;
 import org.metadatacenter.models.investigation.Investigation;
+import org.metadatacenter.models.investigation.Output;
 import org.metadatacenter.models.investigation.ParameterValue;
 import org.metadatacenter.models.investigation.Process;
 import org.metadatacenter.models.investigation.ProtocolParameter;
@@ -20,6 +22,7 @@ import org.metadatacenter.repository.model.StringValueElement;
 import org.metadatacenter.repository.model.URIValueElement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,34 +56,24 @@ public class GEOMetadata2InvestigationConverter
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(this.geoMetadata.getProtocol());
-    List<Study> studies = convertGEOSamples2Studies(this.geoMetadata.getSamples());
+    Study study = convertGEOSeries2Study(this.geoMetadata.getSeries(), this.geoMetadata.getSamples());
 
     return new Investigation(jsonLDTypes, jsonLDIdentifier, templateID, title, description, identifier, submissionDate,
-      publicReleaseDate, studies);
+      publicReleaseDate, Collections.singletonList(study));
 
   }
 
-  private List<Study> convertGEOSamples2Studies(Map<String, Sample> geoSamples)
-  {
-    List<Study> studies = new ArrayList<>();
-
-    for (String sampleName : geoSamples.keySet()) {
-      Study study = convertGEOSample2Study(geoSamples.get(sampleName));
-    }
-    return studies;
-  }
-
-  private Study convertGEOSample2Study(Sample sample)
+  private Study convertGEOSeries2Study(Series series, Map<String, Sample> samples)
   {
     List<String> jsonLDTypes = new ArrayList<>(); // TODO
     Optional<String> jsonLDIdentifier = generateJSONLDIdentifier();
-    StringValueElement title = createStringValueElement(sample.getTitle());
-    StringValueElement description = createStringValueElement(sample.getDescription());
-    StringValueElement identifier = createStringValueElement(sample.getTitle());
+    StringValueElement title = createStringValueElement(series.getTitle());
+    StringValueElement description = createStringValueElement(series.getSummary());
+    StringValueElement identifier = createStringValueElement(series.getTitle());
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<URIValueElement> studyDesignType = Optional.empty();
-    List<Process> processes = extractProcessesFromGEOSample(sample);
+    List<Process> processes = convertGEOSamples2Processes(samples);
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoMetadata.getProtocol());
     List<StudyAssay> studyAssays = new ArrayList<>(); // platform // TODO
     List<StudyFactor> studyFactors = new ArrayList<>(); // TODO
@@ -94,16 +87,33 @@ public class GEOMetadata2InvestigationConverter
 
   }
 
-  private List<Process> extractProcessesFromGEOSample(Sample geoSample)
+  private List<Process> convertGEOSamples2Processes(Map<String, Sample> geoSamples)
   {
     List<Process> processes = new ArrayList<>();
 
-    // TODO
-
+    for (String sampleName : geoSamples.keySet()) {
+      Process process = convertGEOSample2Process(geoSamples.get(sampleName));
+      processes.add(process);
+    }
     return processes;
   }
 
+  private Process convertGEOSample2Process(Sample sample)
+  {
+    List<String> jsonLDTypes = new ArrayList<>(); // TODO
+    Optional<String> jsonLDIdentifier = generateJSONLDIdentifier();
+    StringValueElement type = createStringValueElement("GEOSampleProcess");
+    Optional<StudyAssay> hasStudyAssay = Optional.empty(); // TODO
+    Optional<StudyProtocol> executeStudyProtocol = Optional.empty(); // TODO
+    List<ParameterValue> hasParameterValue = new ArrayList<>(); // TODO
+    List<Input> hasInput = new ArrayList<>(); // TODO
+    List<Output> hasOutput = new ArrayList<>(); // TODO
 
+    return new Process(jsonLDTypes, jsonLDIdentifier, type, hasStudyAssay, executeStudyProtocol, hasParameterValue,
+      hasInput, hasOutput);
+
+  }
+  
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Protocol geoProtocol)
   {
     StringValueElement name = createStringValueElement(geoProtocol.getLabel());
