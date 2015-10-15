@@ -9,15 +9,28 @@ import java.util.Optional;
 
 public class StudyGroupPopulation extends MetadataTemplateElement
 {
+  public static final List<String> ElementURIs = Collections
+    .singletonList(InvestigationNames.URI_BASE + "StudyGroupPopulation");
+
   private final StringValueElement name;
-  private final StringValueElement type;
-  private final StringValueElement selectionRule;
+  private final Optional<StringValueElement> type;
+  private final Optional<StringValueElement> selectionRule;
   private final List<StudySubject> hasStudySubject;
 
   public StudyGroupPopulation(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
-    StringValueElement type, StringValueElement selectionRule, List<StudySubject> studySubjects)
+    Optional<StringValueElement> type, Optional<StringValueElement> selectionRule, List<StudySubject> studySubjects)
   {
     super(jsonLDTypes, jsonLDIdentifier);
+    this.name = name;
+    this.type = type;
+    this.selectionRule = selectionRule;
+    this.hasStudySubject = Collections.unmodifiableList(studySubjects);
+  }
+
+  public StudyGroupPopulation(StringValueElement name, Optional<StringValueElement> type,
+    Optional<StringValueElement> selectionRule, List<StudySubject> studySubjects)
+  {
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
     this.name = name;
     this.type = type;
     this.selectionRule = selectionRule;

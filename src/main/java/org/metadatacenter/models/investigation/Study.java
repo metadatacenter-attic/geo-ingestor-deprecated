@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public class Study extends MetadataTemplateElement
 {
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Study");
+
   private final StringValueElement title;
   private final StringValueElement description;
   private final StringValueElement identifier;
@@ -32,6 +34,28 @@ public class Study extends MetadataTemplateElement
     Optional<StudyGroupPopulation> studyGroupPopulation, List<Publication> publications, List<Contact> contacts)
   {
     super(jsonLDTypes, jsonLDIdentifier);
+    this.title = title;
+    this.description = description;
+    this.identifier = identifier;
+    this.submissionDate = submissionDate;
+    this.publicReleaseDate = publicReleaseDate;
+    this.studyDesignType = studyDesignType;
+    this.hasProcess = Collections.unmodifiableList(processes);
+    this.hasStudyProtocol = studyProtocol;
+    this.hasStudyAssay = Collections.unmodifiableList(studyAssays);
+    this.hasStudyFactor = Collections.unmodifiableList(studyFactors);
+    this.hasStudyGroupPopulation = studyGroupPopulation;
+    this.hasPublication = Collections.unmodifiableList(publications);
+    this.hasContact = Collections.unmodifiableList(contacts);
+  }
+
+  public Study(StringValueElement title, StringValueElement description, StringValueElement identifier,
+    Optional<DateValueElement> submissionDate, Optional<DateValueElement> publicReleaseDate,
+    Optional<URIValueElement> studyDesignType, List<Process> processes, Optional<StudyProtocol> studyProtocol,
+    List<StudyAssay> studyAssays, List<StudyFactor> studyFactors, Optional<StudyGroupPopulation> studyGroupPopulation,
+    List<Publication> publications, List<Contact> contacts)
+  {
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
     this.title = title;
     this.description = description;
     this.identifier = identifier;

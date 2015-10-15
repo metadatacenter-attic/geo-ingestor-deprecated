@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalStringValueElement;
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
@@ -47,8 +46,6 @@ public class GEOMetadata2InvestigationConverter
   {
     Series geoSeries = this.geoMetadata.getSeries();
 
-    List<String> jsonLDTypes = new ArrayList<>(); // TODO
-    Optional<String> jsonLDIdentifier = generateJSONLDIdentifier();
     String templateID = INVESTIGATION_TEMPLATE_ID;
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
     StringValueElement description = createStringValueElement(geoSeries.getSummary());
@@ -58,15 +55,13 @@ public class GEOMetadata2InvestigationConverter
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(this.geoMetadata.getProtocol());
     Study study = convertGEOSeries2Study(this.geoMetadata.getSeries(), this.geoMetadata.getSamples());
 
-    return new Investigation(jsonLDTypes, jsonLDIdentifier, templateID, title, description, identifier, submissionDate,
-      publicReleaseDate, Collections.singletonList(study));
+    return new Investigation(templateID, title, description, identifier, submissionDate, publicReleaseDate,
+      Collections.singletonList(study));
 
   }
 
   private Study convertGEOSeries2Study(Series series, Map<String, Sample> samples)
   {
-    List<String> jsonLDTypes = new ArrayList<>(); // TODO
-    Optional<String> jsonLDIdentifier = generateJSONLDIdentifier();
     StringValueElement title = createStringValueElement(series.getTitle());
     StringValueElement description = createStringValueElement(series.getSummary());
     StringValueElement identifier = createStringValueElement(series.getTitle());
@@ -81,9 +76,8 @@ public class GEOMetadata2InvestigationConverter
     List<Publication> publications = new ArrayList<>(); // TODO
     List<Contact> contacts = new ArrayList<>(); // TODO
 
-    return new Study(jsonLDTypes, jsonLDIdentifier, title, description, identifier, submissionDate, publicReleaseDate,
-      studyDesignType, processes, studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications,
-      contacts);
+    return new Study(title, description, identifier, submissionDate, publicReleaseDate, studyDesignType, processes,
+      studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);
 
   }
 
@@ -100,8 +94,6 @@ public class GEOMetadata2InvestigationConverter
 
   private Process convertGEOSample2Process(Sample sample)
   {
-    List<String> jsonLDTypes = new ArrayList<>(); // TODO
-    Optional<String> jsonLDIdentifier = generateJSONLDIdentifier();
     StringValueElement type = createStringValueElement("GEOSampleProcess");
     Optional<StudyAssay> hasStudyAssay = Optional.empty(); // TODO
     Optional<StudyProtocol> executeStudyProtocol = Optional.empty(); // TODO
@@ -109,11 +101,10 @@ public class GEOMetadata2InvestigationConverter
     List<Input> hasInput = new ArrayList<>(); // TODO
     List<Output> hasOutput = new ArrayList<>(); // TODO
 
-    return new Process(jsonLDTypes, jsonLDIdentifier, type, hasStudyAssay, executeStudyProtocol, hasParameterValue,
-      hasInput, hasOutput);
+    return new Process(type, hasStudyAssay, executeStudyProtocol, hasParameterValue, hasInput, hasOutput);
 
   }
-  
+
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Protocol geoProtocol)
   {
     StringValueElement name = createStringValueElement(geoProtocol.getLabel());
@@ -165,10 +156,5 @@ public class GEOMetadata2InvestigationConverter
     }
 
     return publications;
-  }
-
-  private Optional<String> generateJSONLDIdentifier()
-  {
-    return Optional.of(UUID.randomUUID().toString());
   }
 }

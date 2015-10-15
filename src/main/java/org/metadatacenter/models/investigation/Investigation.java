@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public class Investigation extends MetadataTemplate
 {
+  public static final List<String> ElementURIs = Collections
+    .singletonList(InvestigationNames.URI_BASE + "Investigation");
+
   private final StringValueElement title;
   private final StringValueElement description;
   private final StringValueElement identifier;
@@ -19,8 +22,7 @@ public class Investigation extends MetadataTemplate
 
   public Investigation(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String templateID,
     StringValueElement title, StringValueElement description, StringValueElement identifier,
-    Optional<DateValueElement> submissionDate, Optional<DateValueElement> publicReleaseDate,
-    List<Study> studies)
+    Optional<DateValueElement> submissionDate, Optional<DateValueElement> publicReleaseDate, List<Study> studies)
   {
     super(jsonLDTypes, jsonLDIdentifier, templateID);
     this.title = title;
@@ -31,16 +33,16 @@ public class Investigation extends MetadataTemplate
     this.hasStudy = Collections.unmodifiableList(studies);
   }
 
-  public Investigation(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String templateID,
-    StringValueElement title, StringValueElement description, StringValueElement identifier,
-    List<Study> studies)
+  public Investigation(String templateID, StringValueElement title, StringValueElement description,
+    StringValueElement identifier, Optional<DateValueElement> submissionDate,
+    Optional<DateValueElement> publicReleaseDate, List<Study> studies)
   {
-    super(jsonLDTypes, jsonLDIdentifier, templateID);
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE), templateID);
     this.title = title;
     this.description = description;
     this.identifier = identifier;
-    this.submissionDate = Optional.empty();
-    this.publicReleaseDate = Optional.empty();
+    this.submissionDate = submissionDate;
+    this.publicReleaseDate = publicReleaseDate;
     this.hasStudy = Collections.unmodifiableList(studies);
   }
 }

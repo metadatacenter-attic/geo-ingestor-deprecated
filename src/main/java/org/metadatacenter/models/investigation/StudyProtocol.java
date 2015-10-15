@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public class StudyProtocol extends MetadataTemplateElement
 {
+  public static final List<String> ElementURIs = Collections
+    .singletonList(InvestigationNames.URI_BASE + "StudyProtocol");
+
   private final StringValueElement name;
   private final StringValueElement description;
   private final Optional<StringValueElement> type;
@@ -33,7 +36,7 @@ public class StudyProtocol extends MetadataTemplateElement
   public StudyProtocol(StringValueElement name, StringValueElement description, Optional<StringValueElement> type,
     Optional<URIValueElement> uri, Optional<StringValueElement> version, List<ProtocolParameter> protocolParameters)
   {
-    super();
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
     this.name = name;
     this.description = description;
     this.type = type;

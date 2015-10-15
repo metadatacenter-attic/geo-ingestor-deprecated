@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public class Process extends MetadataTemplateElement
 {
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Process");
+
   private final StringValueElement type;
   private final Optional<StudyAssay> hasStudyAssay;
   private final Optional<StudyProtocol> executeStudyProtocol;
@@ -21,6 +23,19 @@ public class Process extends MetadataTemplateElement
     List<ParameterValue> parameterValues, List<Input> inputs, List<Output> outputs)
   {
     super(jsonLDTypes, jsonLDIdentifier);
+    this.type = type;
+    this.hasStudyAssay = hasStudyAssay;
+    this.executeStudyProtocol = executeStudyProtocol;
+    this.hasParameterValue = Collections.unmodifiableList(parameterValues);
+    this.hasInput = Collections.unmodifiableList(inputs);
+    this.hasOutput = Collections.unmodifiableList(outputs);
+  }
+
+  public Process(StringValueElement type, Optional<StudyAssay> hasStudyAssay,
+    Optional<StudyProtocol> executeStudyProtocol, List<ParameterValue> parameterValues, List<Input> inputs,
+    List<Output> outputs)
+  {
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
     this.type = type;
     this.hasStudyAssay = hasStudyAssay;
     this.executeStudyProtocol = executeStudyProtocol;
