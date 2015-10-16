@@ -1,5 +1,6 @@
 package org.metadatacenter.repository.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,4 +10,10 @@ public class StringValueElement extends ValueElement
   {
     super(jsonLDTypes, jsonLDIdentifier, value);
   }
+
+  public StringValueElement(String value)
+  {
+    super(Collections.emptyList(), Optional.empty(), value);
+  }
+
 }

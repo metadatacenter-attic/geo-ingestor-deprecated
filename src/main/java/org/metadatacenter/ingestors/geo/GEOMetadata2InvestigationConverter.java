@@ -9,6 +9,7 @@ import org.metadatacenter.ingestors.geo.metadata.Series;
 import org.metadatacenter.models.investigation.Characteristic;
 import org.metadatacenter.models.investigation.CharacteristicValue;
 import org.metadatacenter.models.investigation.Contact;
+import org.metadatacenter.models.investigation.DataFile;
 import org.metadatacenter.models.investigation.Input;
 import org.metadatacenter.models.investigation.Investigation;
 import org.metadatacenter.models.investigation.Output;
@@ -108,28 +109,46 @@ public class GEOMetadata2InvestigationConverter
     List<ParameterValue> hasParameterValue = new ArrayList<>(); // Stored via the study protocol
     Optional<StudyAssay> sampleStudyAssay = extractStudyAssayFromGEOSample(geoSample);
     org.metadatacenter.models.investigation.Sample sample = extractSampleFromGEOSample(geoSample);
+    List<DataFile> dataFiles = extractDataFilesFromGEOSample(geoSample);
     List<Input> hasInput = new ArrayList<>();
-    List<Output> hasOutput = new ArrayList<>(); // TODO files
+    List<Output> hasOutput = new ArrayList<>();
+
     hasInput.add(sample);
+    hasOutput.addAll(dataFiles);
 
     return new Process(type, studyAssay.isPresent() ? studyAssay : sampleStudyAssay, studyProtocol, hasParameterValue,
       hasInput, hasOutput);
   }
 
-  //  private final String sampleName;
-  //  private final String title;
-  //  private final List<String> rawDataFiles;
-  //  private final Optional<String> celFile;
-  //  private final Optional<String> expFile;
-  //  private final Optional<String> chpFile;
-  //  private final String sourceName;
-  //  private final List<String> organisms;
-  //  private final Map<String, String> characteristics; // characteristic -> value
-  //  private final Optional<String> biomaterialProvider;
-  //  private final String molecule;
-  //  private final String label;
-  //  private final String description;
-  //  private final String platform;
+  private List<DataFile> extractDataFilesFromGEOSample(org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
+  {
+    List<DataFile> dataFiles = new ArrayList<>();
+
+    for (String rawDataFile : geoSample.getRawDataFiles()) {
+      DataFile dataFile = new DataFile(createStringValueElement(rawDataFile),
+        Optional.of(new StringValueElement("raw")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getCELFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCELFile().get()),
+        Optional.of(new StringValueElement("cel")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getEXPFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getEXPFile().get()),
+        Optional.of(new StringValueElement("exp")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getCHPFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCHPFile().get()),
+        Optional.of(new StringValueElement("chp")));
+      dataFiles.add(dataFile);
+    }
+    return dataFiles;
+  }
 
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
     org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
