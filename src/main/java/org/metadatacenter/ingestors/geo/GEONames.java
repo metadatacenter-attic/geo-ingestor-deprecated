@@ -10,6 +10,8 @@ import java.util.Set;
  */
 public class GEONames
 {
+  public final static String JSON_FILE_ENCODING = "URF-8";
+
   public final static String GEO_METADATA_SHEET_NAME = "Metadata Template";
 
   public final static String SERIES_HEADER_NAME = "SERIES";

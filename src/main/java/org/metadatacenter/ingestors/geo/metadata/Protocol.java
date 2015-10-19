@@ -65,4 +65,18 @@ public class Protocol
   {
     return valueDefinition;
   }
+
+  @Override public String toString()
+  {
+    return "Protocol{" +
+      "growth=" + growth +
+      ", treatment=" + treatment +
+      ", extract='" + extract + '\'' +
+      ", label='" + label + '\'' +
+      ", hyb='" + hyb + '\'' +
+      ", scan='" + scan + '\'' +
+      ", dataProcessing='" + dataProcessing + '\'' +
+      ", valueDefinition='" + valueDefinition + '\'' +
+      '}';
+  }
 }

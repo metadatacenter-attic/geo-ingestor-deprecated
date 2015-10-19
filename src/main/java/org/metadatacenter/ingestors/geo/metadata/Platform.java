@@ -109,4 +109,23 @@ public class Platform
   {
     return Collections.unmodifiableList(pubmedID);
   }
+
+  @Override public String toString()
+  {
+    return "Platform{" +
+      "title='" + title + '\'' +
+      ", distribution='" + distribution + '\'' +
+      ", technology='" + technology + '\'' +
+      ", organism='" + organism + '\'' +
+      ", manufacturer='" + manufacturer + '\'' +
+      ", manufacturerProtocol=" + manufacturerProtocol +
+      ", description=" + description +
+      ", catalogNumber=" + catalogNumber +
+      ", webLink=" + webLink +
+      ", support=" + support +
+      ", coating=" + coating +
+      ", contributor=" + contributor +
+      ", pubmedID=" + pubmedID +
+      '}';
+  }
 }

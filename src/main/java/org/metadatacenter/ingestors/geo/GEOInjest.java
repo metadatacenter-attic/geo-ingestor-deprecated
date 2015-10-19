@@ -36,13 +36,13 @@ public class GEOInjest
 
   private static void writeInvestigation2CEDARJSONFile(Investigation investigation, String cedarJSONFile)
   {
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(cedarJSONFile), "UTF-8")) {
+    try (Writer writer = new OutputStreamWriter(new FileOutputStream(cedarJSONFile), GEONames.JSON_FILE_ENCODING)) {
       Gson gson = new GsonBuilder().create();
       gson.toJson(investigation, writer);
     } catch (FileNotFoundException e) {
       System.err.println("GEO2CEDAR.class.getName(): Error opening or creating JSON file " + cedarJSONFile);
     } catch (UnsupportedEncodingException e) {
-      System.err.println("GEO2CEDAR.class.getName(): Bad JSON file encoding");
+      System.err.println("GEO2CEDAR.class.getName(): Bad JSON file encoding " + GEONames.JSON_FILE_ENCODING);
     } catch (IOException e) {
       System.err.println("GEO2CEDAR.class.getName(): Error writing JSON file " + cedarJSONFile);
     }

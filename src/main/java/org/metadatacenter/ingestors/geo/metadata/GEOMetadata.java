@@ -41,4 +41,14 @@ public class GEOMetadata
   }
 
   public Optional<Platform> getPlatform() { return this.platform; }
+
+  @Override public String toString()
+  {
+    return "GEOMetadata{" +
+      "series=" + series +
+      ", samples=" + samples +
+      ", protocol=" + protocol +
+      ", platform=" + platform +
+      '}';
+  }
 }

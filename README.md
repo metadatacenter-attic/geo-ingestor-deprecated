@@ -1,7 +1,7 @@
 GEO INGESTOR
 ============
 
-Custom utility for converting the metadata in GEO spreadsheets to instances in the CEDAR study model.
+Custom utility for converting the metadata in GEO spreadsheets to instances in the CEDAR Investigation Model.
 
 #### Building Prerequisites
 
@@ -36,7 +36,7 @@ To run with Maven:
 
 To run using the fat JAR:
 
-   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOFileName> <CEDARFileName>
+   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOFileName Excel File> <CEDAR JSON Instance File>
 
 
 

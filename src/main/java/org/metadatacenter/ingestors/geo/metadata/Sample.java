@@ -117,4 +117,24 @@ public class Sample
   {
     return platform;
   }
+
+  @Override public String toString()
+  {
+    return "Sample{" +
+      "sampleName='" + sampleName + '\'' +
+      ", title='" + title + '\'' +
+      ", rawDataFiles=" + rawDataFiles +
+      ", celFile=" + celFile +
+      ", expFile=" + expFile +
+      ", chpFile=" + chpFile +
+      ", sourceName='" + sourceName + '\'' +
+      ", organisms=" + organisms +
+      ", characteristics=" + characteristics +
+      ", biomaterialProvider=" + biomaterialProvider +
+      ", molecule='" + molecule + '\'' +
+      ", label='" + label + '\'' +
+      ", description='" + description + '\'' +
+      ", platform='" + platform + '\'' +
+      '}';
+  }
 }

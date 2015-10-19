@@ -65,4 +65,17 @@ public class Series
   {
     return Collections.unmodifiableMap(repeat);
   }
+
+  @Override public String toString()
+  {
+    return "Series{" +
+      "title='" + title + '\'' +
+      ", summary='" + summary + '\'' +
+      ", overallDesign='" + overallDesign + '\'' +
+      ", contributors=" + contributors +
+      ", pubmedIDs=" + pubmedIDs +
+      ", variables=" + variables +
+      ", repeat=" + repeat +
+      '}';
+  }
 }
