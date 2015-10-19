@@ -151,38 +151,40 @@ public class GEOMetadata2InvestigationConverter
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Protocol geoProtocol)
   {
     StringValueElement name = createStringValueElement(
-      geoProtocol.getLabel().isPresent() ? geoProtocol.getLabel().get() : "");
+      geoProtocol.getLabel().isEmpty() ? "" : concatenateFieldValues(geoProtocol.getLabel()));
     StringValueElement description = createStringValueElement(
-      geoProtocol.getValueDefinition().isPresent() ? geoProtocol.getValueDefinition().get() : "");
+      geoProtocol.getValueDefinition().isEmpty() ? "" : concatenateFieldValues(geoProtocol.getValueDefinition()));
 
     Optional<StringValueElement> type = Optional.empty();
     Optional<URIValueElement> uri = Optional.empty();
     Optional<StringValueElement> version = Optional.empty();
     List<ProtocolParameter> protocolParameters = new ArrayList<>();
 
-    if (geoProtocol.getGrowth().isPresent())
-      protocolParameters.add(createProtocolParameter("growth", geoProtocol.getGrowth().get()));
+    if (!geoProtocol.getGrowth().isEmpty())
+      protocolParameters.add(createProtocolParameter("growth", concatenateFieldValues(geoProtocol.getGrowth())));
 
-    if (geoProtocol.getTreatment().isPresent())
-      protocolParameters.add(createProtocolParameter("treatment", geoProtocol.getTreatment().get()));
+    if (!geoProtocol.getTreatment().isEmpty())
+      protocolParameters.add(createProtocolParameter("treatment", concatenateFieldValues(geoProtocol.getTreatment())));
 
-    if (geoProtocol.getExtract().isPresent())
-      protocolParameters.add(createProtocolParameter("extract", geoProtocol.getExtract().get()));
+    if (!geoProtocol.getExtract().isEmpty())
+      protocolParameters.add(createProtocolParameter("extract", concatenateFieldValues(geoProtocol.getExtract())));
 
-    if (geoProtocol.getLabel().isPresent())
-      protocolParameters.add(createProtocolParameter("label", geoProtocol.getLabel().get()));
+    if (!geoProtocol.getLabel().isEmpty())
+      protocolParameters.add(createProtocolParameter("label", concatenateFieldValues(geoProtocol.getLabel())));
 
-    if (geoProtocol.getHyb().isPresent())
-      protocolParameters.add(createProtocolParameter("hyb", geoProtocol.getHyb().get()));
+    if (!geoProtocol.getHyb().isEmpty())
+      protocolParameters.add(createProtocolParameter("hyb", concatenateFieldValues(geoProtocol.getHyb())));
 
-    if (geoProtocol.getScan().isPresent())
-      protocolParameters.add(createProtocolParameter("scan", geoProtocol.getScan().get()));
+    if (!geoProtocol.getScan().isEmpty())
+      protocolParameters.add(createProtocolParameter("scan", concatenateFieldValues(geoProtocol.getScan())));
 
-    if (geoProtocol.getDataProcessing().isPresent())
-      protocolParameters.add(createProtocolParameter("dataProcessing", geoProtocol.getDataProcessing().get()));
+    if (!geoProtocol.getDataProcessing().isEmpty())
+      protocolParameters
+        .add(createProtocolParameter("dataProcessing", concatenateFieldValues(geoProtocol.getDataProcessing())));
 
-    if (geoProtocol.getValueDefinition().isPresent())
-      protocolParameters.add(createProtocolParameter("valueDefinition", geoProtocol.getValueDefinition().get()));
+    if (!geoProtocol.getValueDefinition().isEmpty())
+      protocolParameters
+        .add(createProtocolParameter("valueDefinition", concatenateFieldValues(geoProtocol.getValueDefinition())));
 
     return Optional.of(new StudyProtocol(name, description, type, uri, version, protocolParameters));
   }

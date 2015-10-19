@@ -55,11 +55,11 @@ import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_CEL_FILE_FIELD_N
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_CHP_FILE_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_DESCRIPTION_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_EXP_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_HEADER_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_LABEL_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_MOLECULE_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_ORGANISM_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_SAMPLE_NAME_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_SOURCE_NAME_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_TITLE_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_HEADER_NAME;
@@ -204,46 +204,40 @@ public class GEOSpreadsheetHandler
 
   private Map<String, List<String>> extractSeriesFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
-    Optional<Integer> seriesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SERIES_HEADER_NAME,
+    Optional<Integer> seriesTitleRowNumber = findFieldRowNumber(geoMetadataSheet, SERIES_TITLE_FIELD_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
 
-    if (seriesHeaderRowNumber.isPresent()) {
-      Optional<Integer> samplesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SAMPLES_HEADER_NAME,
-        FIELD_NAMES_COLUMN_NUMBER);
+    if (seriesTitleRowNumber.isPresent()) {
+      Map<String, List<String>> fieldName2Values = findFieldValues(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
+        FIELD_VALUES_COLUMN_NUMBER, seriesTitleRowNumber.get());
 
-      if (samplesHeaderRowNumber.isPresent()) {
-        Map<String, List<String>> fieldName2Values = findFieldValues(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
-          FIELD_VALUES_COLUMN_NUMBER, seriesHeaderRowNumber.get() + 1);
+      if (fieldName2Values.isEmpty())
+        throw new GEOIngestorException("no series fields found in metadata spreadsheet");
 
-        if (fieldName2Values.isEmpty())
-          throw new GEOIngestorException("no series fields found in metadata spreadsheet");
+      if (!SeriesFieldNames.containsAll(fieldName2Values.keySet()))
+        throw new GEOIngestorException(
+          "unknown series fields " + fieldName2Values.keySet().removeAll(SeriesFieldNames));
 
-        if (!SeriesFieldNames.containsAll(fieldName2Values.keySet()))
-          throw new GEOIngestorException(
-            "unknown series fields " + fieldName2Values.keySet().removeAll(SeriesFieldNames));
-
-        return fieldName2Values;
-      } else
-        throw new GEOIngestorException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
+      return fieldName2Values;
     } else
-      throw new GEOIngestorException("no series header field named " + SERIES_HEADER_NAME + " in metadata sheet");
+      throw new GEOIngestorException("no series title field named " + SERIES_TITLE_FIELD_NAME + " in metadata sheet");
   }
 
   private Protocol extractProtocol(Sheet geoMetadataSheet) throws GEOIngestorException
   {
-    Map<String, String> protocolFields = extractProtocolFields(geoMetadataSheet);
+    Map<String, List<String>> protocolFields = extractProtocolFields(geoMetadataSheet);
 
     if (protocolFields.isEmpty())
       throw new GEOIngestorException("no protocols found in metadata sheet");
 
-    Optional<String> growth = getSingleValueFieldValue(protocolFields, PROTOCOL_GROWTH_FIELD_NAME);
-    Optional<String> treatment = getSingleValueFieldValue(protocolFields, PROTOCOL_TREATMENT_FIELD_NAME);
-    Optional<String> extract = getSingleValueFieldValue(protocolFields, PROTOCOL_EXTRACT_FIELD_NAME);
-    Optional<String> label = getSingleValueFieldValue(protocolFields, PROTOCOL_LABEL_FIELD_NAME);
-    Optional<String> hyb = getSingleValueFieldValue(protocolFields, PROTOCOL_HYB_FIELD_NAME);
-    Optional<String> scan = getSingleValueFieldValue(protocolFields, PROTOCOL_SCAN_FIELD_NAME);
-    Optional<String> dataProcessing = getSingleValueFieldValue(protocolFields, PROTOCOL_DATA_PROCESSING_FIELD_NAME);
-    Optional<String> valueDefinition = getSingleValueFieldValue(protocolFields, PROTOCOL_VALUE_DEFINITION_FIELD_NAME);
+    List<String> growth = getMultiValueFieldValues(protocolFields, PROTOCOL_GROWTH_FIELD_NAME);
+    List<String> treatment = getMultiValueFieldValues(protocolFields, PROTOCOL_TREATMENT_FIELD_NAME);
+    List<String> extract = getMultiValueFieldValues(protocolFields, PROTOCOL_EXTRACT_FIELD_NAME);
+    List<String> label = getMultiValueFieldValues(protocolFields, PROTOCOL_LABEL_FIELD_NAME);
+    List<String> hyb = getMultiValueFieldValues(protocolFields, PROTOCOL_HYB_FIELD_NAME);
+    List<String> scan = getMultiValueFieldValues(protocolFields, PROTOCOL_SCAN_FIELD_NAME);
+    List<String> dataProcessing = getMultiValueFieldValues(protocolFields, PROTOCOL_DATA_PROCESSING_FIELD_NAME);
+    List<String> valueDefinition = getMultiValueFieldValues(protocolFields, PROTOCOL_VALUE_DEFINITION_FIELD_NAME);
 
     return new Protocol(growth, treatment, extract, label, hyb, scan, dataProcessing, valueDefinition);
   }
@@ -306,23 +300,23 @@ public class GEOSpreadsheetHandler
       return Collections.emptyMap();
   }
 
-  private Map<String, String> extractProtocolFields(Sheet geoMetadataSheet) throws GEOIngestorException
+  private Map<String, List<String>> extractProtocolFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Optional<Integer> protocolsHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, PROTOCOLS_HEADER_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
     if (protocolsHeaderRowNumber.isPresent()) {
 
-      Map<String, String> fieldName2Value = findProtocolFieldValue(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
+      Map<String, List<String>> fieldName2Values = findProtocolFieldValues(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
         FIELD_VALUES_COLUMN_NUMBER, protocolsHeaderRowNumber.get() + 1);
 
-      if (fieldName2Value.isEmpty())
+      if (fieldName2Values.isEmpty())
         throw new GEOIngestorException("no protocol fields found in metadata spreadsheet");
 
-      if (!ProtocolFieldNames.containsAll(fieldName2Value.keySet()))
+      if (!ProtocolFieldNames.containsAll(fieldName2Values.keySet()))
         throw new GEOIngestorException(
-          "unknown protocol fields " + fieldName2Value.keySet().removeAll(ProtocolFieldNames));
+          "unknown protocol fields " + fieldName2Values.keySet().removeAll(ProtocolFieldNames));
 
-      return fieldName2Value;
+      return fieldName2Values;
     } else
       throw new GEOIngestorException("no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
   }
@@ -331,7 +325,7 @@ public class GEOSpreadsheetHandler
   {
     Map<String, Sample> samples = new HashMap<>();
 
-    Optional<Integer> samplesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SAMPLES_HEADER_NAME,
+    Optional<Integer> samplesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SAMPLES_SAMPLE_NAME_FIELD_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
 
     if (samplesHeaderRowNumber.isPresent()) {
@@ -348,29 +342,30 @@ public class GEOSpreadsheetHandler
           Map<String, List<String>> sampleFields = samplesFields.get(sampleName);
 
           String sampleTitle = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_TITLE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           List<String> rawDataFiles = getRequiredRepeatedValueFieldValues(sampleFields,
-            SAMPLES_RAW_DATA_FILE_FIELD_NAME, SAMPLES_HEADER_NAME);
+            SAMPLES_RAW_DATA_FILE_FIELD_NAME, SAMPLES_SAMPLE_NAME_FIELD_NAME);
           Optional<String> celFile = getMultiValueFieldValue(sampleFields, SAMPLES_CEL_FILE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           Optional<String> expFile = getMultiValueFieldValue(sampleFields, SAMPLES_EXP_FILE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           Optional<String> chpFile = getMultiValueFieldValue(sampleFields, SAMPLES_CHP_FILE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           String sourceName = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_SOURCE_NAME_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           List<String> organisms = getRequiredRepeatedValueFieldValues(sampleFields, SAMPLES_ORGANISM_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           Map<String, String> characteristics = extractCharacteristicsFromSampleFields(sampleFields);
           Optional<String> biomaterialProvider = getMultiValueFieldValue(sampleFields,
-            SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME, SAMPLES_HEADER_NAME);
+            SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME, SAMPLES_SAMPLE_NAME_FIELD_NAME);
           String molecule = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_MOLECULE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
-          String label = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_LABEL_FIELD_NAME, SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
+          String label = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_LABEL_FIELD_NAME,
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           String description = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_DESCRIPTION_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
           String platform = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_MOLECULE_FIELD_NAME,
-            SAMPLES_HEADER_NAME);
+            SAMPLES_SAMPLE_NAME_FIELD_NAME);
 
           Sample sample = new Sample(sampleName, sampleTitle, rawDataFiles, celFile, expFile, chpFile, sourceName,
             organisms, characteristics, biomaterialProvider, molecule, label, description, platform);
@@ -384,7 +379,8 @@ public class GEOSpreadsheetHandler
         throw new GEOIngestorException(
           "no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
     } else
-      throw new GEOIngestorException("no samples header field named " + SAMPLES_HEADER_NAME + " in metadata sheet");
+      throw new GEOIngestorException(
+        "no samples header field named " + SAMPLES_SAMPLE_NAME_FIELD_NAME + " in metadata sheet");
 
     if (samples.isEmpty())
       throw new GEOIngestorException("no samples found in metadata sheet");
@@ -546,19 +542,17 @@ public class GEOSpreadsheetHandler
       else {
         Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
-        if (fieldNameCell == null)
+        if (fieldNameCell == null || isBlankCellType(fieldNameCell)) {
+          blankRowReached = true;
           continue;
-
-        if (!isStringCellType(fieldNameCell))
-          throw new GEOIngestorException("blank field name at location " + getCellLocation(fieldNameCell));
+        }
 
         Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
 
-        if (fieldValueCell == null)
+        if (fieldValueCell == null || isBlankCellType(fieldValueCell)) {
+          blankRowReached = true;
           continue;
-
-        if (!isStringCellType(fieldValueCell))
-          throw new GEOIngestorException("non string field value at location " + getCellLocation(fieldNameCell));
+        }
 
         String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell);
 
@@ -585,10 +579,10 @@ public class GEOSpreadsheetHandler
   /**
    * Duplicates not allowed.
    */
-  private Map<String, String> findProtocolFieldValue(Sheet sheet, int fieldNameColumnNumber, int fieldValueColumnNumber,
-    int startRowNumber) throws GEOIngestorException
+  private Map<String, List<String>> findProtocolFieldValues(Sheet sheet, int fieldNameColumnNumber,
+    int fieldValueColumnNumber, int startRowNumber) throws GEOIngestorException
   {
-    Map<String, String> field2Value = new HashMap<>();
+    Map<String, List<String>> field2Values = new HashMap<>();
     boolean blankRowReached = false;
 
     for (int currentRow = startRowNumber; currentRow <= sheet.getLastRowNum() && !blankRowReached; currentRow++) {
@@ -618,15 +612,16 @@ public class GEOSpreadsheetHandler
           if (fieldValue.isEmpty())
             throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
 
-          if (field2Value.containsKey(fieldName))
-            throw new GEOIngestorException(
-              "duplicate field " + fieldName + " value at location " + getCellLocation(fieldValueCell));
+          if (field2Values.containsKey(fieldName))
+            field2Values.get(fieldName).add(fieldValue);
           else {
-            field2Value.put(fieldName, fieldValue);
+            List<String> fieldValues = new ArrayList<>();
+            fieldValues.add(fieldValue);
+            field2Values.put(fieldName, fieldValues);
           }
         }
       }
     }
-    return field2Value;
+    return field2Values;
   }
 }

@@ -1,20 +1,20 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
-import java.util.Optional;
+import java.util.List;
 
 public class Protocol
 {
-  private final Optional<String> growth;
-  private final Optional<String> treatment;
-  private final Optional<String> extract;
-  private final Optional<String> label;
-  private final Optional<String> hyb;
-  private final Optional<String> scan;
-  private final Optional<String> dataProcessing;
-  private final Optional<String> valueDefinition;
+  private final List<String> growth;
+  private final List<String> treatment;
+  private final List<String> extract;
+  private final List<String> label;
+  private final List<String> hyb;
+  private final List<String> scan;
+  private final List<String> dataProcessing;
+  private final List<String> valueDefinition;
 
-  public Protocol(Optional<String> growth, Optional<String> treatment, Optional<String> extract, Optional<String> label,
-    Optional<String> hyb, Optional<String> scan, Optional<String> dataProcessing, Optional<String> valueDefinition)
+  public Protocol(List<String> growth, List<String> treatment, List<String> extract, List<String> label,
+    List<String> hyb, List<String> scan, List<String> dataProcessing, List<String> valueDefinition)
   {
     this.growth = growth;
     this.treatment = treatment;
@@ -26,42 +26,42 @@ public class Protocol
     this.valueDefinition = valueDefinition;
   }
 
-  public Optional<String> getGrowth()
+  public List<String> getGrowth()
   {
     return growth;
   }
 
-  public Optional<String> getTreatment()
+  public List<String> getTreatment()
   {
     return treatment;
   }
 
-  public Optional<String> getExtract()
+  public List<String> getExtract()
   {
     return extract;
   }
 
-  public Optional<String> getLabel()
+  public List<String> getLabel()
   {
     return label;
   }
 
-  public Optional<String> getHyb()
+  public List<String> getHyb()
   {
     return hyb;
   }
 
-  public Optional<String> getScan()
+  public List<String> getScan()
   {
     return scan;
   }
 
-  public Optional<String> getDataProcessing()
+  public List<String> getDataProcessing()
   {
     return dataProcessing;
   }
 
-  public Optional<String> getValueDefinition()
+  public List<String> getValueDefinition()
   {
     return valueDefinition;
   }

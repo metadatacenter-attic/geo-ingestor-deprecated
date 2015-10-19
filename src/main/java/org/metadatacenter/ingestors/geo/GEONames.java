@@ -17,7 +17,7 @@ public class GEONames
   public final static String GEO_METADATA_SHEET_NAME = "Metadata Example";
 
   public final static String SERIES_HEADER_NAME = "SERIES";
-  public final static String SAMPLES_HEADER_NAME = "Sample name";
+  public final static String SAMPLES_HEADER_NAME = "SAMPLES";
   public final static String PROTOCOLS_HEADER_NAME = "PROTOCOLS";
   public final static String PLATFORM_HEADER_NAME = "PLATFORM";
 
@@ -30,6 +30,7 @@ public class GEONames
   public final static String SERIES_VARIABLE_FIELD_NAME = "variable";
   public final static String SERIES_REPEAT_FIELD_NAME = "repeat";
 
+  public final static String SAMPLES_SAMPLE_NAME_FIELD_NAME = "Sample name";
   public final static String SAMPLES_NAME_FIELD_NAME = "Sample name";
   public final static String SAMPLES_TITLE_FIELD_NAME = "title";
   public final static String SAMPLES_RAW_DATA_FILE_FIELD_NAME = "raw data file";
