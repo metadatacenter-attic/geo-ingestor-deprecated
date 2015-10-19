@@ -53,7 +53,7 @@ public class GEOMetadata2InvestigationConverter
 
     String templateID = INVESTIGATION_TEMPLATE_ID;
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
-    StringValueElement description = createStringValueElement(geoSeries.getSummary());
+    StringValueElement description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
     StringValueElement identifier = createStringValueElement(geoSeries.getTitle());
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
@@ -70,7 +70,7 @@ public class GEOMetadata2InvestigationConverter
     Optional<StudyProtocol> studyProtocol)
   {
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
-    StringValueElement description = createStringValueElement(geoSeries.getSummary());
+    StringValueElement description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
     StringValueElement identifier = createStringValueElement(geoSeries.getTitle());
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
@@ -150,8 +150,11 @@ public class GEOMetadata2InvestigationConverter
 
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Protocol geoProtocol)
   {
-    StringValueElement name = createStringValueElement(geoProtocol.getLabel());
-    StringValueElement description = createStringValueElement(geoProtocol.getValueDefinition());
+    StringValueElement name = createStringValueElement(
+      geoProtocol.getLabel().isPresent() ? geoProtocol.getLabel().get() : "");
+    StringValueElement description = createStringValueElement(
+      geoProtocol.getValueDefinition().isPresent() ? geoProtocol.getValueDefinition().get() : "");
+
     Optional<StringValueElement> type = Optional.empty();
     Optional<URIValueElement> uri = Optional.empty();
     Optional<StringValueElement> version = Optional.empty();
@@ -163,12 +166,23 @@ public class GEOMetadata2InvestigationConverter
     if (geoProtocol.getTreatment().isPresent())
       protocolParameters.add(createProtocolParameter("treatment", geoProtocol.getTreatment().get()));
 
-    protocolParameters.add(createProtocolParameter("extract", geoProtocol.getExtract()));
-    protocolParameters.add(createProtocolParameter("label", geoProtocol.getLabel()));
-    protocolParameters.add(createProtocolParameter("hyb", geoProtocol.getHyb()));
-    protocolParameters.add(createProtocolParameter("scan", geoProtocol.getScan()));
-    protocolParameters.add(createProtocolParameter("dataProcessing", geoProtocol.getDataProcessing()));
-    protocolParameters.add(createProtocolParameter("valueDefinition", geoProtocol.getValueDefinition()));
+    if (geoProtocol.getExtract().isPresent())
+      protocolParameters.add(createProtocolParameter("extract", geoProtocol.getExtract().get()));
+
+    if (geoProtocol.getLabel().isPresent())
+      protocolParameters.add(createProtocolParameter("label", geoProtocol.getLabel().get()));
+
+    if (geoProtocol.getHyb().isPresent())
+      protocolParameters.add(createProtocolParameter("hyb", geoProtocol.getHyb().get()));
+
+    if (geoProtocol.getScan().isPresent())
+      protocolParameters.add(createProtocolParameter("scan", geoProtocol.getScan().get()));
+
+    if (geoProtocol.getDataProcessing().isPresent())
+      protocolParameters.add(createProtocolParameter("dataProcessing", geoProtocol.getDataProcessing().get()));
+
+    if (geoProtocol.getValueDefinition().isPresent())
+      protocolParameters.add(createProtocolParameter("valueDefinition", geoProtocol.getValueDefinition().get()));
 
     return Optional.of(new StudyProtocol(name, description, type, uri, version, protocolParameters));
   }
@@ -258,7 +272,19 @@ public class GEOMetadata2InvestigationConverter
       Publication publication = new Publication(pubmedIDValueElement);
       publications.add(publication);
     }
-
     return publications;
+  }
+
+  private String concatenateFieldValues(List<String> fieldValues)
+  {
+    StringBuilder sb = new StringBuilder();
+    boolean isFirst = true;
+    for (String fieldValue : fieldValues) {
+      if (!isFirst)
+        sb.append(GEONames.MULTI_VALUE_FIELD_SEPARATOR);
+      sb.append(fieldValue);
+      isFirst = false;
+    }
+    return sb.toString();
   }
 }

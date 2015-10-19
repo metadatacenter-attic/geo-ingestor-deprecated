@@ -12,6 +12,8 @@ public class GEONames
 {
   public final static String JSON_FILE_ENCODING = "UTF-8";
 
+  public final static String MULTI_VALUE_FIELD_SEPARATOR = "; ";
+
   public final static String GEO_METADATA_SHEET_NAME = "Metadata Example";
 
   public final static String SERIES_HEADER_NAME = "SERIES";

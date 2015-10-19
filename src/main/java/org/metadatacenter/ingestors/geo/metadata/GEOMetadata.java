@@ -45,10 +45,21 @@ public class GEOMetadata
   @Override public String toString()
   {
     return "GEOMetadata{" +
-      "series=" + series +
-      ", samples=" + samples +
-      ", protocol=" + protocol +
-      ", platform=" + platform +
+      "Series=" + series + "\n\n" +
+      "Samples=" + ppSamples() +  "\n\n" +
+      "Protocol=" + protocol + "\n\n" +
+      "Platform=" + platform +
       '}';
+  }
+
+  private String ppSamples()
+  {
+    StringBuilder sb = new StringBuilder();
+
+    for (String sampleName : this.samples.keySet()) {
+      Sample sample = this.samples.get(sampleName);
+      sb.append("\nsampleName=" + sampleName + ", " + sample);
+    }
+    return sb.toString();
   }
 }

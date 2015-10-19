@@ -6,15 +6,15 @@ public class Protocol
 {
   private final Optional<String> growth;
   private final Optional<String> treatment;
-  private final String extract;
-  private final String label;
-  private final String hyb;
-  private final String scan;
-  private final String dataProcessing;
-  private final String valueDefinition;
+  private final Optional<String> extract;
+  private final Optional<String> label;
+  private final Optional<String> hyb;
+  private final Optional<String> scan;
+  private final Optional<String> dataProcessing;
+  private final Optional<String> valueDefinition;
 
-  public Protocol(Optional<String> growth, Optional<String> treatment, String extract, String label, String hyb,
-    String scan, String dataProcessing, String valueDefinition)
+  public Protocol(Optional<String> growth, Optional<String> treatment, Optional<String> extract, Optional<String> label,
+    Optional<String> hyb, Optional<String> scan, Optional<String> dataProcessing, Optional<String> valueDefinition)
   {
     this.growth = growth;
     this.treatment = treatment;
@@ -36,32 +36,32 @@ public class Protocol
     return treatment;
   }
 
-  public String getExtract()
+  public Optional<String> getExtract()
   {
     return extract;
   }
 
-  public String getLabel()
+  public Optional<String> getLabel()
   {
     return label;
   }
 
-  public String getHyb()
+  public Optional<String> getHyb()
   {
     return hyb;
   }
 
-  public String getScan()
+  public Optional<String> getScan()
   {
     return scan;
   }
 
-  public String getDataProcessing()
+  public Optional<String> getDataProcessing()
   {
     return dataProcessing;
   }
 
-  public String getValueDefinition()
+  public Optional<String> getValueDefinition()
   {
     return valueDefinition;
   }
@@ -69,14 +69,14 @@ public class Protocol
   @Override public String toString()
   {
     return "Protocol{" +
-      "growth=" + growth +
-      ", treatment=" + treatment +
-      ", extract='" + extract + '\'' +
-      ", label='" + label + '\'' +
-      ", hyb='" + hyb + '\'' +
-      ", scan='" + scan + '\'' +
-      ", dataProcessing='" + dataProcessing + '\'' +
-      ", valueDefinition='" + valueDefinition + '\'' +
+      "\n growth=" + growth +
+      "\n treatment=" + treatment +
+      "\n extract='" + extract + '\'' +
+      "\n label='" + label + '\'' +
+      "\n hyb='" + hyb + '\'' +
+      "\n scan='" + scan + '\'' +
+      "\n dataProcessing='" + dataProcessing + '\'' +
+      "\n valueDefinition='" + valueDefinition + '\'' +
       '}';
   }
 }

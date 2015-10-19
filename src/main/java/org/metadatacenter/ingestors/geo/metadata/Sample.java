@@ -122,19 +122,19 @@ public class Sample
   {
     return "Sample{" +
       "sampleName='" + sampleName + '\'' +
-      ", title='" + title + '\'' +
-      ", rawDataFiles=" + rawDataFiles +
-      ", celFile=" + celFile +
-      ", expFile=" + expFile +
-      ", chpFile=" + chpFile +
-      ", sourceName='" + sourceName + '\'' +
-      ", organisms=" + organisms +
-      ", characteristics=" + characteristics +
-      ", biomaterialProvider=" + biomaterialProvider +
-      ", molecule='" + molecule + '\'' +
-      ", label='" + label + '\'' +
-      ", description='" + description + '\'' +
-      ", platform='" + platform + '\'' +
+      "\n title='" + title + '\'' +
+      "\n rawDataFiles=" + rawDataFiles +
+      "\n celFile=" + celFile +
+      "\n expFile=" + expFile +
+      "\n chpFile=" + chpFile +
+      "\n sourceName='" + sourceName + '\'' +
+      "\n organisms=" + organisms +
+      "\n characteristics=" + characteristics +
+      "\n biomaterialProvider=" + biomaterialProvider +
+      "\n molecule='" + molecule + '\'' +
+      "\n label='" + label + '\'' +
+      "\n description='" + description + '\'' +
+      "\n platform='" + platform + '\'' +
       '}';
   }
 }

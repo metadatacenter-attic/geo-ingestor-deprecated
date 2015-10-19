@@ -26,6 +26,9 @@ public class GEOInjest
       GEOMetadata2InvestigationConverter converter = new GEOMetadata2InvestigationConverter();
       GEOSpreadsheetHandler geoSpreadsheetHandler = new GEOSpreadsheetHandler(geoExcelFile);
       GEOMetadata geoMetadata = geoSpreadsheetHandler.extractGEOMetadata();
+
+      System.out.println(geoMetadata);
+
       Investigation investigation = converter.convertGeoMetadata2Investigation(geoMetadata);
 
       writeInvestigation2CEDARJSONFile(investigation, cedarJSONFile);

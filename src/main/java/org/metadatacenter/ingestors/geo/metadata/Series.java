@@ -12,14 +12,14 @@ import java.util.Map;
 public class Series
 {
   private final String title;
-  private final String summary;
+  private final List<String> summary;
   private final String overallDesign;
   private final List<ContributorName> contributors;
   private final List<String> pubmedIDs;
   private final Map<String, Map<String, String>> variables; // sample name -> (variable -> value)
   private final Map<String, List<String>> repeat; // sample name -> [repeat type]
 
-  public Series(String title, String summary, String overallDesign, List<ContributorName> contributors,
+  public Series(String title, List<String> summary, String overallDesign, List<ContributorName> contributors,
     List<String> pubmedIDs, Map<String, Map<String, String>> variables, Map<String, List<String>> repeat)
   {
     this.title = title;
@@ -36,7 +36,7 @@ public class Series
     return title;
   }
 
-  public String getSummary()
+  public List<String> getSummary()
   {
     return summary;
   }
@@ -69,13 +69,13 @@ public class Series
   @Override public String toString()
   {
     return "Series{" +
-      "title='" + title + '\'' +
-      ", summary='" + summary + '\'' +
-      ", overallDesign='" + overallDesign + '\'' +
-      ", contributors=" + contributors +
-      ", pubmedIDs=" + pubmedIDs +
-      ", variables=" + variables +
-      ", repeat=" + repeat +
+      "\n title='" + title + '\'' +
+      "\n summary='" + summary + '\'' +
+      "\n overallDesign='" + overallDesign + '\'' +
+      "\n contributors=" + contributors +
+      "\n pubmedIDs=" + pubmedIDs +
+      "\n variables=" + variables +
+      "\n repeat=" + repeat +
       '}';
   }
 }
