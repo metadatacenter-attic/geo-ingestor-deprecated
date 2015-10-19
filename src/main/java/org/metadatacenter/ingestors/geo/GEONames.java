@@ -10,12 +10,12 @@ import java.util.Set;
  */
 public class GEONames
 {
-  public final static String JSON_FILE_ENCODING = "URF-8";
+  public final static String JSON_FILE_ENCODING = "UTF-8";
 
-  public final static String GEO_METADATA_SHEET_NAME = "Metadata Template";
+  public final static String GEO_METADATA_SHEET_NAME = "Metadata Example";
 
   public final static String SERIES_HEADER_NAME = "SERIES";
-  public final static String SAMPLES_HEADER_NAME = "SAMPLES";
+  public final static String SAMPLES_HEADER_NAME = "Sample name";
   public final static String PROTOCOLS_HEADER_NAME = "PROTOCOLS";
   public final static String PLATFORM_HEADER_NAME = "PLATFORM";
 

@@ -239,6 +239,11 @@ public class SpreadsheetUtil
     return cell.getCellType() == Cell.CELL_TYPE_STRING;
   }
 
+  public static boolean isBlankCellType(Cell cell)
+  {
+    return cell.getCellType() == Cell.CELL_TYPE_BLANK;
+  }
+
   public static String getCellTypeName(Cell cell)
   {
     if (cell == null)
