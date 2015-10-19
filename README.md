@@ -1,5 +1,5 @@
-GEO2CEDAR
-=========
+GEO INGESTOR
+============
 
 Custom utility for converting the metadata in GEO spreadsheets to instances in the CEDAR study model.
 
@@ -7,23 +7,36 @@ Custom utility for converting the metadata in GEO spreadsheets to instances in t
 
 To build this library you must have the following items installed:
 
++ [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 + A tool for checking out a [Git](http://git-scm.com/) repository.
 + Apache's [Maven](http://maven.apache.org/index.html).
-+ [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
 #### Building
 
 Get a copy of the latest code:
 
-    git clone https://github.com/metadatacenter/geo2cedar.git 
+    git clone https://github.com/metadatacenter/geo-ingestor.git 
 
-Change into the geo2cedar directory:
+Change into the geo-ingestor directory:
 
-    cd geo2cedar
+    cd geo-ingestor
 
 Then build it with Maven:
 
     mvn clean install
 
-On build completion your local Maven repository will contain the generated geo2cedar-${version}.jar file.
+On build completion your local Maven repository will contain the generated geo-ingestor-${version}.jar and a fat JAR called geo-ingestor-${version}-jar-with-dependencies.jar.
+The ./target directory will also contain these JARs.
+
+#### Running
+
+To run with Maven:
+
+   mvn exec:java -Dexec.args="<GEOFileName> <CEDARFileName>"
+
+To run using the fat JAR:
+
+   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOFileName> <CEDARFileName>
+
+
 
