@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Metadata for a GEO sample. See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
+ * Metadata for a GEO sample.
+ *
+ * @see GEOMetadata
  */
 public class Sample
 {

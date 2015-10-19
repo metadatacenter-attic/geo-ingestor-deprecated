@@ -15,14 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 
-public class SSUtil
+public class SpreadsheetUtil
 {
   public static final String XLS_EXTENSION = ".xls";
   public static final String XLSX_EXTENSION = ".xlsx";
@@ -266,100 +261,5 @@ public class SSUtil
       else
         return "UNKNOWN CELL TYPE!";
     }
-  }
-
-  public static Optional<Integer> findFieldRowNumber(Sheet sheet, String fieldName, int fieldColumnNumber)
-    throws GEOIngestorException
-  {
-    int firstRow = sheet.getFirstRowNum();
-    int lastRow = sheet.getLastRowNum();
-
-    for (int currentRow = firstRow; currentRow <= lastRow; currentRow++) {
-      Row row = sheet.getRow(currentRow);
-      Cell cell = row.getCell(fieldColumnNumber);
-      String value = SSUtil.getStringCellValue(cell);
-      if (fieldName.equals(value))
-        return Optional.of(currentRow);
-    }
-    return Optional.empty();
-  }
-
-  /**
-   * A field can have multiple values.
-   */
-  public static Map<String, List<String>> findFieldValues(Sheet sheet, int fieldNameColumnNumber,
-    int fieldValueColumnNumber, int startRowNumber, int finishRowNumber) throws GEOIngestorException
-  {
-    Map<String, List<String>> field2Values = new HashMap<>();
-
-    for (int currentRow = startRowNumber; currentRow <= finishRowNumber; currentRow++) {
-      Row row = sheet.getRow(currentRow);
-      Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
-
-      if (fieldNameCell == null)
-        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
-
-      Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
-
-      if (fieldValueCell == null)
-        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
-
-      String fieldName = SSUtil.getStringCellValue(fieldNameCell);
-      if (fieldName.isEmpty())
-        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
-
-      String fieldValue = SSUtil.getStringCellValue(fieldNameCell);
-
-      if (fieldValue.isEmpty())
-        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
-
-      if (field2Values.containsKey(fieldName))
-        field2Values.get(fieldName).add(fieldValue);
-      else {
-        List<String> fieldValues = new ArrayList<>();
-        fieldValues.add(fieldValue);
-        field2Values.put(fieldName, fieldValues);
-      }
-    }
-    return field2Values;
-  }
-
-  /**
-   * Duplicates not allowed.
-   */
-  public static Map<String, String> findFieldValue(Sheet sheet, int fieldNameColumnNumber, int fieldValueColumnNumber,
-    int startRowNumber, int finishRowNumber) throws GEOIngestorException
-  {
-    Map<String, String> field2Value = new HashMap<>();
-
-    for (int currentRow = startRowNumber; currentRow <= finishRowNumber; currentRow++) {
-      Row row = sheet.getRow(currentRow);
-      Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
-
-      if (fieldNameCell == null)
-        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
-
-      Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
-
-      if (fieldValueCell == null)
-        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
-
-      String fieldName = SSUtil.getStringCellValue(fieldNameCell); // Check for null cell
-      if (fieldName.isEmpty())
-        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
-
-      String fieldValue = SSUtil.getStringCellValue(fieldNameCell); // Check for null cell
-
-      if (fieldValue.isEmpty())
-        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
-
-      if (field2Value.containsKey(fieldName))
-        throw new GEOIngestorException(
-          "duplicate field " + fieldName + " value at location " + getCellLocation(fieldValueCell));
-      else {
-        field2Value.put(fieldName, fieldValue);
-      }
-    }
-    return field2Value;
   }
 }

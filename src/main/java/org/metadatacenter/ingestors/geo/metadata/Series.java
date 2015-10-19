@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Metadata for a GEO series. See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
+ * Metadata for a GEO series.
+ *
+ * @see GEOMetadata
  */
 public class Series
 {

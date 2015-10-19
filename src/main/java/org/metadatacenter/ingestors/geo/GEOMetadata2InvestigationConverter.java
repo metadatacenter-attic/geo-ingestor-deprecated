@@ -36,21 +36,20 @@ import java.util.Optional;
 import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalStringValueElement;
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
 
+/**
+ * Take a {@link GEOMetadata} object and convert it to a CEDAR {@link Investigation} object.
+ *
+ * @see GEOMetadata
+ * @see Investigation
+ */
 public class GEOMetadata2InvestigationConverter
 {
-  private final GEOMetadata geoMetadata;
-
   private static final String INVESTIGATION_TEMPLATE_ID = "Investigation";
 
-  public GEOMetadata2InvestigationConverter(GEOMetadata geoMetadata)
-  {
-    this.geoMetadata = geoMetadata;
-  }
-
   // TODO GEO Series variables and repeat fields
-  public Investigation convert()
+  public Investigation convertGeoMetadata2Investigation(GEOMetadata geoMetadata)
   {
-    Series geoSeries = this.geoMetadata.getSeries();
+    Series geoSeries = geoMetadata.getSeries();
 
     String templateID = INVESTIGATION_TEMPLATE_ID;
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
@@ -58,9 +57,9 @@ public class GEOMetadata2InvestigationConverter
     StringValueElement identifier = createStringValueElement(geoSeries.getTitle());
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
-    Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(this.geoMetadata.getProtocol());
-    Study study = convertGEOSeries2Study(this.geoMetadata.getSeries(), this.geoMetadata.getSamples(),
-      geoMetadata.getPlatform(), studyProtocol);
+    Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoMetadata.getProtocol());
+    Study study = convertGEOSeries2Study(geoMetadata.getSeries(), geoMetadata.getSamples(), geoMetadata.getPlatform(),
+      studyProtocol);
 
     return new Investigation(templateID, title, description, identifier, submissionDate, publicReleaseDate,
       Collections.singletonList(study));
@@ -120,42 +119,12 @@ public class GEOMetadata2InvestigationConverter
       hasInput, hasOutput);
   }
 
-  private List<DataFile> extractDataFilesFromGEOSample(org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
-  {
-    List<DataFile> dataFiles = new ArrayList<>();
-
-    for (String rawDataFile : geoSample.getRawDataFiles()) {
-      DataFile dataFile = new DataFile(createStringValueElement(rawDataFile),
-        Optional.of(new StringValueElement("raw")));
-      dataFiles.add(dataFile);
-    }
-
-    if (geoSample.getCELFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCELFile().get()),
-        Optional.of(new StringValueElement("cel")));
-      dataFiles.add(dataFile);
-    }
-
-    if (geoSample.getEXPFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getEXPFile().get()),
-        Optional.of(new StringValueElement("exp")));
-      dataFiles.add(dataFile);
-    }
-
-    if (geoSample.getCHPFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCHPFile().get()),
-        Optional.of(new StringValueElement("chp")));
-      dataFiles.add(dataFile);
-    }
-    return dataFiles;
-  }
-
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
     org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
   {
-    StringValueElement name = createStringValueElement(geoSample.getTitle());
+    StringValueElement name = createStringValueElement(geoSample.getSampleName());
     StringValueElement type = createStringValueElement(geoSample.getPlatform());
-    Optional<StringValueElement> description = createOptionalStringValueElement(geoSample.getPlatform());
+    Optional<StringValueElement> description = createOptionalStringValueElement(geoSample.getTitle());
     Optional<StringValueElement> source = createOptionalStringValueElement(geoSample.getBiomaterialProvider());
     List<Characteristic> characteristics = convertGEOCharacteristics2Characteristics(geoSample.getCharacteristics());
     Optional<StudyTime> hasStudyTime = Optional.empty(); // Not present
@@ -164,40 +133,9 @@ public class GEOMetadata2InvestigationConverter
       hasStudyTime);
   }
 
-  private List<Characteristic> convertGEOCharacteristics2Characteristics(Map<String, String> geoCharacteristics)
-  {
-    List<Characteristic> characteristics = new ArrayList<>();
-
-    for (String geoCharacteristicName : geoCharacteristics.keySet()) {
-      String geoCharacteristicValue = geoCharacteristics.get(geoCharacteristicName);
-      CharacteristicValue characteristicValue = new CharacteristicValue(
-        createStringValueElement(geoCharacteristicValue));
-      Characteristic characteristic = new Characteristic(createStringValueElement(geoCharacteristicName),
-        Optional.of(characteristicValue));
-
-      characteristics.add(characteristic);
-    }
-
-    return characteristics;
-  }
-
   private Optional<StudyAssay> extractStudyAssayFromGEOSample(Sample geoSample)
   {
     return Optional.of(new StudyAssay(createStringValueElement(geoSample.getPlatform())));
-  }
-
-  private List<Contact> convertGEOContributors2Contacts(List<ContributorName> geoContributors)
-  {
-    List<Contact> contacts = new ArrayList<>();
-
-    for (ContributorName contributorName : geoContributors) {
-      Contact contact = new Contact(createStringValueElement(contributorName.getFirstName()),
-        createStringValueElement(contributorName.getMiddleInitial()),
-        createStringValueElement(contributorName.getLastName()));
-
-      contacts.add(contact);
-    }
-    return contacts;
   }
 
   private Optional<StudyAssay> convertGEOPlatform2StudyAssay(Optional<Platform> geoPlatform)
@@ -235,6 +173,23 @@ public class GEOMetadata2InvestigationConverter
     return Optional.of(new StudyProtocol(name, description, type, uri, version, protocolParameters));
   }
 
+  private List<Characteristic> convertGEOCharacteristics2Characteristics(Map<String, String> geoCharacteristics)
+  {
+    List<Characteristic> characteristics = new ArrayList<>();
+
+    for (String geoCharacteristicName : geoCharacteristics.keySet()) {
+      String geoCharacteristicValue = geoCharacteristics.get(geoCharacteristicName);
+      CharacteristicValue characteristicValue = new CharacteristicValue(
+        createStringValueElement(geoCharacteristicValue));
+      Characteristic characteristic = new Characteristic(createStringValueElement(geoCharacteristicName),
+        Optional.of(characteristicValue));
+
+      characteristics.add(characteristic);
+    }
+
+    return characteristics;
+  }
+
   private ProtocolParameter createProtocolParameter(String parameterName, String value)
   {
     return createProtocolParameter(parameterName, Optional.empty(), value, Optional.empty(), Optional.empty());
@@ -248,6 +203,50 @@ public class GEOMetadata2InvestigationConverter
 
     return new ProtocolParameter(createStringValueElement(parameterName),
       createOptionalStringValueElement(parameterDescription), Optional.of(parameterValue));
+  }
+
+  private List<Contact> convertGEOContributors2Contacts(List<ContributorName> geoContributors)
+  {
+    List<Contact> contacts = new ArrayList<>();
+
+    for (ContributorName contributorName : geoContributors) {
+      Contact contact = new Contact(createStringValueElement(contributorName.getFirstName()),
+        createStringValueElement(contributorName.getMiddleInitial()),
+        createStringValueElement(contributorName.getLastName()));
+
+      contacts.add(contact);
+    }
+    return contacts;
+  }
+
+  private List<DataFile> extractDataFilesFromGEOSample(org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
+  {
+    List<DataFile> dataFiles = new ArrayList<>();
+
+    for (String rawDataFile : geoSample.getRawDataFiles()) {
+      DataFile dataFile = new DataFile(createStringValueElement(rawDataFile),
+        Optional.of(new StringValueElement("raw")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getCELFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCELFile().get()),
+        Optional.of(new StringValueElement("cel")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getEXPFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getEXPFile().get()),
+        Optional.of(new StringValueElement("exp")));
+      dataFiles.add(dataFile);
+    }
+
+    if (geoSample.getCHPFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCHPFile().get()),
+        Optional.of(new StringValueElement("chp")));
+      dataFiles.add(dataFile);
+    }
+    return dataFiles;
   }
 
   private List<Publication> convertPubmedIDs2Publications(List<String> pubmedIDs)

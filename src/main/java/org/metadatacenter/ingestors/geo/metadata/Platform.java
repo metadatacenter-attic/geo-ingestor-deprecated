@@ -4,6 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Metadata for a GEO platform.
+ *
+ * @see GEOMetadata
+ */
 public class Platform
 {
   private final String title;

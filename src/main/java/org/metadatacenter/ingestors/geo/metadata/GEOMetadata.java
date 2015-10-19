@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Metadata for GEO. See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
+ * GEO metadata. This metadata is typically extracted from a metadata sheet in a GEO submission spreadsheet.
+ * See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta for a description of this metadata.
  *
  * @see org.metadatacenter.ingestors.geo.GEOSpreadsheetHandler
  */

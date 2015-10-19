@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.metadatacenter</groupId>
-  <artifactId>geo2cedar</artifactId>
+  <artifactId>geo-injesto</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
-  <name>GEO2CEDAR</name>
+  <name>GEO Injestor</name>
 
   <properties>
 

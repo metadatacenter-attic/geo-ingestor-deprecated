@@ -67,10 +67,8 @@ import static org.metadatacenter.ingestors.geo.GEONames.SERIES_PUBMED_ID_FIELD_N
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_SUMMARY_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SERIES_TITLE_FIELD_NAME;
 import static org.metadatacenter.ingestors.geo.GEONames.SeriesFieldNames;
-import static org.metadatacenter.ingestors.geo.SSUtil.findFieldRowNumber;
-import static org.metadatacenter.ingestors.geo.SSUtil.findFieldValue;
-import static org.metadatacenter.ingestors.geo.SSUtil.findFieldValues;
-import static org.metadatacenter.ingestors.geo.SSUtil.getStringCellValue;
+import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.getCellLocation;
+import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.getStringCellValue;
 
 public class GEOSpreadsheetHandler
 {
@@ -83,8 +81,8 @@ public class GEOSpreadsheetHandler
 
   public GEOMetadata extractGEOMetadata() throws GEOIngestorException
   {
-    InputStream spreadsheetStream = SSUtil.openSpreadsheetInputStream(spreadsheetFileName);
-    Workbook workbook = SSUtil.createReadonlyWorkbook(spreadsheetStream);
+    InputStream spreadsheetStream = SpreadsheetUtil.openSpreadsheetInputStream(spreadsheetFileName);
+    Workbook workbook = SpreadsheetUtil.createReadonlyWorkbook(spreadsheetStream);
     Sheet geoMetadataSheet = getGEOMetadataSheet(workbook);
 
     return extractGEOMetadata(geoMetadataSheet);
@@ -496,4 +494,100 @@ public class GEOSpreadsheetHandler
     else
       return metadataSheet;
   }
+
+  public static Optional<Integer> findFieldRowNumber(Sheet sheet, String fieldName, int fieldColumnNumber)
+    throws GEOIngestorException
+  {
+    int firstRow = sheet.getFirstRowNum();
+    int lastRow = sheet.getLastRowNum();
+
+    for (int currentRow = firstRow; currentRow <= lastRow; currentRow++) {
+      Row row = sheet.getRow(currentRow);
+      Cell cell = row.getCell(fieldColumnNumber);
+      String value = SpreadsheetUtil.getStringCellValue(cell);
+      if (fieldName.equals(value))
+        return Optional.of(currentRow);
+    }
+    return Optional.empty();
+  }
+
+  /**
+   * A field can have multiple values.
+   */
+  private Map<String, List<String>> findFieldValues(Sheet sheet, int fieldNameColumnNumber, int fieldValueColumnNumber,
+    int startRowNumber, int finishRowNumber) throws GEOIngestorException
+  {
+    Map<String, List<String>> field2Values = new HashMap<>();
+
+    for (int currentRow = startRowNumber; currentRow <= finishRowNumber; currentRow++) {
+      Row row = sheet.getRow(currentRow);
+      Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
+
+      if (fieldNameCell == null)
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
+
+      Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
+
+      if (fieldValueCell == null)
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
+
+      String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell);
+      if (fieldName.isEmpty())
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
+
+      String fieldValue = SpreadsheetUtil.getStringCellValue(fieldNameCell);
+
+      if (fieldValue.isEmpty())
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
+
+      if (field2Values.containsKey(fieldName))
+        field2Values.get(fieldName).add(fieldValue);
+      else {
+        List<String> fieldValues = new ArrayList<>();
+        fieldValues.add(fieldValue);
+        field2Values.put(fieldName, fieldValues);
+      }
+    }
+    return field2Values;
+  }
+
+  /**
+   * Duplicates not allowed.
+   */
+  private Map<String, String> findFieldValue(Sheet sheet, int fieldNameColumnNumber, int fieldValueColumnNumber,
+    int startRowNumber, int finishRowNumber) throws GEOIngestorException
+  {
+    Map<String, String> field2Value = new HashMap<>();
+
+    for (int currentRow = startRowNumber; currentRow <= finishRowNumber; currentRow++) {
+      Row row = sheet.getRow(currentRow);
+      Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
+
+      if (fieldNameCell == null)
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
+
+      Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
+
+      if (fieldValueCell == null)
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldNameCell));
+
+      String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell); // Check for null cell
+      if (fieldName.isEmpty())
+        throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
+
+      String fieldValue = SpreadsheetUtil.getStringCellValue(fieldNameCell); // Check for null cell
+
+      if (fieldValue.isEmpty())
+        throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
+
+      if (field2Value.containsKey(fieldName))
+        throw new GEOIngestorException(
+          "duplicate field " + fieldName + " value at location " + getCellLocation(fieldValueCell));
+      else {
+        field2Value.put(fieldName, fieldValue);
+      }
+    }
+    return field2Value;
+  }
+
 }
