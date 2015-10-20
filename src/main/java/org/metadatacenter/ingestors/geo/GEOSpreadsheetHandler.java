@@ -604,31 +604,30 @@ public class GEOSpreadsheetHandler
       else {
         Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
-        if (fieldNameCell == null)
-          throw new GEOIngestorException("missing field name at location " + getCellLocation(fieldNameCell));
-
-        if (isBlankCellType(fieldNameCell))
-          throw new GEOIngestorException("blank field name at location " + getCellLocation(fieldNameCell));
-
-        Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
-
-        if (fieldValueCell != null && !isBlankCellType(fieldValueCell)) {
-
-          String fieldName = getStringCellValue(fieldNameCell); // Check for null cell
+        if (fieldNameCell == null || isBlankCellType(fieldNameCell))
+          blankRowReached = true;
+        else {
+          String fieldName = getStringCellValue(fieldNameCell);
           if (fieldName.isEmpty())
-            throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
-
-          String fieldValue = getCellValueAsString(fieldValueCell); // Check for null cell
-
-          if (fieldValue.isEmpty())
-            throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
-
-          if (field2Values.containsKey(fieldName))
-            field2Values.get(fieldName).add(fieldValue);
+            blankRowReached = true;
           else {
-            List<String> fieldValues = new ArrayList<>();
-            fieldValues.add(fieldValue);
-            field2Values.put(fieldName, fieldValues);
+            Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
+
+            if (fieldValueCell != null && !isBlankCellType(fieldValueCell)) {
+
+              String fieldValue = getCellValueAsString(fieldValueCell); // Check for null cell
+
+              if (fieldValue.isEmpty())
+                throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
+
+              if (field2Values.containsKey(fieldName))
+                field2Values.get(fieldName).add(fieldValue);
+              else {
+                List<String> fieldValues = new ArrayList<>();
+                fieldValues.add(fieldValue);
+                field2Values.put(fieldName, fieldValues);
+              }
+            }
           }
         }
       }
