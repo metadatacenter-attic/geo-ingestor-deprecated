@@ -13,13 +13,13 @@ public class Series
 {
   private final String title;
   private final List<String> summary;
-  private final String overallDesign;
+  private final List<String> overallDesign;
   private final List<ContributorName> contributors;
   private final List<String> pubmedIDs;
   private final Map<String, Map<String, String>> variables; // sample name -> (variable -> value)
   private final Map<String, List<String>> repeat; // sample name -> [repeat type]
 
-  public Series(String title, List<String> summary, String overallDesign, List<ContributorName> contributors,
+  public Series(String title, List<String> summary, List<String> overallDesign, List<ContributorName> contributors,
     List<String> pubmedIDs, Map<String, Map<String, String>> variables, Map<String, List<String>> repeat)
   {
     this.title = title;
@@ -41,7 +41,7 @@ public class Series
     return summary;
   }
 
-  public String getOverallDesign()
+  public List<String> getOverallDesign()
   {
     return overallDesign;
   }
