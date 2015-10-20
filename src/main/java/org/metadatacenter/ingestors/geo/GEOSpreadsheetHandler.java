@@ -205,6 +205,12 @@ public class GEOSpreadsheetHandler
 
   private Map<String, List<String>> extractSeriesFields(Sheet geoMetadataSheet) throws GEOIngestorException
   {
+    Optional<Integer> seriesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SERIES_HEADER_NAME,
+      FIELD_NAMES_COLUMN_NUMBER);
+
+    if (!seriesHeaderRowNumber.isPresent())
+      throw new GEOIngestorException("no series header found in metadata spreadsheet");
+
     Optional<Integer> seriesTitleRowNumber = findFieldRowNumber(geoMetadataSheet, SERIES_TITLE_FIELD_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
 
@@ -312,25 +318,31 @@ public class GEOSpreadsheetHandler
   {
     Optional<Integer> protocolsHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, PROTOCOLS_HEADER_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
-    if (protocolsHeaderRowNumber.isPresent()) {
 
-      Map<String, List<String>> fieldName2Values = findProtocolFieldValues(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
-        FIELD_VALUES_COLUMN_NUMBER, protocolsHeaderRowNumber.get() + 1);
-
-      if (fieldName2Values.isEmpty())
-        throw new GEOIngestorException("no protocol fields found in metadata spreadsheet");
-
-      // We do not indicate an error if there fields beyond the set defined in GEONames.ProtocolFieldNames
-      // because it appears that user are allowed to define arbitrary fields.
-
-      return fieldName2Values;
-    } else
+    if (!protocolsHeaderRowNumber.isPresent())
       throw new GEOIngestorException("no protocols header field named " + PROTOCOLS_HEADER_NAME + " in metadata sheet");
+
+    Map<String, List<String>> fieldName2Values = findProtocolFieldValues(geoMetadataSheet, FIELD_NAMES_COLUMN_NUMBER,
+      FIELD_VALUES_COLUMN_NUMBER, protocolsHeaderRowNumber.get() + 1);
+
+    if (fieldName2Values.isEmpty())
+      throw new GEOIngestorException("no protocol fields found in metadata spreadsheet");
+
+    // We do not indicate an error if there fields beyond the set defined in GEONames.ProtocolFieldNames
+    // because it appears that user are allowed to define arbitrary fields.
+
+    return fieldName2Values;
   }
 
   private Map<String, Sample> extractSamples(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, Sample> samples = new HashMap<>();
+
+    Optional<Integer> samplesHeaderRowNumber = findFieldRowNumber(geoMetadataSheet, SAMPLES_HEADER_NAME,
+      FIELD_NAMES_COLUMN_NUMBER);
+
+    if (!samplesHeaderRowNumber.isPresent())
+      throw new GEOIngestorException("no samples header found in metadata spreadsheet");
 
     Optional<Integer> samplesColumnNamesRowNumber = findFieldRowNumber(geoMetadataSheet, SAMPLES_SAMPLE_NAME_FIELD_NAME,
       FIELD_NAMES_COLUMN_NUMBER);
@@ -373,7 +385,7 @@ public class GEOSpreadsheetHandler
           organisms, characteristics, biomaterialProvider, molecule, label, description, platform);
 
         if (samples.containsKey(sampleName))
-          throw new GEOIngestorException("multiple entires for sample " + sampleName);
+          throw new GEOIngestorException("multiple entries for sample " + sampleName);
 
         samples.put(sampleName, sample);
       }
