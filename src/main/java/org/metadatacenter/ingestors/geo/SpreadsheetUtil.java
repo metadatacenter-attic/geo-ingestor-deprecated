@@ -197,10 +197,37 @@ public class SpreadsheetUtil
     return cell.getStringCellValue();
   }
 
+  public static String getCellValueAsString(Cell cell) throws GEOIngestorException
+  {
+    assertNonNullCell(cell);
+    assertNonBlankCell(cell);
+    assertNonErrorCell(cell);
+
+    if (isStringCellType(cell))
+      return cell.getStringCellValue();
+    else if (isBooleanCellType(cell))
+      return String.valueOf(cell.getBooleanCellValue());
+    else if (isNumericCellType(cell))
+      return String.valueOf(cell.getNumericCellValue());
+    else throw new GEOIngestorException("Unknown cell type at location " + getCellLocation(cell));
+  }
+
   public static void assertNonNullCell(Cell cell) throws GEOIngestorException
   {
     if (cell == null)
-      throw new GEOIngestorException("No cell at location " + getCellLocation(cell));
+      throw new GEOIngestorException("Empty cell at location " + getCellLocation(cell));
+  }
+
+  public static void assertNonBlankCell(Cell cell) throws GEOIngestorException
+  {
+    if (cell != null && isBlankCellType(cell))
+      throw new GEOIngestorException("Blank cell at location " + getCellLocation(cell));
+  }
+
+  public static void assertNonErrorCell(Cell cell) throws GEOIngestorException
+  {
+    if (cell != null && isErrorCellType(cell))
+      throw new GEOIngestorException("Error cell at location " + getCellLocation(cell));
   }
 
   public static void assertStringCellType(Cell cell) throws GEOIngestorException
@@ -242,6 +269,11 @@ public class SpreadsheetUtil
   public static boolean isBlankCellType(Cell cell)
   {
     return cell.getCellType() == Cell.CELL_TYPE_BLANK;
+  }
+
+  public static boolean isErrorCellType(Cell cell)
+  {
+    return cell.getCellType() == Cell.CELL_TYPE_ERROR;
   }
 
   public static String getCellTypeName(Cell cell)

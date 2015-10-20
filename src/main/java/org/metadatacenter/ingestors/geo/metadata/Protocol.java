@@ -1,6 +1,8 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Protocol
 {
@@ -12,18 +14,21 @@ public class Protocol
   private final List<String> scan;
   private final List<String> dataProcessing;
   private final List<String> valueDefinition;
+  private final Map<String, List<String>> userDefinedFields;
 
   public Protocol(List<String> growth, List<String> treatment, List<String> extract, List<String> label,
-    List<String> hyb, List<String> scan, List<String> dataProcessing, List<String> valueDefinition)
+    List<String> hyb, List<String> scan, List<String> dataProcessing, List<String> valueDefinition,
+    Map<String, List<String>> userDefinedFields)
   {
-    this.growth = growth;
-    this.treatment = treatment;
-    this.extract = extract;
-    this.label = label;
-    this.hyb = hyb;
-    this.scan = scan;
-    this.dataProcessing = dataProcessing;
-    this.valueDefinition = valueDefinition;
+    this.growth = Collections.unmodifiableList(growth);
+    this.treatment = Collections.unmodifiableList(treatment);
+    this.extract = Collections.unmodifiableList(extract);
+    this.label = Collections.unmodifiableList(label);
+    this.hyb = Collections.unmodifiableList(hyb);
+    this.scan = Collections.unmodifiableList(scan);
+    this.dataProcessing = Collections.unmodifiableList(dataProcessing);
+    this.valueDefinition = Collections.unmodifiableList(valueDefinition);
+    this.userDefinedFields = Collections.unmodifiableMap(userDefinedFields);
   }
 
   public List<String> getGrowth()
@@ -64,6 +69,11 @@ public class Protocol
   public List<String> getValueDefinition()
   {
     return valueDefinition;
+  }
+
+  public Map<String, List<String>> getUserDefinedFields()
+  {
+    return userDefinedFields;
   }
 
   @Override public String toString()
