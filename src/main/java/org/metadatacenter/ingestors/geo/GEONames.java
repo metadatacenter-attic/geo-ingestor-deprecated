@@ -67,6 +67,8 @@ public class GEONames
   public final static String PLATFORM_COATING_FIELD_NAME = "coating";
   public final static String PLATFORM_CONTRIBUTOR_FIELD_NAME = "contributor";
   public final static String PLATFORM_PUBMED_ID_FIELD_NAME = "pubmed id";
+  public final static String PLATFORM_NATIVE_ARRAY_DESCRIPTION_FILE_NAME = "native array description file";
+  public final static String PLATFORM_PLATFORM_FILE_NAME = "Platform file";
 
   public final static String CHARACTERISTICS_FIELD_PREFIX = "characteristics: ";
 
@@ -88,7 +90,8 @@ public class GEONames
     PLATFORM_TECHNOLOGY_FIELD_NAME, PLATFORM_ORGANISM_FIELD_NAME, PLATFORM_MANUFACTURER_FIELD_NAME,
     PLATFORM_MANUFACTURE_PROTOCOL_FIELD_NAME, PLATFORM_DESCRIPTION_FIELD_NAME, PLATFORM_CATALOG_NUMBER_FIELD_NAME,
     PLATFORM_WEB_LINK_FIELD_NAME, PLATFORM_SUPPORT_FIELD_NAME, PLATFORM_COATING_FIELD_NAME,
-    PLATFORM_CONTRIBUTOR_FIELD_NAME, PLATFORM_PUBMED_ID_FIELD_NAME };
+    PLATFORM_CONTRIBUTOR_FIELD_NAME, PLATFORM_PUBMED_ID_FIELD_NAME, PLATFORM_NATIVE_ARRAY_DESCRIPTION_FILE_NAME,
+    PLATFORM_PLATFORM_FILE_NAME };
 
   public final static String[] REPEAT_TYPE_NAMES = { "biological replicate", "technical replicate - extract",
     "technical replicate - labeled-extract" };
