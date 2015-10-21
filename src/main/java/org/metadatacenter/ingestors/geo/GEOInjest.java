@@ -2,11 +2,11 @@ package org.metadatacenter.ingestors.geo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import io.gsonfire.GsonFireBuilder;
-import io.gsonfire.PreProcessor;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.models.investigation.Investigation;
+import org.metadatacenter.repository.model.MetadataTemplateElement;
+import org.metadatacenter.repository.model.MetadataTemplateElementPostProcessor;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,25 +40,16 @@ public class GEOInjest
   private static void writeInvestigation2CEDARJSONFile(Investigation investigation, String cedarJSONFile)
   {
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(cedarJSONFile), GEONames.JSON_FILE_ENCODING)) {
-      //GsonBuilder gsonBuilder = new GsonBuilder();
       GsonFireBuilder fireBuilder = new GsonFireBuilder();
       fireBuilder.enableExclusionByValue();
 
-      fireBuilder.registerPreProcessor(Investigation.class, new PreProcessor<Investigation>()
-      {
-        @Override public void preDeserialize(Class<? extends Investigation> clazz, JsonElement src, Gson gson)
-        {
-          //Here you can add logic to change the src object before it gets converted into the Class clazz
-          System.err.println("xxxx");
-        }
-      });
+      fireBuilder.registerPostProcessor(MetadataTemplateElement.class, new MetadataTemplateElementPostProcessor());
+
       GsonBuilder gsonBuilder = fireBuilder.createGsonBuilder();
 
       gsonBuilder.setPrettyPrinting();
       Gson gson = gsonBuilder.create();
       gson.toJson(investigation, writer);
-
-      //gsonBuilder.registerTypeAdapter(MetadataTemplateElement.class, new MetadataTemplateElementSerializer());
 
     } catch (FileNotFoundException e) {
       System.err.println("GEO2CEDAR.class.getName(): Error opening or creating JSON file " + cedarJSONFile);
