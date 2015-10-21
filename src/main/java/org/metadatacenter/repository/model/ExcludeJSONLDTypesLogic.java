@@ -8,6 +8,7 @@ public class ExcludeJSONLDTypesLogic implements ExclusionByValueStrategy<List<St
 {
   @Override
   public boolean shouldSkipField(List<String> jsonLDTypes) {
+
     return jsonLDTypes.isEmpty();
   }
 }

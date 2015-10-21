@@ -2,7 +2,9 @@ package org.metadatacenter.ingestors.geo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import io.gsonfire.GsonFireBuilder;
+import io.gsonfire.PreProcessor;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.models.investigation.Investigation;
 
@@ -40,6 +42,16 @@ public class GEOInjest
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(cedarJSONFile), GEONames.JSON_FILE_ENCODING)) {
       //GsonBuilder gsonBuilder = new GsonBuilder();
       GsonFireBuilder fireBuilder = new GsonFireBuilder();
+      fireBuilder.enableExclusionByValue();
+
+      fireBuilder.registerPreProcessor(Investigation.class, new PreProcessor<Investigation>()
+      {
+        @Override public void preDeserialize(Class<? extends Investigation> clazz, JsonElement src, Gson gson)
+        {
+          //Here you can add logic to change the src object before it gets converted into the Class clazz
+          System.err.println("xxxx");
+        }
+      });
       GsonBuilder gsonBuilder = fireBuilder.createGsonBuilder();
 
       gsonBuilder.setPrettyPrinting();
