@@ -2,6 +2,7 @@ package org.metadatacenter.ingestors.geo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.gsonfire.GsonFireBuilder;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.models.investigation.Investigation;
 
@@ -26,9 +27,6 @@ public class GEOInjest
       GEOMetadata2InvestigationConverter converter = new GEOMetadata2InvestigationConverter();
       GEOSpreadsheetHandler geoSpreadsheetHandler = new GEOSpreadsheetHandler(geoExcelFile);
       GEOMetadata geoMetadata = geoSpreadsheetHandler.extractGEOMetadata();
-
-      System.out.println(geoMetadata);
-
       Investigation investigation = converter.convertGeoMetadata2Investigation(geoMetadata);
 
       writeInvestigation2CEDARJSONFile(investigation, cedarJSONFile);
@@ -40,8 +38,16 @@ public class GEOInjest
   private static void writeInvestigation2CEDARJSONFile(Investigation investigation, String cedarJSONFile)
   {
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(cedarJSONFile), GEONames.JSON_FILE_ENCODING)) {
-      Gson gson = new GsonBuilder().create();
+      //GsonBuilder gsonBuilder = new GsonBuilder();
+      GsonFireBuilder fireBuilder = new GsonFireBuilder();
+      GsonBuilder gsonBuilder = fireBuilder.createGsonBuilder();
+
+      gsonBuilder.setPrettyPrinting();
+      Gson gson = gsonBuilder.create();
       gson.toJson(investigation, writer);
+
+      //gsonBuilder.registerTypeAdapter(MetadataTemplateElement.class, new MetadataTemplateElementSerializer());
+
     } catch (FileNotFoundException e) {
       System.err.println("GEO2CEDAR.class.getName(): Error opening or creating JSON file " + cedarJSONFile);
     } catch (UnsupportedEncodingException e) {
