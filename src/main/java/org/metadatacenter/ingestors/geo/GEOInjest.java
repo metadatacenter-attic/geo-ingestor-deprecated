@@ -7,6 +7,7 @@ import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.models.investigation.Investigation;
 import org.metadatacenter.repository.model.MetadataTemplateElement;
 import org.metadatacenter.repository.model.MetadataTemplateElementPostProcessor;
+import org.metadatacenter.util.gson.OptionalTypeAdapter;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,6 +47,8 @@ public class GEOInjest
       fireBuilder.registerPostProcessor(MetadataTemplateElement.class, new MetadataTemplateElementPostProcessor());
 
       GsonBuilder gsonBuilder = fireBuilder.createGsonBuilder();
+
+      gsonBuilder.registerTypeAdapterFactory(OptionalTypeAdapter.FACTORY);
 
       gsonBuilder.setPrettyPrinting();
       Gson gson = gsonBuilder.create();

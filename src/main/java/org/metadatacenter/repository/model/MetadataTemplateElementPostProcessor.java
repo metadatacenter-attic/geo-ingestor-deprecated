@@ -13,9 +13,6 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
   @Override public void postDeserialize(MetadataTemplateElement metadataTemplateElement, JsonElement jsonElement,
       Gson gson)
   {
-    if (jsonElement.isJsonObject()) {
-      JsonObject jsonObject = jsonElement.getAsJsonObject();
-    }
   }
 
   @Override public void postSerialize(JsonElement jsonElement, MetadataTemplateElement metadataTemplateElement,
@@ -27,11 +24,14 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
       if (obj.has("jsonLDTypes"))
         obj.remove("jsonLDTypes");
 
-      if (obj.has("jsonLDTypes"))
-        obj.remove("jsonLDTypes");
+      if (obj.has("jsonLDIdentifier"))
+        obj.remove("jsonLDIdentifier");
 
       List<String> jsonLDTypes = metadataTemplateElement.getJSONLDTypes();
       Optional<String> jsonLDIdentifier = metadataTemplateElement.getJSONLDIdentifier();
+
+      if (jsonLDIdentifier.isPresent())
+        obj.addProperty("@id", jsonLDIdentifier.get());
 
       if (!jsonLDTypes.isEmpty()) {
         if (jsonLDTypes.size() == 1)
@@ -49,9 +49,6 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
           obj.addProperty("@type", sb.toString());
         }
       }
-
-      if (jsonLDIdentifier.isPresent())
-        obj.addProperty("@id", jsonLDIdentifier.get());
     }
   }
 }

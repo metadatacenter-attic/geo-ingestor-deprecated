@@ -51,6 +51,11 @@ public class RepositoryFactory
     return new DateValueElement(Collections.emptyList(), Optional.empty(), value);
   }
 
+  public static Optional<DateValueElement> createOptionalDateValueElement(String value)
+  {
+    return Optional.of(new DateValueElement(Collections.emptyList(), Optional.empty(), value));
+  }
+
   public static BooleanValueElement createBooleanValueElement(List<String> jsonLDTypes,
     Optional<String> jsonLDIdentifier, Boolean value)
   {
