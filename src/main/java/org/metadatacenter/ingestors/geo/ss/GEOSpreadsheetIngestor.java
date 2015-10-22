@@ -1,9 +1,10 @@
-package org.metadatacenter.ingestors.geo;
+package org.metadatacenter.ingestors.geo.ss;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.metadata.ContributorName;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.ingestors.geo.metadata.PerChannelSampleInfo;
@@ -23,65 +24,60 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.metadatacenter.ingestors.geo.GEONames.CHARACTERISTICS_FIELD_PREFIX;
-import static org.metadatacenter.ingestors.geo.GEONames.FIELD_NAMES_COLUMN_NUMBER;
-import static org.metadatacenter.ingestors.geo.GEONames.FIELD_VALUES_COLUMN_NUMBER;
-import static org.metadatacenter.ingestors.geo.GEONames.GEO_METADATA_SHEET_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_CATALOG_NUMBER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_COATING_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_CONTRIBUTOR_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_DESCRIPTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_DISTRIBUTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_MANUFACTURER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_MANUFACTURE_PROTOCOL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_ORGANISM_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_PUBMED_ID_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_SUPPORT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_TECHNOLOGY_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PLATFORM_WEB_LINK_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOLS_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_DATA_PROCESSING_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_EXTRACT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_GROWTH_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_HYB_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_LABEL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_SCAN_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_TREATMENT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.PlatformFieldNames;
-import static org.metadatacenter.ingestors.geo.GEONames.ProtocolFieldNames;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_CEL_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_CHP_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_DESCRIPTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_EXP_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_LABEL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_MOLECULE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_ORGANISM_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_SAMPLE_NAME_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_SOURCE_NAME_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SAMPLES_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_OVERALL_DESIGN_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_PUBMED_ID_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_SUMMARY_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SERIES_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.GEONames.SeriesFieldNames;
-import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.getCellLocation;
-import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.getCellValueAsString;
-import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.getStringCellValue;
-import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.isBlankCellType;
-import static org.metadatacenter.ingestors.geo.SpreadsheetUtil.isStringCellType;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.CHARACTERISTICS_FIELD_PREFIX;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.FIELD_NAMES_COLUMN_NUMBER;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.FIELD_VALUES_COLUMN_NUMBER;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.GEO_METADATA_SHEET_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_CATALOG_NUMBER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_COATING_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_CONTRIBUTOR_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_DESCRIPTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_DISTRIBUTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_MANUFACTURER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_MANUFACTURE_PROTOCOL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_ORGANISM_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_PUBMED_ID_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_SUPPORT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_TECHNOLOGY_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_WEB_LINK_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOLS_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_EXTRACT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_GROWTH_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_HYB_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_LABEL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_SCAN_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_TREATMENT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PlatformFieldNames;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.ProtocolFieldNames;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_CEL_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_CHP_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_DESCRIPTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_EXP_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_LABEL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_MOLECULE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_ORGANISM_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_SAMPLE_NAME_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_SOURCE_NAME_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_OVERALL_DESIGN_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_PUBMED_ID_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_SUMMARY_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SeriesFieldNames;
 
-public class GEOSpreadsheetHandler
+public class GEOSpreadsheetIngestor
 {
   private final String spreadsheetFileName;
 
-  public GEOSpreadsheetHandler(String spreadsheetFileName) throws GEOIngestorException
+  public GEOSpreadsheetIngestor(String spreadsheetFileName) throws GEOIngestorException
   {
     this.spreadsheetFileName = spreadsheetFileName;
   }
@@ -386,7 +382,7 @@ public class GEOSpreadsheetHandler
           molecule, label);
         Map<Integer, PerChannelSampleInfo> perChannelInformation = new HashMap<>();
         perChannelInformation.put(0, perChannelSampleInfo);
-         
+
         Sample sample = new Sample(sampleName, sampleTitle, label, description, platform, perChannelInformation,
           biomaterialProvider, rawDataFiles, celFile, expFile, chpFile);
 
@@ -467,10 +463,10 @@ public class GEOSpreadsheetHandler
          currentColumnNumber <= samplesColumnNamesRow.getLastCellNum() && !lastColumnReached; currentColumnNumber++) {
       Cell fieldNameCell = samplesColumnNamesRow.getCell(currentColumnNumber);
 
-      if (fieldNameCell == null || isBlankCellType(fieldNameCell)) {
+      if (fieldNameCell == null || SpreadsheetUtil.isBlankCellType(fieldNameCell)) {
         lastColumnReached = true;
       } else {
-        String fieldNameValue = getStringCellValue(fieldNameCell);
+        String fieldNameValue = SpreadsheetUtil.getStringCellValue(fieldNameCell);
 
         if (fieldNameValue.isEmpty())
           throw new GEOIngestorException(
@@ -488,8 +484,8 @@ public class GEOSpreadsheetHandler
 
       if (valueRow != null && valueRow.getPhysicalNumberOfCells() > 0) {
         Cell sampleNameCell = valueRow.getCell(0);
-        if (sampleNameCell != null && !isBlankCellType(sampleNameCell)) {
-          String sampleName = getCellValueAsString(sampleNameCell);
+        if (sampleNameCell != null && !SpreadsheetUtil.isBlankCellType(sampleNameCell)) {
+          String sampleName = SpreadsheetUtil.getCellValueAsString(sampleNameCell);
 
           if (sampleName.isEmpty())
             throw new GEOIngestorException("empty sample name at row " + currentRowNumber);
@@ -501,8 +497,8 @@ public class GEOSpreadsheetHandler
 
           for (int currentColumnNumber = 0; currentColumnNumber < numberOfSamplesColumns; currentColumnNumber++) {
             Cell fieldValueCell = valueRow.getCell(currentColumnNumber);
-            if (fieldValueCell != null && !isBlankCellType(fieldValueCell)) {
-              String fieldValue = getCellValueAsString(fieldValueCell);
+            if (fieldValueCell != null && !SpreadsheetUtil.isBlankCellType(fieldValueCell)) {
+              String fieldValue = SpreadsheetUtil.getCellValueAsString(fieldValueCell);
               if (!fieldValue.isEmpty()) {
                 String headerFieldName = samplesColumnNames.get(currentColumnNumber);
                 if (samplesColumnValues.get(sampleName).containsKey(headerFieldName)) {
@@ -544,7 +540,7 @@ public class GEOSpreadsheetHandler
       Row row = sheet.getRow(currentRow);
       if (row != null) {
         Cell cell = row.getCell(fieldColumnNumber);
-        if (cell != null && isStringCellType(cell)) {
+        if (cell != null && SpreadsheetUtil.isStringCellType(cell)) {
           String value = SpreadsheetUtil.getCellValueAsString(cell);
           if (fieldName.equals(value))
             return Optional.of(currentRow);
@@ -571,14 +567,14 @@ public class GEOSpreadsheetHandler
       else {
         Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
-        if (fieldNameCell == null || isBlankCellType(fieldNameCell)) {
+        if (fieldNameCell == null || SpreadsheetUtil.isBlankCellType(fieldNameCell)) {
           blankRowReached = true;
           continue;
         }
 
         Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
 
-        if (fieldValueCell == null || isBlankCellType(fieldValueCell)) {
+        if (fieldValueCell == null || SpreadsheetUtil.isBlankCellType(fieldValueCell)) {
           blankRowReached = true;
           continue;
         }
@@ -586,12 +582,14 @@ public class GEOSpreadsheetHandler
         String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell);
 
         if (fieldName.isEmpty())
-          throw new GEOIngestorException("empty field name at location " + getCellLocation(fieldNameCell));
+          throw new GEOIngestorException("empty field name at location " + SpreadsheetUtil
+            .getCellLocation(fieldNameCell));
 
         String fieldValue = SpreadsheetUtil.getCellValueAsString(fieldValueCell);
 
         if (fieldValue.isEmpty())
-          throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
+          throw new GEOIngestorException("empty field value at location " + SpreadsheetUtil
+            .getCellLocation(fieldValueCell));
 
         if (field2Values.containsKey(fieldName))
           field2Values.get(fieldName).add(fieldValue);
@@ -622,21 +620,22 @@ public class GEOSpreadsheetHandler
       else {
         Cell fieldNameCell = row.getCell(fieldNameColumnNumber);
 
-        if (fieldNameCell == null || isBlankCellType(fieldNameCell))
+        if (fieldNameCell == null || SpreadsheetUtil.isBlankCellType(fieldNameCell))
           blankRowReached = true;
         else {
-          String fieldName = getStringCellValue(fieldNameCell);
+          String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell);
           if (fieldName.isEmpty())
             blankRowReached = true;
           else {
             Cell fieldValueCell = row.getCell(fieldValueColumnNumber);
 
-            if (fieldValueCell != null && !isBlankCellType(fieldValueCell)) {
+            if (fieldValueCell != null && !SpreadsheetUtil.isBlankCellType(fieldValueCell)) {
 
-              String fieldValue = getCellValueAsString(fieldValueCell); // Check for null cell
+              String fieldValue = SpreadsheetUtil.getCellValueAsString(fieldValueCell); // Check for null cell
 
               if (fieldValue.isEmpty())
-                throw new GEOIngestorException("empty field value at location " + getCellLocation(fieldValueCell));
+                throw new GEOIngestorException("empty field value at location " + SpreadsheetUtil
+                  .getCellLocation(fieldValueCell));
 
               if (field2Values.containsKey(fieldName))
                 field2Values.get(fieldName).add(fieldValue);

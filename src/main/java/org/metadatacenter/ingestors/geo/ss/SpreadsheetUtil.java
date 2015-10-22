@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo;
+package org.metadatacenter.ingestors.geo.ss;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
+import org.metadatacenter.ingestors.geo.GEOIngestorException;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

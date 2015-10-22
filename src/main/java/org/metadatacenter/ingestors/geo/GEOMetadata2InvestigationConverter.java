@@ -6,6 +6,7 @@ import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
 import org.metadatacenter.ingestors.geo.metadata.Sample;
 import org.metadatacenter.ingestors.geo.metadata.Series;
+import org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames;
 import org.metadatacenter.models.investigation.Characteristic;
 import org.metadatacenter.models.investigation.CharacteristicValue;
 import org.metadatacenter.models.investigation.Contact;
@@ -38,8 +39,8 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createString
 
 /**
  * Take a {@link GEOMetadata} object and convert it to a CEDAR {@link Investigation} object.
- *
- * TODO: variables and repeat fields not currently read
+ * <p/>
+ * TODO variables and repeat fields not currently trasferred to CEDAR Investigation model
  *
  * @see GEOMetadata
  * @see Investigation
@@ -85,6 +86,8 @@ public class GEOMetadata2InvestigationConverter
     List<StudyAssay> studyAssays = studyAssay.isPresent() ?
       Collections.singletonList(studyAssay.get()) :
       Collections.emptyList();
+    Map<String, Map<String, String>> variables = geoSeries.getVariables(); // TODO Where do these go in our model?
+    Map<String, List<String>> repeat = geoSeries.getRepeat(); // TODO Where do these go in our model?
 
     return new Study(title, description, identifier, submissionDate, publicReleaseDate, studyDesignType, processes,
       studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);
@@ -162,35 +165,35 @@ public class GEOMetadata2InvestigationConverter
     List<ProtocolParameter> protocolParameters = new ArrayList<>();
 
     if (!geoProtocol.getGrowth().isEmpty())
-      protocolParameters.add(
-        createProtocolParameter(GEONames.PROTOCOL_GROWTH_FIELD_NAME, concatenateFieldValues(geoProtocol.getGrowth())));
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_GROWTH_FIELD_NAME,
+        concatenateFieldValues(geoProtocol.getGrowth())));
 
     if (!geoProtocol.getTreatment().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEONames.PROTOCOL_TREATMENT_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_TREATMENT_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getTreatment())));
 
     if (!geoProtocol.getExtract().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEONames.PROTOCOL_EXTRACT_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_EXTRACT_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getExtract())));
 
     if (!geoProtocol.getLabel().isEmpty())
-      protocolParameters.add(
-        createProtocolParameter(GEONames.PROTOCOL_LABEL_FIELD_NAME, concatenateFieldValues(geoProtocol.getLabel())));
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_LABEL_FIELD_NAME,
+        concatenateFieldValues(geoProtocol.getLabel())));
 
     if (!geoProtocol.getHyb().isEmpty())
-      protocolParameters
-        .add(createProtocolParameter(GEONames.PROTOCOL_HYB_FIELD_NAME, concatenateFieldValues(geoProtocol.getHyb())));
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_HYB_FIELD_NAME,
+        concatenateFieldValues(geoProtocol.getHyb())));
 
     if (!geoProtocol.getScan().isEmpty())
-      protocolParameters
-        .add(createProtocolParameter(GEONames.PROTOCOL_SCAN_FIELD_NAME, concatenateFieldValues(geoProtocol.getScan())));
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_SCAN_FIELD_NAME,
+        concatenateFieldValues(geoProtocol.getScan())));
 
     if (!geoProtocol.getDataProcessing().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEONames.PROTOCOL_DATA_PROCESSING_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getDataProcessing())));
 
     if (!geoProtocol.getValueDefinition().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEONames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getValueDefinition())));
 
     for (String fieldName : geoProtocol.getUserDefinedFields().keySet())
@@ -294,7 +297,7 @@ public class GEOMetadata2InvestigationConverter
     boolean isFirst = true;
     for (String fieldValue : fieldValues) {
       if (!isFirst)
-        sb.append(GEONames.MULTI_VALUE_FIELD_SEPARATOR);
+        sb.append(GEOSpreadsheetNames.MULTI_VALUE_FIELD_SEPARATOR);
       sb.append(fieldValue);
       isFirst = false;
     }

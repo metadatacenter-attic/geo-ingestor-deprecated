@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo;
+package org.metadatacenter.ingestors.geo.ss;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,7 +8,7 @@ import java.util.Set;
  * Names for metadata fields in GEO metadata spreadsheet.
  * See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
  */
-public class GEONames
+public class GEOSpreadsheetNames
 {
   public final static String JSON_FILE_ENCODING = "UTF-8";
 
