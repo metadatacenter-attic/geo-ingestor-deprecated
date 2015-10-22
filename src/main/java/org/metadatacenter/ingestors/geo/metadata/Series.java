@@ -16,7 +16,7 @@ public class Series
   private final List<String> overallDesign;
   private final List<ContributorName> contributors;
   private final List<String> pubmedIDs;
-  private final Map<String, Map<String, String>> variables; // sample name -> (variable -> value)
+  private final Map<String, Map<String, String>> variables; // sample name -> (variable name -> value)
   private final Map<String, List<String>> repeat; // sample name -> [repeat type]
 
   public Series(String title, List<String> summary, List<String> overallDesign, List<ContributorName> contributors,

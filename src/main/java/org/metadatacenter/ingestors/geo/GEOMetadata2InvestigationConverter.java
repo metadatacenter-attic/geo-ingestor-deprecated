@@ -39,6 +39,8 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createString
 /**
  * Take a {@link GEOMetadata} object and convert it to a CEDAR {@link Investigation} object.
  *
+ * TODO: variables and repeat fields not currently read
+ *
  * @see GEOMetadata
  * @see Investigation
  */
@@ -46,7 +48,6 @@ public class GEOMetadata2InvestigationConverter
 {
   private static final String INVESTIGATION_TEMPLATE_ID = "Investigation";
 
-  // TODO GEO Series variables and repeat fields
   public Investigation convertGeoMetadata2Investigation(GEOMetadata geoMetadata)
   {
     Series geoSeries = geoMetadata.getSeries();

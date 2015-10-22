@@ -8,6 +8,10 @@ import java.util.Optional;
  * GEO metadata. This metadata is typically extracted from a metadata sheet in a GEO submission spreadsheet.
  * See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta for a description of this metadata.
  *
+ *  TODO: variables and repeat fields in Series not currently read
+ *  TODO: multi-channel metadata samples not currently handled. See ./examples/GA_Agilent_two_color_matrix.xls
+ *
+ *
  * @see org.metadatacenter.ingestors.geo.GEOSpreadsheetHandler
  */
 public class GEOMetadata

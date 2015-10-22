@@ -8,6 +8,10 @@ import java.util.Optional;
 /**
  * Metadata for a GEO sample.
  *
+ * TODO variables and repeat fields not currently read
+ * TODO multi-channel metadata samples not currently handled. See ./examples/GA_Agilent_two_color_matrix.xls
+ * TODO fields preceded with ch1: or ch2: are: source name, organism, characteristics, molecule, label
+ *
  * @see GEOMetadata
  */
 public class Sample
