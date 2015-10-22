@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.metadatacenter.ingestors.geo.metadata.ContributorName;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
+import org.metadatacenter.ingestors.geo.metadata.PerChannelSampleInfo;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
 import org.metadatacenter.ingestors.geo.metadata.Sample;
@@ -381,8 +382,13 @@ public class GEOSpreadsheetHandler
         String platform = getRequiredMultiValueFieldValue(sampleFields, SAMPLES_MOLECULE_FIELD_NAME,
           SAMPLES_HEADER_NAME);
 
-        Sample sample = new Sample(sampleName, sampleTitle, rawDataFiles, celFile, expFile, chpFile, sourceName,
-          organisms, characteristics, biomaterialProvider, molecule, label, description, platform);
+        PerChannelSampleInfo perChannelSampleInfo = new PerChannelSampleInfo(0, sourceName, organisms, characteristics,
+          molecule, label);
+        Map<Integer, PerChannelSampleInfo> perChannelInformation = new HashMap<>();
+        perChannelInformation.put(0, perChannelSampleInfo);
+         
+        Sample sample = new Sample(sampleName, sampleTitle, label, description, platform, perChannelInformation,
+          biomaterialProvider, rawDataFiles, celFile, expFile, chpFile);
 
         if (samples.containsKey(sampleName))
           throw new GEOIngestorException("multiple entries for sample " + sampleName);

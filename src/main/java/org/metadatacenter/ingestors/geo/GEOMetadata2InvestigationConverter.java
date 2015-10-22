@@ -256,20 +256,20 @@ public class GEOMetadata2InvestigationConverter
       dataFiles.add(dataFile);
     }
 
-    if (geoSample.getCELFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCELFile().get()),
+    if (geoSample.getCelFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCelFile().get()),
         Optional.of(new StringValueElement("cel")));
       dataFiles.add(dataFile);
     }
 
-    if (geoSample.getEXPFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getEXPFile().get()),
+    if (geoSample.getExpFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getExpFile().get()),
         Optional.of(new StringValueElement("exp")));
       dataFiles.add(dataFile);
     }
 
-    if (geoSample.getCHPFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCHPFile().get()),
+    if (geoSample.getChpFile().isPresent()) {
+      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getChpFile().get()),
         Optional.of(new StringValueElement("chp")));
       dataFiles.add(dataFile);
     }
