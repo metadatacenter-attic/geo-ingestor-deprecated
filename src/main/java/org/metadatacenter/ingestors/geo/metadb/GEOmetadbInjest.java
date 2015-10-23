@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.ss;
+package org.metadatacenter.ingestors.geo.metadb;
 
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter;
@@ -8,37 +8,38 @@ import org.metadatacenter.repository.model.MetadataTemplateJSONSerializer;
 
 import java.io.IOException;
 
-public class GEOSpreadsheetInjest
+public class GEOmetadbInjest
 {
   public static void main(String[] args)
   {
     if (args.length != 2)
       Usage();
 
-    String geoExcelFilename = args[0];
+    String geometadbFilename = args[0];
     String cedarJSONFilename = args[1];
 
     try {
       GEOMetadata2InvestigationConverter converter = new GEOMetadata2InvestigationConverter();
-      GEOSpreadsheetIngestor geoSpreadsheetIngestor = new GEOSpreadsheetIngestor(geoExcelFilename);
+      GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>(
         cedarJSONFilename);
-      GEOMetadata geoMetadata = geoSpreadsheetIngestor.extractGEOMetadata();
+      GEOMetadata geoMetadata = geometadbIngestor.extractGEOMetadata();
       Investigation investigation = converter.convertGeoMetadata2Investigation(geoMetadata);
 
       investigationJSONSerializer.serialize(investigation);
+
     } catch (GEOIngestorException e) {
-      System.err.println(GEOSpreadsheetInjest.class.getName() + ": Error ingesting: " + e.getMessage());
+      System.err.println(GEOmetadbInjest.class.getName() + ": Error ingesting: " + e.getMessage());
       System.exit(-1);
     } catch (IOException e) {
-      System.err.println(GEOSpreadsheetInjest.class.getName() + ": IO error: " + e.getMessage());
+      System.err.println(GEOmetadbInjest.class.getName() + ": IO error ingesting: " + e.getMessage());
       System.exit(-1);
     }
   }
 
   private static void Usage()
   {
-    System.err.println("Usage: " + GEOSpreadsheetInjest.class.getName() + " <GEO Excel Filename> <CEDAR JSON File Name>");
+    System.err.println("Usage: " + GEOmetadbInjest.class.getName() + " <GEOmetadb Filename> <CEDAR JSON Filename>");
     System.exit(-1);
   }
 }
