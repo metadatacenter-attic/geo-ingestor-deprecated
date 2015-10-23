@@ -32,7 +32,7 @@ public class GEOmetadbNames
   public static final String SAMPLE_TABLE_SERIES_ID_COLUMN_NAME = "series_id";
   public static final String SAMPLE_TABLE_GPL_COLUMN_NAME = "gpl";
   public static final String SAMPLE_TABLE_STATUS_COLUMN_NAME = "status";
-  public static final String SAMPLE_TABLE_SUBMISSION_DATECOLUMN_NAME = "submission_date";
+  public static final String SAMPLE_TABLE_SUBMISSION_DATE_COLUMN_NAME = "submission_date";
   public static final String SAMPLE_TABLE_LAST_UPDATE_DATE_COLUMN_NAME = "last_update_date";
   public static final String SAMPLE_TABLE_TYPE_COLUMN_NAME = "type";
   public static final String SAMPLE_TABLE_CHANNEL_COUNT_COLUMN_NAME = "channel_count";
@@ -72,7 +72,7 @@ public class GEOmetadbNames
   public static final String PLATFORM_TABLE_SUPPORT_COLUMN_NAME = "support";
   public static final String PLATFORM_TABLE_DESCRIPTION_COLUMN_NAME = "description";
   public static final String PLATFORM_TABLE_WEB_LINK_COLUMN_NAME = "web_link";
-  public static final String PLATFORM_TABLE_CONTAXT_COLUMN_NAME = "contact";
+  public static final String PLATFORM_TABLE_CONTACT_COLUMN_NAME = "contact";
   public static final String PLATFORM_TABLE_DATA_ROW_COUNT_COLUMN_NAME = "data_row_count";
   public static final String PLATFORM_TABLE_SUPPLEMENTARY_FILE_COLUMN_NAME = "supplementary_file";
   public static final String PLATFORM_TABLE_BIOC_PACKAGE_COLUMN_NAME = "bioc_package";
