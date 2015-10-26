@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.ss;
+package org.metadatacenter.ingestors.geo.soft;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,7 +8,7 @@ import java.util.Set;
  * Names for metadata fields in GEO metadata spreadsheet.
  * See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta.
  */
-public class GEOSpreadsheetNames
+public class GEOSoftNames
 {
   public final static String MULTI_VALUE_FIELD_SEPARATOR = "; ";
 

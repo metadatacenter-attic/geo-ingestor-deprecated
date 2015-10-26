@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.ss;
+package org.metadatacenter.ingestors.geo.soft;
 
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter;
@@ -8,7 +8,7 @@ import org.metadatacenter.repository.model.MetadataTemplateJSONSerializer;
 
 import java.io.IOException;
 
-public class GEOSpreadsheetInjest
+public class GEOSoftInjest
 {
   public static void main(String[] args)
   {
@@ -20,25 +20,25 @@ public class GEOSpreadsheetInjest
 
     try {
       GEOMetadata2InvestigationConverter converter = new GEOMetadata2InvestigationConverter();
-      GEOSpreadsheetIngestor geoSpreadsheetIngestor = new GEOSpreadsheetIngestor(geoExcelFilename);
+      GEOSoftIngestor geoSoftIngestor = new GEOSoftIngestor(geoExcelFilename);
       MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>(
         cedarJSONFilename);
-      GEOMetadata geoMetadata = geoSpreadsheetIngestor.extractGEOMetadata();
+      GEOMetadata geoMetadata = geoSoftIngestor.extractGEOMetadata();
       Investigation investigation = converter.convertGeoMetadata2Investigation(geoMetadata);
 
       investigationJSONSerializer.serialize(investigation);
     } catch (GEOIngestorException e) {
-      System.err.println(GEOSpreadsheetInjest.class.getName() + ": Error ingesting: " + e.getMessage());
+      System.err.println(GEOSoftInjest.class.getName() + ": Error ingesting: " + e.getMessage());
       System.exit(-1);
     } catch (IOException e) {
-      System.err.println(GEOSpreadsheetInjest.class.getName() + ": IO error: " + e.getMessage());
+      System.err.println(GEOSoftInjest.class.getName() + ": IO error: " + e.getMessage());
       System.exit(-1);
     }
   }
 
   private static void Usage()
   {
-    System.err.println("Usage: " + GEOSpreadsheetInjest.class.getName() + " <GEO Excel Filename> <CEDAR JSON File Name>");
+    System.err.println("Usage: " + GEOSoftInjest.class.getName() + " <GEO Excel Filename> <CEDAR JSON File Name>");
     System.exit(-1);
   }
 }

@@ -1,6 +1,6 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
-import org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetIngestor;
+import org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor;
 
 import java.util.Collections;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.Optional;
  *  TODO: multi-channel metadata samples not currently handled. See ./examples/GA_Agilent_two_color_matrix.xls
  *
  *
- * @see GEOSpreadsheetIngestor
+ * @see GEOSoftIngestor
  */
 public class GEOMetadata
 {

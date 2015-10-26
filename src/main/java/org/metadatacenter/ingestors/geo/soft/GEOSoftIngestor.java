@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.ss;
+package org.metadatacenter.ingestors.geo.soft;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -24,60 +24,60 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.CHARACTERISTICS_FIELD_PREFIX;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.FIELD_NAMES_COLUMN_NUMBER;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.FIELD_VALUES_COLUMN_NUMBER;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.GEO_METADATA_SHEET_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_CATALOG_NUMBER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_COATING_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_CONTRIBUTOR_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_DESCRIPTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_DISTRIBUTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_MANUFACTURER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_MANUFACTURE_PROTOCOL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_ORGANISM_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_PUBMED_ID_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_SUPPORT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_TECHNOLOGY_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PLATFORM_WEB_LINK_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOLS_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_EXTRACT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_GROWTH_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_HYB_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_LABEL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_SCAN_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_TREATMENT_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.PlatformFieldNames;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.ProtocolFieldNames;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_CEL_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_CHP_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_DESCRIPTION_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_EXP_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_LABEL_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_MOLECULE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_ORGANISM_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_SAMPLE_NAME_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_SOURCE_NAME_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SAMPLES_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_HEADER_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_OVERALL_DESIGN_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_PUBMED_ID_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_SUMMARY_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SERIES_TITLE_FIELD_NAME;
-import static org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames.SeriesFieldNames;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.CHARACTERISTICS_FIELD_PREFIX;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.FIELD_NAMES_COLUMN_NUMBER;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.FIELD_VALUES_COLUMN_NUMBER;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.GEO_METADATA_SHEET_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_CATALOG_NUMBER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_COATING_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_CONTRIBUTOR_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_DESCRIPTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_DISTRIBUTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_MANUFACTURER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_MANUFACTURE_PROTOCOL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_ORGANISM_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_PUBMED_ID_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_SUPPORT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_TECHNOLOGY_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PLATFORM_WEB_LINK_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOLS_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_EXTRACT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_GROWTH_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_HYB_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_LABEL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_SCAN_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_TREATMENT_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.PlatformFieldNames;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.ProtocolFieldNames;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_BIOMATERIAL_PROVIDER_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_CEL_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_CHP_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_DESCRIPTION_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_EXP_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_LABEL_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_MOLECULE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_ORGANISM_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_RAW_DATA_FILE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_SAMPLE_NAME_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_SOURCE_NAME_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SAMPLES_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SERIES_HEADER_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SERIES_OVERALL_DESIGN_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SERIES_PUBMED_ID_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SERIES_SUMMARY_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SERIES_TITLE_FIELD_NAME;
+import static org.metadatacenter.ingestors.geo.soft.GEOSoftNames.SeriesFieldNames;
 
-public class GEOSpreadsheetIngestor
+public class GEOSoftIngestor
 {
   private final String spreadsheetFileName;
 
-  public GEOSpreadsheetIngestor(String spreadsheetFileName) throws GEOIngestorException
+  public GEOSoftIngestor(String spreadsheetFileName) throws GEOIngestorException
   {
     this.spreadsheetFileName = spreadsheetFileName;
   }

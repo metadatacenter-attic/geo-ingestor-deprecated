@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.ss;
+package org.metadatacenter.ingestors.geo.soft;
 
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;

@@ -6,7 +6,7 @@ import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
 import org.metadatacenter.ingestors.geo.metadata.Sample;
 import org.metadatacenter.ingestors.geo.metadata.Series;
-import org.metadatacenter.ingestors.geo.ss.GEOSpreadsheetNames;
+import org.metadatacenter.ingestors.geo.soft.GEOSoftNames;
 import org.metadatacenter.models.investigation.Characteristic;
 import org.metadatacenter.models.investigation.CharacteristicValue;
 import org.metadatacenter.models.investigation.Contact;
@@ -165,35 +165,35 @@ public class GEOMetadata2InvestigationConverter
     List<ProtocolParameter> protocolParameters = new ArrayList<>();
 
     if (!geoProtocol.getGrowth().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_GROWTH_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_GROWTH_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getGrowth())));
 
     if (!geoProtocol.getTreatment().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_TREATMENT_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_TREATMENT_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getTreatment())));
 
     if (!geoProtocol.getExtract().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_EXTRACT_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_EXTRACT_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getExtract())));
 
     if (!geoProtocol.getLabel().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_LABEL_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_LABEL_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getLabel())));
 
     if (!geoProtocol.getHyb().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_HYB_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_HYB_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getHyb())));
 
     if (!geoProtocol.getScan().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_SCAN_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_SCAN_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getScan())));
 
     if (!geoProtocol.getDataProcessing().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getDataProcessing())));
 
     if (!geoProtocol.getValueDefinition().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSpreadsheetNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME,
+      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_VALUE_DEFINITION_FIELD_NAME,
         concatenateFieldValues(geoProtocol.getValueDefinition())));
 
     for (String fieldName : geoProtocol.getUserDefinedFields().keySet())
@@ -297,7 +297,7 @@ public class GEOMetadata2InvestigationConverter
     boolean isFirst = true;
     for (String fieldValue : fieldValues) {
       if (!isFirst)
-        sb.append(GEOSpreadsheetNames.MULTI_VALUE_FIELD_SEPARATOR);
+        sb.append(GEOSoftNames.MULTI_VALUE_FIELD_SEPARATOR);
       sb.append(fieldValue);
       isFirst = false;
     }
