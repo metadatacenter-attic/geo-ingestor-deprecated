@@ -8,6 +8,16 @@ import io.gsonfire.PostProcessor;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * GSON Fire directives in the {@link MetadataTemplateElement} class  exclude the
+ * {@link MetadataTemplateElement#jsonLDTypes} and {@link MetadataTemplateElement#jsonLDIdentifier} fields from direct
+ * serialization. Here we serialize them as JSON-LD-conforming <tt>@type</tt> and <tt>@id</tt> fields.
+ * </p>
+ * Note that the corresponding deserialization logic has not been implemented.
+ *
+ * @see MetadataTemplateElement
+ * @see MetadataTemplateJSONSerializer
+ */
 public class MetadataTemplateElementPostProcessor implements PostProcessor<MetadataTemplateElement>
 {
   @Override public void postDeserialize(MetadataTemplateElement metadataTemplateElement, JsonElement jsonElement,

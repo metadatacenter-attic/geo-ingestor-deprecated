@@ -7,6 +7,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Using GSON Fire directives we exclude the {@link #jsonLDTypes} and {@link #jsonLDIdentifier} fields from direct
+ * serialization and use the {@link MetadataTemplateElementPostProcessor} class to serialize them as JSON-LD-conforming
+ * <tt>@type</tt> and <tt>@id</tt> fields.
+ * </p>
+ * Note that the corresponding deserialization logic has not been implemented.
+ *
+ * @see ExcludeJSONLDTypesLogic
+ * @see ExcludeJSONLDIdentifierLogic
+ * @see MetadataTemplateElementPostProcessor
+ * @see MetadataTemplateJSONSerializer
+ */
 public abstract class MetadataTemplateElement
 {
   @ExcludeByValue(ExcludeJSONLDTypesLogic.class)

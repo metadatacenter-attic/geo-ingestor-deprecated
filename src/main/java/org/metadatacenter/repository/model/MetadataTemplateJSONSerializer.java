@@ -3,18 +3,24 @@ package org.metadatacenter.repository.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.gsonfire.GsonFireBuilder;
-import org.metadatacenter.util.gson.OptionalTypeAdapter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+/**
+ * GSON- and GSON Fire-based JSON serializer for metadata templates.
+ *
+ * @see MetadataTemplateElement
+ * @see MetadataTemplateElementPostProcessor
+ * @see OptionalTypeAdapter
+ */
 public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
 {
-  private final String jsonFileName;
-
   public final static String JSON_FILE_ENCODING = "UTF-8";
+
+  private final String jsonFileName;
 
   public MetadataTemplateJSONSerializer(String jsonFileName)
   {
@@ -38,5 +44,4 @@ public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
       gson.toJson(metadataTemplate, writer);
     }
   }
-
 }

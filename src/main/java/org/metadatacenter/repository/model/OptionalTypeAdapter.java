@@ -1,4 +1,4 @@
-package org.metadatacenter.util.gson;
+package org.metadatacenter.repository.model;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -13,6 +13,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+/**
+ *
+ * @see MetadataTemplateJSONSerializer
+ */
 public class OptionalTypeAdapter<E> extends TypeAdapter<Optional<E>>
 {
   public static final TypeAdapterFactory FACTORY = new TypeAdapterFactory()
