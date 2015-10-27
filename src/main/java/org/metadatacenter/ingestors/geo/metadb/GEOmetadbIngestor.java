@@ -2,6 +2,7 @@ package org.metadatacenter.ingestors.geo.metadb;
 
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
+import org.metadatacenter.ingestors.geo.metadata.PerChannelSampleInfo;
 import org.sqlite.JDBC;
 
 import java.sql.Connection;
@@ -9,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,27 +90,29 @@ public class GEOmetadbIngestor
       String type = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_TYPE_COLUMN_NAME, sampleRow,
           currentRowNumber);
 
-      Optional<String> channel1Source = getOptionalStringValueFromRow(
-          GEOmetadbNames.SAMPLE_TABLE_SOURCE_NAME_CH1_COLUMN_NAME, sampleRow);
-      Optional<String> channel1Characteristic = getOptionalStringValueFromRow(
+      String channel1Source = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_SOURCE_NAME_CH1_COLUMN_NAME,
+          sampleRow, currentRowNumber);
+      Optional<String> channel1RawCharacteristic = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_CHARACTERISTIC_CH1_COLUMN_NAME, sampleRow);
-      Optional<String> channel1Molecule = getOptionalStringValueFromRow(
-          GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH1_COLUMN_NAME, sampleRow);
-      Optional<String> channel1Label = getOptionalStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH1_COLUMN_NAME,
-          sampleRow);
+      Map<String, String> channel1Characteristics = new HashMap<>(); // TODO
+      String channel1Molecule = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH1_COLUMN_NAME,
+          sampleRow, currentRowNumber);
+      String channel1Label = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH1_COLUMN_NAME, sampleRow,
+          currentRowNumber);
       Optional<String> channel1TreatmentProtocol = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_TREATMENT_PROTOCOL_CH1_COLUMN_NAME, sampleRow);
       Optional<String> channel1ExtractProtocol = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_EXTRACT_PROTOCOL_CH1_COLUMN_NAME, sampleRow);
 
-      Optional<String> channel2Source = getOptionalStringValueFromRow(
-          GEOmetadbNames.SAMPLE_TABLE_SOURCE_NAME_CH2_COLUMN_NAME, sampleRow);
-      Optional<String> channel2Characteristic = getOptionalStringValueFromRow(
+      String channel2Source = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_SOURCE_NAME_CH2_COLUMN_NAME,
+          sampleRow, currentRowNumber);
+      Optional<String> channel2RawCharacteristic = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_CHARACTERISTIC_CH2_COLUMN_NAME, sampleRow);
-      Optional<String> channel2Molecule = getOptionalStringValueFromRow(
-          GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH2_COLUMN_NAME, sampleRow);
-      Optional<String> channel2Label = getOptionalStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH2_COLUMN_NAME,
-          sampleRow);
+      Map<String, String> channel2Characteristics = new HashMap<>(); // TODO
+      String channel2Molecule = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH2_COLUMN_NAME,
+          sampleRow, currentRowNumber);
+      String channel2Label = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH2_COLUMN_NAME, sampleRow,
+          currentRowNumber);
       Optional<String> channel2TreatmentProtocol = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_TREATMENT_PROTOCOL_CH2_COLUMN_NAME, sampleRow);
       Optional<String> channel2ExtractProtocol = getOptionalStringValueFromRow(
@@ -124,6 +128,19 @@ public class GEOmetadbIngestor
           sampleRow);
       Optional<String> supplementaryFile = getOptionalStringValueFromRow(
           GEOmetadbNames.SAMPLE_TABLE_SUPPLEMENTARY_FILE_COLUMN_NAME, sampleRow);
+      List<String> rawDataFiles = new ArrayList<>(); // TODO semi-colon separated
+      List<String> organisms = new ArrayList<>();// TODO
+
+      Map<Integer, PerChannelSampleInfo> perChannelInformation = new HashMap<>();
+      PerChannelSampleInfo channel1SampleInfo = new PerChannelSampleInfo(1, channel1Source, organisms,
+          channel1Characteristics, channel1Molecule, channel1Label);
+      PerChannelSampleInfo channel2SampleInfo = new PerChannelSampleInfo(2, channel2Source, organisms,
+          channel2Characteristics, channel2Molecule, channel2Label);
+      perChannelInformation.put(1, channel1SampleInfo);
+      perChannelInformation.put(2, channel2SampleInfo);
+
+      //      Sample(gsm, title, label, description, platform, perChannelInformation, biomaterialProvider,
+      //          rawDataFiles, Optional.empty(), Optional.empty(), Optional.empty())
 
       currentRowNumber++;
     }
@@ -150,32 +167,46 @@ public class GEOmetadbIngestor
       return Optional.empty();
   }
 
-  private void f() throws GEOIngestorException
+  private void ser() throws GEOIngestorException
   {
     Map<String, String> seriesRow = null;
     int currentRowNumber = 1;
     String title = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_TITLE_COLUMN_NAME, seriesRow,
         currentRowNumber);
-    String type = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_TYPE_COLUMN_NAME, seriesRow,
+    String summary = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_SUMMARY_COLUMN_NAME, seriesRow,
         currentRowNumber);
-    Optional<String> contributor = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTRIBUTOR_COLUMN_NAME,
-        seriesRow);
-    Optional<String> contact = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTACT_COLUMN_NAME,
-        seriesRow);
-    Optional<String> status = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_STATUS_COLUMN_NAME, seriesRow);
     Optional<String> overallDesign = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_OVERALL_DESIGN_COLUMN_NAME, seriesRow);
+    Optional<String> contributor = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTRIBUTOR_COLUMN_NAME,
+        seriesRow);
+    Optional<String> webLink = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_WEB_LINK_COLUMN_NAME,
+        seriesRow);
+    String type = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_TYPE_COLUMN_NAME, seriesRow,
+        currentRowNumber);
+    Optional<String> status = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_STATUS_COLUMN_NAME, seriesRow);
     Optional<String> submissionDate = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_SUBMISSION_DATE_COLUMN_NAME, seriesRow);
     Optional<String> lastUpdateDate = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_LAST_UPDATE_DATE_COLUMN_NAME, seriesRow);
+    Optional<String> contact = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTACT_COLUMN_NAME,
+        seriesRow);
     Optional<String> pubmedID = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_PUBMED_ID_COLUMN_NAME,
         seriesRow);
+    Optional<String> repeats = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_REPEATS_COLUMN_NAME,
+        seriesRow);
+    Optional<String> repeatsSamples = getOptionalStringValueFromRow(
+        GEOmetadbNames.SERIES_TABLE_REPEATS_SAMPLE_LIST_COLUMN_NAME, seriesRow);
+    Optional<String> variable = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_VARIABLE_COLUMN_NAME,
+        seriesRow);
+    Optional<String> variableDescription = getOptionalStringValueFromRow(
+        GEOmetadbNames.SERIES_TABLE_VARIABLE_DESCRIPTION_COLUMN_NAME, seriesRow);
     Optional<String> supplementaryFile = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_SUPPLEMENTARY_FILE_COLUMN_NAME, seriesRow);
+
+    //    return new Series(title, summary, overallDesign, contributors, pubmedIDs, variables, repeat);
   }
 
-  private void g() throws GEOIngestorException
+  private void plat() throws GEOIngestorException
   {
     Map<String, String> platformRow = null;
     int currentRowNumber = 1;
@@ -218,8 +249,8 @@ public class GEOmetadbIngestor
     Optional<String> biocPackage = getOptionalStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_BIOC_PACKAGE_COLUMN_NAME,
         platformRow);
 
-//    Platform p = new Platform(title, distribution, technology, organism, manufacturer, manufactureProtocol, description,
-//            catalogNumber, webLink, support, coating, contributor, pubmedID);
+    //    Platform p = new Platform(title, distribution, technology, organism, manufacturer, manufactureProtocol, description,
+    //            catalogNumber, webLink, support, coating, contributor, pubmedID);
 
   }
 
@@ -254,20 +285,6 @@ public class GEOmetadbIngestor
 
     return tableData;
   }
-
-  //  private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException
-  //  {
-  //    Map<String, List<String>> seriesFields = extractSeriesFields(geoMetadataSheet);
-  //    String title = getRequiredMultiValueFieldValue(seriesFields, SERIES_TITLE_FIELD_NAME, SERIES_HEADER_NAME);
-  //    List<String> summary = getMultiValueFieldValues(seriesFields, SERIES_SUMMARY_FIELD_NAME);
-  //    List<String> overallDesign = getMultiValueFieldValues(seriesFields, SERIES_OVERALL_DESIGN_FIELD_NAME);
-  //    List<ContributorName> contributors = extractContributorNames(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
-  //    List<String> pubmedIDs = getMultiValueFieldValues(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
-  //    Map<String, Map<String, String>> variables = new HashMap<>(); // TODO
-  //    Map<String, List<String>> repeat = new HashMap<>(); // TODO
-  //
-  //    return new Series(title, summary, overallDesign, contributors, pubmedIDs, variables, repeat);
-  //  }
 
   private void series()
   {
