@@ -88,6 +88,11 @@ public class RepositoryFactory
     return new EmailValueElement(Collections.emptyList(), Optional.empty(), value);
   }
 
+  public static Optional<EmailValueElement> createOptionalEmailValueElement(String value)
+  {
+    return Optional.of(new EmailValueElement(Collections.emptyList(), Optional.empty(), value));
+  }
+
   public static PhoneValueElement createPhoneValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier,
     String value)
   {
@@ -102,6 +107,11 @@ public class RepositoryFactory
   public static PhoneValueElement createPhoneValueElement(String value)
   {
     return new PhoneValueElement(Collections.emptyList(), Optional.empty(), value);
+  }
+
+  public static Optional<PhoneValueElement> createOptionalPhoneValueElement(String value)
+  {
+    return Optional.of(new PhoneValueElement(Collections.emptyList(), Optional.empty(), value));
   }
 
   public static URIValueElement createURIValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier,

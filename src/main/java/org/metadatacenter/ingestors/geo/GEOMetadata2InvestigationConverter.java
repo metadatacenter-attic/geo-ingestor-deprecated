@@ -1,6 +1,6 @@
 package org.metadatacenter.ingestors.geo;
 
-import org.metadatacenter.ingestors.geo.metadata.ContributorName;
+import org.metadatacenter.ingestors.geo.metadata.Contributor;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
@@ -13,6 +13,7 @@ import org.metadatacenter.models.investigation.Contact;
 import org.metadatacenter.models.investigation.DataFile;
 import org.metadatacenter.models.investigation.Input;
 import org.metadatacenter.models.investigation.Investigation;
+import org.metadatacenter.models.investigation.Organization;
 import org.metadatacenter.models.investigation.Output;
 import org.metadatacenter.models.investigation.ParameterValue;
 import org.metadatacenter.models.investigation.Process;
@@ -34,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalEmailValueElement;
+import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalPhoneValueElement;
 import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalStringValueElement;
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
 
@@ -181,12 +184,12 @@ public class GEOMetadata2InvestigationConverter
         concatenateFieldValues(geoProtocol.getLabel())));
 
     if (!geoProtocol.getHyb().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_HYB_FIELD_NAME,
-        concatenateFieldValues(geoProtocol.getHyb())));
+      protocolParameters.add(
+        createProtocolParameter(GEOSoftNames.PROTOCOL_HYB_FIELD_NAME, concatenateFieldValues(geoProtocol.getHyb())));
 
     if (!geoProtocol.getScan().isEmpty())
-      protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_SCAN_FIELD_NAME,
-        concatenateFieldValues(geoProtocol.getScan())));
+      protocolParameters.add(
+        createProtocolParameter(GEOSoftNames.PROTOCOL_SCAN_FIELD_NAME, concatenateFieldValues(geoProtocol.getScan())));
 
     if (!geoProtocol.getDataProcessing().isEmpty())
       protocolParameters.add(createProtocolParameter(GEOSoftNames.PROTOCOL_DATA_PROCESSING_FIELD_NAME,
@@ -235,14 +238,19 @@ public class GEOMetadata2InvestigationConverter
       createOptionalStringValueElement(parameterDescription), Optional.of(parameterValue));
   }
 
-  private List<Contact> convertGEOContributors2Contacts(List<ContributorName> geoContributors)
+  private List<Contact> convertGEOContributors2Contacts(List<Contributor> geoContributors)
   {
     List<Contact> contacts = new ArrayList<>();
 
-    for (ContributorName contributorName : geoContributors) {
-      Contact contact = new Contact(createStringValueElement(contributorName.getFirstName()),
-        createStringValueElement(contributorName.getMiddleInitial()),
-        createStringValueElement(contributorName.getLastName()));
+    for (Contributor geoContributor : geoContributors) {
+      Organization organization = new Organization(createStringValueElement(geoContributor.getInstitute()),
+        createOptionalStringValueElement(geoContributor.getDepartment()));
+      Contact contact = new Contact(createStringValueElement(""), createStringValueElement(""),
+        createStringValueElement(geoContributor.getName()),
+        createOptionalStringValueElement(geoContributor.getAddress()),
+        createOptionalEmailValueElement(geoContributor.getEmail()),
+        createOptionalPhoneValueElement(geoContributor.getPhone()),
+        createOptionalPhoneValueElement(geoContributor.getFax()), Optional.empty(), Optional.of(organization));
 
       contacts.add(contact);
     }
@@ -255,25 +263,25 @@ public class GEOMetadata2InvestigationConverter
 
     for (String rawDataFile : geoSample.getRawDataFiles()) {
       DataFile dataFile = new DataFile(createStringValueElement(rawDataFile),
-        Optional.of(new StringValueElement("raw")));
+        Optional.of(new StringValueElement(GEOSoftNames.RAW_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getCelFile().isPresent()) {
       DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCelFile().get()),
-        Optional.of(new StringValueElement("cel")));
+        Optional.of(new StringValueElement(GEOSoftNames.CEL_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getExpFile().isPresent()) {
       DataFile dataFile = new DataFile(createStringValueElement(geoSample.getExpFile().get()),
-        Optional.of(new StringValueElement("exp")));
+        Optional.of(new StringValueElement(GEOSoftNames.EXP_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getChpFile().isPresent()) {
       DataFile dataFile = new DataFile(createStringValueElement(geoSample.getChpFile().get()),
-        Optional.of(new StringValueElement("chp")));
+        Optional.of(new StringValueElement(GEOSoftNames.CHP_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
     return dataFiles;

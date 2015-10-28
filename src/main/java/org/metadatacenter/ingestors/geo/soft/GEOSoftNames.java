@@ -113,4 +113,9 @@ public class GEOSoftNames
 
   public final static int FIELD_NAMES_COLUMN_NUMBER = 0;
   public final static int FIELD_VALUES_COLUMN_NUMBER = 1;
+
+  public final static String CEL_FILE_TYPE_NAME = "CEL";
+  public final static String CHP_FILE_TYPE_NAME = "CHP";
+  public final static String EXP_FILE_TYPE_NAME = "EXP";
+  public final static String RAW_FILE_TYPE_NAME = "RAW";
 }

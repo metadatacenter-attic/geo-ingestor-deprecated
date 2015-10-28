@@ -5,7 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
-import org.metadatacenter.ingestors.geo.metadata.ContributorName;
+import org.metadatacenter.ingestors.geo.metadata.Contributor;
 import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
 import org.metadatacenter.ingestors.geo.metadata.PerChannelSampleInfo;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
@@ -107,7 +107,7 @@ public class GEOSoftIngestor
     String title = getRequiredMultiValueFieldValue(seriesFields, SERIES_TITLE_FIELD_NAME, SERIES_HEADER_NAME);
     List<String> summary = getMultiValueFieldValues(seriesFields, SERIES_SUMMARY_FIELD_NAME);
     List<String> overallDesign = getMultiValueFieldValues(seriesFields, SERIES_OVERALL_DESIGN_FIELD_NAME);
-    List<ContributorName> contributors = extractContributorNames(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
+    List<Contributor> contributors = extractContributors(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
     List<String> pubmedIDs = getMultiValueFieldValues(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
     Map<String, Map<String, String>> variables = new HashMap<>(); // TODO
     Map<String, List<String>> repeat = new HashMap<>(); // TODO
@@ -115,10 +115,10 @@ public class GEOSoftIngestor
     return new Series(title, summary, overallDesign, contributors, pubmedIDs, variables, repeat);
   }
 
-  private List<ContributorName> extractContributorNames(Map<String, List<String>> seriesFields,
+  private List<Contributor> extractContributors(Map<String, List<String>> seriesFields,
     String SERIES_CONTRIBUTOR_FIELD_NAME) throws GEOIngestorException
   {
-    List<ContributorName> contributorNames = new ArrayList<>();
+    List<Contributor> contributors = new ArrayList<>();
     List<String> contributorNameFieldValues = getMultiValueFieldValues(seriesFields, SERIES_CONTRIBUTOR_FIELD_NAME);
 
     String regexp = "([A-Za-z]+),\\s+([A-Za-z]+)\\s+([A-Za-z]+)";
@@ -129,12 +129,12 @@ public class GEOSoftIngestor
         String firstName = matcher.group(1);
         String middleInitial = matcher.group(2);
         String lastName = matcher.group(3);
-        contributorNames.add(new ContributorName(firstName, middleInitial, lastName));
+        contributors.add(new Contributor(firstName + " " + middleInitial + " " + lastName));
       } else { // Just add entire string as last name
-        contributorNames.add(new ContributorName("", "", contributorName));
+        contributors.add(new Contributor(contributorName));
       }
     }
-    return contributorNames;
+    return contributors;
   }
 
   private String getRequiredSingleValueFieldValue(Map<String, String> fields, String fieldName,
@@ -379,8 +379,9 @@ public class GEOSoftIngestor
           SAMPLES_HEADER_NAME);
 
         PerChannelSampleInfo perChannelSampleInfo = new PerChannelSampleInfo(0, sourceName, organisms, characteristics,
-          molecule, label);
+          molecule, label, Optional.empty(), Optional.empty());
         Map<Integer, PerChannelSampleInfo> perChannelInformation = new HashMap<>();
+
         perChannelInformation.put(0, perChannelSampleInfo);
 
         Sample sample = new Sample(sampleName, sampleTitle, label, description, platform, perChannelInformation,
@@ -582,14 +583,14 @@ public class GEOSoftIngestor
         String fieldName = SpreadsheetUtil.getStringCellValue(fieldNameCell);
 
         if (fieldName.isEmpty())
-          throw new GEOIngestorException("empty field name at location " + SpreadsheetUtil
-            .getCellLocation(fieldNameCell));
+          throw new GEOIngestorException(
+            "empty field name at location " + SpreadsheetUtil.getCellLocation(fieldNameCell));
 
         String fieldValue = SpreadsheetUtil.getCellValueAsString(fieldValueCell);
 
         if (fieldValue.isEmpty())
-          throw new GEOIngestorException("empty field value at location " + SpreadsheetUtil
-            .getCellLocation(fieldValueCell));
+          throw new GEOIngestorException(
+            "empty field value at location " + SpreadsheetUtil.getCellLocation(fieldValueCell));
 
         if (field2Values.containsKey(fieldName))
           field2Values.get(fieldName).add(fieldValue);
@@ -634,8 +635,8 @@ public class GEOSoftIngestor
               String fieldValue = SpreadsheetUtil.getCellValueAsString(fieldValueCell); // Check for null cell
 
               if (fieldValue.isEmpty())
-                throw new GEOIngestorException("empty field value at location " + SpreadsheetUtil
-                  .getCellLocation(fieldValueCell));
+                throw new GEOIngestorException(
+                  "empty field value at location " + SpreadsheetUtil.getCellLocation(fieldValueCell));
 
               if (field2Values.containsKey(fieldName))
                 field2Values.get(fieldName).add(fieldValue);
