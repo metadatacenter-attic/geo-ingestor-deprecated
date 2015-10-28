@@ -1,25 +1,31 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
-import org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * GEO metadata. This metadata is typically extracted from a metadata sheet in a GEO submission spreadsheet.
- * See http://www.ncbi.nlm.nih.gov/geo/info/spreadsheet.html#GAmeta for a description of this metadata.
+ * Metadata for a GEO series and its associated samples, protocol, and platform.
+ * </p>
+ * A {@link org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor} or a
+ * {@link org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor} can
+ * be used to read this metadata from GEOmetadb and GEOSoft formats, respectively
+ * </p>
+ * A {@link org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter} converts this metadata
+ * to CEDAR Investigation Model instances.
  *
- *  TODO: variables and repeat fields in Series not currently read
- *  TODO: multi-channel metadata samples not currently handled. See ./examples/GA_Agilent_two_color_matrix.xls
- *
- *
- * @see GEOSoftIngestor
+ * @see Series
+ * @see Sample
+ * @see Platform
+ * @see Protocol
+ * @see org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor
+ * @see org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor
+ * @see org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter
  */
 public class GEOMetadata
 {
   private final Series series;
-  private final Map<String, Sample> samples; // sample name -> Sample
+  private final Map<String, Sample> samples; // sampleID -> Sample
   private final Protocol protocol;
   private final Optional<Platform> platform;
 
@@ -52,13 +58,13 @@ public class GEOMetadata
   {
     return "GEOMetadata{" +
       "Series=" + series + "\n\n" +
-      "Samples=" + ppSamples() +  "\n\n" +
+      "Samples=" + prettyPrintSamples() + "\n\n" +
       "Protocol=" + protocol + "\n\n" +
       "Platform=" + platform +
       '}';
   }
 
-  private String ppSamples()
+  private String prettyPrintSamples()
   {
     StringBuilder sb = new StringBuilder();
 

@@ -87,7 +87,7 @@ public class GEOMetadata2InvestigationConverter
       Collections.singletonList(studyAssay.get()) :
       Collections.emptyList();
     Map<String, Map<String, String>> variables = geoSeries.getVariables(); // TODO Where do these go in our model?
-    Map<String, List<String>> repeat = geoSeries.getRepeat(); // TODO Where do these go in our model?
+    Map<String, List<String>> repeat = geoSeries.getRepeats(); // TODO Where do these go in our model?
 
     return new Study(title, description, identifier, submissionDate, publicReleaseDate, studyDesignType, processes,
       studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);

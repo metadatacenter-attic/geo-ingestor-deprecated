@@ -1,5 +1,6 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,12 @@ public class PerChannelSampleInfo
   private final String label;
 
   public PerChannelSampleInfo(Integer channelNumber, String sourceName, List<String> organisms,
-      Map<String, String> characteristics, String molecule, String label)
+    Map<String, String> characteristics, String molecule, String label)
   {
     this.channelNumber = channelNumber;
     this.sourceName = sourceName;
-    this.organisms = organisms;
-    this.characteristics = characteristics;
+    this.organisms = Collections.unmodifiableList(organisms);
+    this.characteristics = Collections.unmodifiableMap(characteristics);
     this.molecule = molecule;
     this.label = label;
   }

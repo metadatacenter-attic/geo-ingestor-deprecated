@@ -23,26 +23,26 @@ public class Platform
   private final Optional<String> support;
   private final Optional<String> coating;
   private final List<String> contributor;
-  private final List<String> pubmedID;
+  private final List<String> pubmedIDs;
 
   public Platform(String title, String distribution, String technology, String organism, String manufacturer,
     List<String> manufacturerProtocol, List<String> description, Optional<String> catalogNumber,
     Optional<String> webLink, Optional<String> support, Optional<String> coating, List<String> contributor,
-    List<String> pubmedID)
+    List<String> pubmedIDs)
   {
     this.title = title;
     this.distribution = distribution;
     this.technology = technology;
     this.organism = organism;
     this.manufacturer = manufacturer;
-    this.manufacturerProtocol = manufacturerProtocol;
+    this.manufacturerProtocol = Collections.unmodifiableList(manufacturerProtocol);
     this.description = description;
     this.catalogNumber = catalogNumber;
     this.webLink = webLink;
     this.support = support;
     this.coating = coating;
-    this.contributor = contributor;
-    this.pubmedID = pubmedID;
+    this.contributor = Collections.unmodifiableList(contributor);
+    this.pubmedIDs = Collections.unmodifiableList(pubmedIDs);
   }
 
   public String getTitle()
@@ -72,7 +72,7 @@ public class Platform
 
   public List<String> getManufacturerProtocol()
   {
-    return Collections.unmodifiableList(manufacturerProtocol);
+    return manufacturerProtocol;
   }
 
   public List<String> getDescription()
@@ -102,12 +102,12 @@ public class Platform
 
   public List<String> getContributor()
   {
-    return Collections.unmodifiableList(contributor);
+    return contributor;
   }
 
-  public List<String> getPubmedID()
+  public List<String> getPubmedIDs()
   {
-    return Collections.unmodifiableList(pubmedID);
+    return pubmedIDs;
   }
 
   @Override public String toString()
@@ -125,7 +125,7 @@ public class Platform
       ", support=" + support +
       ", coating=" + coating +
       ", contributor=" + contributor +
-      ", pubmedID=" + pubmedID +
+      ", pubmedIDs=" + pubmedIDs +
       '}';
   }
 }

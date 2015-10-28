@@ -14,21 +14,21 @@ public class Series
   private final String title;
   private final List<String> summary;
   private final List<String> overallDesign;
-  private final List<ContributorName> contributors;
+  private final List<Contributor> contributors;
   private final List<String> pubmedIDs;
-  private final Map<String, Map<String, String>> variables; // sample name -> (variable name -> value)
-  private final Map<String, List<String>> repeat; // sample name -> [repeat type]
+  private final Map<String, Map<String, String>> variables; // sample ID -> (variable name -> value)
+  private final Map<String, List<String>> repeats; // sample ID -> [repeats type]
 
-  public Series(String title, List<String> summary, List<String> overallDesign, List<ContributorName> contributors,
-    List<String> pubmedIDs, Map<String, Map<String, String>> variables, Map<String, List<String>> repeat)
+  public Series(String title, List<String> summary, List<String> overallDesign, List<Contributor> contributors,
+    List<String> pubmedIDs, Map<String, Map<String, String>> variables, Map<String, List<String>> repeats)
   {
     this.title = title;
-    this.summary = summary;
-    this.overallDesign = overallDesign;
-    this.contributors = contributors;
-    this.pubmedIDs = pubmedIDs;
-    this.variables = variables;
-    this.repeat = repeat;
+    this.summary = Collections.unmodifiableList(summary);
+    this.overallDesign = Collections.unmodifiableList(overallDesign);
+    this.contributors = Collections.unmodifiableList(contributors);
+    this.pubmedIDs = Collections.unmodifiableList(pubmedIDs);
+    this.variables = Collections.unmodifiableMap(variables);
+    this.repeats = Collections.unmodifiableMap(repeats);
   }
 
   public String getTitle()
@@ -46,24 +46,24 @@ public class Series
     return overallDesign;
   }
 
-  public List<ContributorName> getContributors()
+  public List<Contributor> getContributors()
   {
-    return Collections.unmodifiableList(contributors);
+    return contributors;
   }
 
   public List<String> getPubmedIDs()
   {
-    return Collections.unmodifiableList(pubmedIDs);
+    return pubmedIDs;
   }
 
   public Map<String, Map<String, String>> getVariables()
   {
-    return Collections.unmodifiableMap(variables);
+    return variables;
   }
 
-  public Map<String, List<String>> getRepeat()
+  public Map<String, List<String>> getRepeats()
   {
-    return Collections.unmodifiableMap(repeat);
+    return repeats;
   }
 
   @Override public String toString()
@@ -75,7 +75,7 @@ public class Series
       "\n contributors=" + contributors +
       "\n pubmedIDs=" + pubmedIDs +
       "\n variables=" + variables +
-      "\n repeat=" + repeat +
+      "\n repeats=" + repeats +
       '}';
   }
 }
