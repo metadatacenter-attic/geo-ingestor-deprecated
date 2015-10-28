@@ -119,24 +119,24 @@ public class GEOmetadbNames
 
   public final static List<String> PlatformTableColumnNames = Arrays.asList(PLATFORM_TABLE_COLUMN_NAMES);
 
-  public final static String NAME_CONTACT_FIELD = "Name";
-  public final static String EMAIL_CONTACT_FIELD = "Email";
-  public final static String PHONE_CONTACT_FIELD = "Phone";
-  public final static String FAX_CONTACT_FIELD = "Fax";
-  public final static String LABORATORY_CONTACT_FIELD = "Laboratory";
-  public final static String DEPARTMENT_CONTACT_FIELD = "Department";
-  public final static String INSTITUTE_CONTACT_FIELD = "Institute";
-  public final static String ADDRESS_CONTACT_FIELD = "Address";
-  public final static String CITY_CONTACT_FIELD = "City";
-  public final static String STATE_CONTACT_FIELD = "State";
-  public final static String ZIP_POSTAL_CODE_CONTACT_FIELD = "Zip/postal-code";
-  public final static String COUNTRY_CONTACT_FIELD = "Country";
-  public final static String WEB_LINK_CONTACT_FIELD = "Web_link";
+  public final static String NAME_CONTACT_ATTRIBUTE = "Name";
+  public final static String EMAIL_CONTACT_ATTRIBUTE = "Email";
+  public final static String PHONE_CONTACT_ATTRIBUTE = "Phone";
+  public final static String FAX_CONTACT_ATTRIBUTE = "Fax";
+  public final static String LABORATORY_CONTACT_ATTRIBUTE = "Laboratory";
+  public final static String DEPARTMENT_CONTACT_ATTRIBUTE = "Department";
+  public final static String INSTITUTE_CONTACT_ATTRIBUTE = "Institute";
+  public final static String ADDRESS_CONTACT_ATTRIBUTE = "Address";
+  public final static String CITY_CONTACT_ATTRIBUTE = "City";
+  public final static String STATE_CONTACT_ATTRIBUTE = "State";
+  public final static String ZIP_POSTAL_CODE_CONTACT_ATTRIBUTE = "Zip/postal-code";
+  public final static String COUNTRY_CONTACT_ATTRIBUTE = "Country";
+  public final static String WEB_LINK_CONTACT_ATTRIBUTE = "Web_link";
 
-  public final static String[] CONTACT_FIELD_NAMES = { NAME_CONTACT_FIELD, EMAIL_CONTACT_FIELD, PHONE_CONTACT_FIELD,
-    FAX_CONTACT_FIELD, LABORATORY_CONTACT_FIELD, DEPARTMENT_CONTACT_FIELD, INSTITUTE_CONTACT_FIELD,
-    ADDRESS_CONTACT_FIELD, CITY_CONTACT_FIELD, STATE_CONTACT_FIELD, ZIP_POSTAL_CODE_CONTACT_FIELD,
-    COUNTRY_CONTACT_FIELD, WEB_LINK_CONTACT_FIELD };
+  public final static String[] CONTACT_FIELD_NAMES = { NAME_CONTACT_ATTRIBUTE, EMAIL_CONTACT_ATTRIBUTE,
+      PHONE_CONTACT_ATTRIBUTE, FAX_CONTACT_ATTRIBUTE, LABORATORY_CONTACT_ATTRIBUTE, DEPARTMENT_CONTACT_ATTRIBUTE,
+      INSTITUTE_CONTACT_ATTRIBUTE, ADDRESS_CONTACT_ATTRIBUTE, CITY_CONTACT_ATTRIBUTE, STATE_CONTACT_ATTRIBUTE,
+      ZIP_POSTAL_CODE_CONTACT_ATTRIBUTE, COUNTRY_CONTACT_ATTRIBUTE, WEB_LINK_CONTACT_ATTRIBUTE };
 
   public final static List<String> ContactFieldNames = Arrays.asList(CONTACT_FIELD_NAMES);
 }

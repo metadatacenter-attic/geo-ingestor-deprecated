@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A GEOmetadb database contains a full dump of GEO metadata. Copies of this database, which is in SQLite format,
@@ -115,14 +117,15 @@ public class GEOmetadbIngestor
         currentRowNumber);
     String status = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_STATUS_COLUMN_NAME, sampleRow,
         currentRowNumber);
-    String type = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_TYPE_COLUMN_NAME, sampleRow,
+    String typesString = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_TYPE_COLUMN_NAME, sampleRow,
         currentRowNumber);
+    Set<String> types = extractTypes(typesString);
 
     String channel1Source = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_SOURCE_NAME_CH1_COLUMN_NAME,
         sampleRow, currentRowNumber);
     Optional<String> channel1RawCharacteristic = getOptionalStringValueFromRow(
         GEOmetadbNames.SAMPLE_TABLE_CHARACTERISTIC_CH1_COLUMN_NAME, sampleRow);
-    Map<String, String> channel1Characteristics = new HashMap<>(); // TODO
+    Map<String, List<String>> channel1Characteristics = extractCharacteristics(channel1RawCharacteristic);
     String channel1Molecule = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH1_COLUMN_NAME,
         sampleRow, currentRowNumber);
     String channel1Label = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH1_COLUMN_NAME, sampleRow,
@@ -136,7 +139,7 @@ public class GEOmetadbIngestor
         sampleRow, currentRowNumber);
     Optional<String> channel2RawCharacteristic = getOptionalStringValueFromRow(
         GEOmetadbNames.SAMPLE_TABLE_CHARACTERISTIC_CH2_COLUMN_NAME, sampleRow);
-    Map<String, String> channel2Characteristics = new HashMap<>(); // TODO
+    Map<String, List<String>> channel2Characteristics = extractCharacteristics(channel2RawCharacteristic);
     String channel2Molecule = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH2_COLUMN_NAME,
         sampleRow, currentRowNumber);
     String channel2Label = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_LABEL_CH2_COLUMN_NAME, sampleRow,
@@ -167,16 +170,6 @@ public class GEOmetadbIngestor
     perChannelInformation.put(1, channel1SampleInfo);
     perChannelInformation.put(2, channel2SampleInfo);
 
-    // GEOmetadbNames.SAMPLE_TABLE_TYPE_COLUMN_NAME)) {
-    // [other, SRA, RNA, genomic, SARST, protein, MPSS, SAGE, mixed]
-
-    //GEOmetadbNames.SAMPLE_TABLE_CHARACTERISTIC_CH1_COLUMN_NAME)) {
-    // characteristic_name1: value1, value2; characteristic_name2: value1, value2;
-    // Some have errors - no name: value at all. Some have http:// as field
-    // GEOmetadbNames.SAMPLE_TABLE_MOLECULE_CH1_COLUMN_NAME)) {
-    // [genomic DNA, other, total RNA, nuclear RNA, protein, cytoplasmic RNA, polyA RNA]
-    // GEOmetadbNames.SAMPLE_TABLE_DESCRIPTION_COLUMN_NAME)) {
-    // Free form plus semi-colon separated lists of colon-separated attribute value pairs
     // GEOmetadbNames.SAMPLE_TABLE_CONTACT_COLUMN_NAME)) {
     // As per contact in series
     // GEOmetadbNames.SAMPLE_TABLE_SUPPLEMENTARY_FILE_COLUMN_NAME)) {
@@ -214,7 +207,8 @@ public class GEOmetadbIngestor
     Optional<String> pubmedID = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_PUBMED_ID_COLUMN_NAME,
         seriesRow);
     List<String> pubmedIDs = pubmedID.isPresent() ? Collections.singletonList(pubmedID.get()) : Collections.emptyList();
-    Optional<String> repeats = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_REPEATS_COLUMN_NAME, seriesRow);
+    Optional<String> repeats = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_REPEATS_COLUMN_NAME,
+        seriesRow);
     Optional<String> repeatsSamples = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_REPEATS_SAMPLE_LIST_COLUMN_NAME, seriesRow);
     Optional<String> variable = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_VARIABLE_COLUMN_NAME,
@@ -234,7 +228,7 @@ public class GEOmetadbIngestor
   }
 
   /**
-   * @param variableString The raw string containing the
+   * @param variableString The raw string containing the variable definitions
    * @return (gsm -> (variable name -> variable value))
    */
   private Map<String, Map<String, String>> extractVariables(String variableString)
@@ -341,26 +335,28 @@ public class GEOmetadbIngestor
    * @param characteristicsString
    * @return (characteristic name -> [value])
    */
-  private Map<String, List<String>> extractCharacteristics(String characteristicsString)
+  private Map<String, List<String>> extractCharacteristics(Optional<String> characteristicsString)
   {
     Map<String, List<String>> characteristics = new HashMap<>();
 
-    for (String characteristicString : Arrays.stream(characteristicsString.split(";")).map(String::trim)
-        .filter(s -> !s.isEmpty()).toArray(String[]::new)) {
-      String characteristicAndValue[] = characteristicString.split(":");
-      if (characteristicAndValue.length == 2) {
-        String characteristicName = characteristicAndValue[0].trim();
-        String characteristicValuesString = characteristicAndValue[1].trim();
+    if (characteristicsString.isPresent()) {
+      for (String characteristicString : Arrays.stream(characteristicsString.get().split(";")).map(String::trim)
+          .filter(s -> !s.isEmpty()).toArray(String[]::new)) {
+        String characteristicAndValue[] = characteristicString.split(":");
+        if (characteristicAndValue.length == 2) {
+          String characteristicName = characteristicAndValue[0].trim();
+          String characteristicValuesString = characteristicAndValue[1].trim();
 
-        if (!characteristicName.isEmpty() && !characteristicValuesString.isEmpty()) {
-          List<String> characteristicValues = new ArrayList<>();
+          if (!characteristicName.isEmpty() && !characteristicValuesString.isEmpty()) {
+            List<String> characteristicValues = new ArrayList<>();
 
-          for (String characteristicValue : Arrays.stream(characteristicValuesString.split(",")).map(String::trim)
-              .filter(s -> !s.isEmpty()).toArray(String[]::new))
-            characteristicValues.add(characteristicValue);
+            for (String characteristicValue : Arrays.stream(characteristicValuesString.split(",")).map(String::trim)
+                .filter(s -> !s.isEmpty()).toArray(String[]::new))
+              characteristicValues.add(characteristicValue);
 
-          if (!characteristicValues.isEmpty())
-            characteristics.put(characteristicName, characteristicValues);
+            if (!characteristicValues.isEmpty())
+              characteristics.put(characteristicName, characteristicValues);
+          }
         }
       }
     }
@@ -389,19 +385,19 @@ public class GEOmetadbIngestor
         }
       }
       if (!fieldValues.isEmpty()) {
-        String name = getOrElse(fieldValues, GEOmetadbNames.NAME_CONTACT_FIELD, "");
-        String email = getOrElse(fieldValues, GEOmetadbNames.EMAIL_CONTACT_FIELD, "");
-        String phone = getOrElse(fieldValues, GEOmetadbNames.PHONE_CONTACT_FIELD, "");
-        String fax = getOrElse(fieldValues, GEOmetadbNames.FAX_CONTACT_FIELD, "");
-        String laboratory = getOrElse(fieldValues, GEOmetadbNames.LABORATORY_CONTACT_FIELD, "");
-        String department = getOrElse(fieldValues, GEOmetadbNames.DEPARTMENT_CONTACT_FIELD, "");
-        String institute = getOrElse(fieldValues, GEOmetadbNames.INSTITUTE_CONTACT_FIELD, "");
-        String address = getOrElse(fieldValues, GEOmetadbNames.ADDRESS_CONTACT_FIELD, "");
-        String city = getOrElse(fieldValues, GEOmetadbNames.CITY_CONTACT_FIELD, "");
-        String state = getOrElse(fieldValues, GEOmetadbNames.STATE_CONTACT_FIELD, "");
-        String zipOrPostalCode = getOrElse(fieldValues, GEOmetadbNames.ZIP_POSTAL_CODE_CONTACT_FIELD, "");
-        String country = getOrElse(fieldValues, GEOmetadbNames.COUNTRY_CONTACT_FIELD, "");
-        String webLink = getOrElse(fieldValues, GEOmetadbNames.WEB_LINK_CONTACT_FIELD, "");
+        String name = getOrElse(fieldValues, GEOmetadbNames.NAME_CONTACT_ATTRIBUTE, "");
+        String email = getOrElse(fieldValues, GEOmetadbNames.EMAIL_CONTACT_ATTRIBUTE, "");
+        String phone = getOrElse(fieldValues, GEOmetadbNames.PHONE_CONTACT_ATTRIBUTE, "");
+        String fax = getOrElse(fieldValues, GEOmetadbNames.FAX_CONTACT_ATTRIBUTE, "");
+        String laboratory = getOrElse(fieldValues, GEOmetadbNames.LABORATORY_CONTACT_ATTRIBUTE, "");
+        String department = getOrElse(fieldValues, GEOmetadbNames.DEPARTMENT_CONTACT_ATTRIBUTE, "");
+        String institute = getOrElse(fieldValues, GEOmetadbNames.INSTITUTE_CONTACT_ATTRIBUTE, "");
+        String address = getOrElse(fieldValues, GEOmetadbNames.ADDRESS_CONTACT_ATTRIBUTE, "");
+        String city = getOrElse(fieldValues, GEOmetadbNames.CITY_CONTACT_ATTRIBUTE, "");
+        String state = getOrElse(fieldValues, GEOmetadbNames.STATE_CONTACT_ATTRIBUTE, "");
+        String zipOrPostalCode = getOrElse(fieldValues, GEOmetadbNames.ZIP_POSTAL_CODE_CONTACT_ATTRIBUTE, "");
+        String country = getOrElse(fieldValues, GEOmetadbNames.COUNTRY_CONTACT_ATTRIBUTE, "");
+        String webLink = getOrElse(fieldValues, GEOmetadbNames.WEB_LINK_CONTACT_ATTRIBUTE, "");
         Contributor contributor = new Contributor(name, email, phone, fax, laboratory, department, institute, address,
             city, state, zipOrPostalCode, country, webLink);
 
@@ -411,6 +407,21 @@ public class GEOmetadbIngestor
     return contributors;
   }
 
+  /**
+   * @param typesString The raw string containing the comma-separated types
+   * @return A list of types
+   */
+  private Set<String> extractTypes(String typesString)
+  {
+    Set<String> types = new HashSet<>();
+
+    for (String type : Arrays.stream(typesString.split(",")).map(String::trim).filter(s -> !s.isEmpty())
+        .toArray(String[]::new))
+      types.add(type);
+
+    return types;
+  }
+  
   private String getOrElse(Map<String, String> fieldValues, String fieldName, String defaultValue)
   {
     if (fieldValues.containsKey(fieldName))
