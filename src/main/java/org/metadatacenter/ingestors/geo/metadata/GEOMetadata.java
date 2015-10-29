@@ -26,10 +26,11 @@ public class GEOMetadata
 {
   private final Series series;
   private final Map<String, Sample> samples; // sampleID -> Sample
-  private final Protocol protocol;
+  private final Optional<Protocol> protocol;
   private final Optional<Platform> platform;
 
-  public GEOMetadata(Series series, Map<String, Sample> samples, Protocol protocol, Optional<Platform> platform)
+  public GEOMetadata(Series series, Map<String, Sample> samples, Optional<Protocol> protocol,
+    Optional<Platform> platform)
   {
     this.series = series;
     this.samples = samples;
@@ -47,7 +48,7 @@ public class GEOMetadata
     return Collections.unmodifiableMap(samples);
   }
 
-  public Protocol getProtocol()
+  public Optional<Protocol> getProtocol()
   {
     return this.protocol;
   }

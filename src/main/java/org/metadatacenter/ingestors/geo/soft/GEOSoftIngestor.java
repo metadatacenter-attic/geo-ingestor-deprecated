@@ -98,7 +98,7 @@ public class GEOSoftIngestor
     Protocol protocol = extractProtocol(geoMetadataSheet);
     Optional<Platform> platform = extractPlatform(geoMetadataSheet);
 
-    return new GEOMetadata(series, samples, protocol, platform);
+    return new GEOMetadata(series, samples, Optional.of(protocol), platform);
   }
 
   private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException

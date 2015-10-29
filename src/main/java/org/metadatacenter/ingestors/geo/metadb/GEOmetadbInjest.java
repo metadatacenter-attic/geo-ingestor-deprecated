@@ -23,7 +23,7 @@ public class GEOmetadbInjest
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>(
         cedarJSONFilename);
-      GEOMetadata geoMetadata = geometadbIngestor.extractGEOMetadata();
+      GEOMetadata geoMetadata = geometadbIngestor.extractGEOMetadata(1);
       Investigation investigation = converter.convertGeoMetadata2Investigation(geoMetadata);
 
       investigationJSONSerializer.serialize(investigation);
