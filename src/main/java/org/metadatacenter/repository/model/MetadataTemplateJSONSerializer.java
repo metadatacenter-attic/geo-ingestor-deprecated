@@ -20,14 +20,7 @@ public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
 {
   public final static String JSON_FILE_ENCODING = "UTF-8";
 
-  private final String jsonFileName;
-
-  public MetadataTemplateJSONSerializer(String jsonFileName)
-  {
-    this.jsonFileName = jsonFileName;
-  }
-
-  public void serialize(T metadataTemplate) throws IOException
+  public void serialize(T metadataTemplate, String jsonFileName) throws IOException
   {
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFileName), JSON_FILE_ENCODING)) {
       GsonFireBuilder fireBuilder = new GsonFireBuilder();

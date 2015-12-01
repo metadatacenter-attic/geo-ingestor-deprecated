@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Metadata for a GEO sample.
  *
- * @see GEOMetadata
+ * @see GEOSubmissionMetadata
  */
 public class Sample
 {

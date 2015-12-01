@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Metadata for a GEO platform.
  *
- * @see GEOMetadata
+ * @see GEOSubmissionMetadata
  */
 public class Platform
 {

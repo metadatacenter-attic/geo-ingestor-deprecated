@@ -1,17 +1,20 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
+import org.metadatacenter.ingestors.geo.GEOSubmissionMetadata2InvestigationConverter;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * Metadata for a GEO series and its associated samples, protocol, and platform.
+ * Metadata for a single GEO submission, which will contain a single series and its associated samples,
+ * protocol, and platform.
  * </p>
  * A {@link org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor} or a
  * {@link org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor} can
  * be used to read this metadata from GEOmetadb and GEOSoft formats, respectively
  * </p>
- * A {@link org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter} converts this metadata
+ * A {@link GEOSubmissionMetadata2InvestigationConverter} converts this metadata
  * to CEDAR Investigation Model instances.
  *
  * @see Series
@@ -20,17 +23,17 @@ import java.util.Optional;
  * @see Protocol
  * @see org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor
  * @see org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor
- * @see org.metadatacenter.ingestors.geo.GEOMetadata2InvestigationConverter
+ * @see GEOSubmissionMetadata2InvestigationConverter
  */
-public class GEOMetadata
+public class GEOSubmissionMetadata
 {
   private final Series series;
   private final Map<String, Sample> samples; // sampleID -> Sample
   private final Optional<Protocol> protocol;
   private final Optional<Platform> platform;
 
-  public GEOMetadata(Series series, Map<String, Sample> samples, Optional<Protocol> protocol,
-    Optional<Platform> platform)
+  public GEOSubmissionMetadata(Series series, Map<String, Sample> samples, Optional<Protocol> protocol,
+      Optional<Platform> platform)
   {
     this.series = series;
     this.samples = samples;

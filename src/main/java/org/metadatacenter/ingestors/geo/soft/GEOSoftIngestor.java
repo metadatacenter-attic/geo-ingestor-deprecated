@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.metadata.Contributor;
-import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
+import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.ingestors.geo.metadata.PerChannelSampleInfo;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
@@ -82,23 +82,23 @@ public class GEOSoftIngestor
     this.spreadsheetFileName = spreadsheetFileName;
   }
 
-  public GEOMetadata extractGEOMetadata() throws GEOIngestorException
+  public GEOSubmissionMetadata extractGEOSubmissionMetadata() throws GEOIngestorException
   {
     InputStream spreadsheetStream = SpreadsheetUtil.openSpreadsheetInputStream(spreadsheetFileName);
     Workbook workbook = SpreadsheetUtil.createReadonlyWorkbook(spreadsheetStream);
     Sheet geoMetadataSheet = getGEOMetadataSheet(workbook);
 
-    return extractGEOMetadata(geoMetadataSheet);
+    return extractGEOSubmissionMetadata(geoMetadataSheet);
   }
 
-  private GEOMetadata extractGEOMetadata(Sheet geoMetadataSheet) throws GEOIngestorException
+  private GEOSubmissionMetadata extractGEOSubmissionMetadata(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Series series = extractSeries(geoMetadataSheet);
     Map<String, Sample> samples = extractSamples(geoMetadataSheet);
     Protocol protocol = extractProtocol(geoMetadataSheet);
     Optional<Platform> platform = extractPlatform(geoMetadataSheet);
 
-    return new GEOMetadata(series, samples, Optional.of(protocol), platform);
+    return new GEOSubmissionMetadata(series, samples, Optional.of(protocol), platform);
   }
 
   private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException

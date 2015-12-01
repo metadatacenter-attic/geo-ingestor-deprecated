@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Metadata for a GEO series.
  *
- * @see GEOMetadata
+ * @see GEOSubmissionMetadata
  */
 public class Series
 {

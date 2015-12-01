@@ -1,7 +1,7 @@
 package org.metadatacenter.ingestors.geo;
 
 import org.metadatacenter.ingestors.geo.metadata.Contributor;
-import org.metadatacenter.ingestors.geo.metadata.GEOMetadata;
+import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.ingestors.geo.metadata.Platform;
 import org.metadatacenter.ingestors.geo.metadata.Protocol;
 import org.metadatacenter.ingestors.geo.metadata.Sample;
@@ -41,20 +41,20 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createOption
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
 
 /**
- * Take a {@link GEOMetadata} object and convert it to a CEDAR {@link Investigation} object.
+ * Take a {@link GEOSubmissionMetadata} object and convert it to a CEDAR {@link Investigation} object.
  * <p/>
- * TODO variables and repeat fields not currently trasferred to CEDAR Investigation model
+ * TODO variables and repeat fields not currently transferred to CEDAR Investigation model
  *
- * @see GEOMetadata
+ * @see GEOSubmissionMetadata
  * @see Investigation
  */
-public class GEOMetadata2InvestigationConverter
+public class GEOSubmissionMetadata2InvestigationConverter
 {
   private static final String INVESTIGATION_TEMPLATE_ID = "Investigation";
 
-  public Investigation convertGeoMetadata2Investigation(GEOMetadata geoMetadata)
+  public Investigation convertGEOSubmissionMetadata2Investigation(GEOSubmissionMetadata geoSubmissionMetadata)
   {
-    Series geoSeries = geoMetadata.getSeries();
+    Series geoSeries = geoSubmissionMetadata.getSeries();
 
     String templateID = INVESTIGATION_TEMPLATE_ID;
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
@@ -62,8 +62,9 @@ public class GEOMetadata2InvestigationConverter
     StringValueElement identifier = createStringValueElement(geoSeries.getTitle());
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
-    Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoMetadata.getProtocol());
-    Study study = convertGEOSeries2Study(geoMetadata.getSeries(), geoMetadata.getSamples(), geoMetadata.getPlatform(),
+    Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoSubmissionMetadata.getProtocol());
+    Study study = convertGEOSeries2Study(geoSubmissionMetadata.getSeries(), geoSubmissionMetadata.getSamples(), geoSubmissionMetadata
+        .getPlatform(),
       studyProtocol);
 
     return new Investigation(templateID, title, description, identifier, submissionDate, publicReleaseDate,
