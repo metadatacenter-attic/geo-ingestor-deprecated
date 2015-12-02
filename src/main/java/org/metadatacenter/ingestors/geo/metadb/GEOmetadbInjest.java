@@ -24,7 +24,7 @@ public class GEOmetadbInjest
       GEOSubmissionMetadata2InvestigationConverter converter = new GEOSubmissionMetadata2InvestigationConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>();
-      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor.extractGEOSubmissionsMetadata(1);
+      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor.extractGEOSubmissionsMetadata(1000);
 
       int submissionNumber = 0;
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {

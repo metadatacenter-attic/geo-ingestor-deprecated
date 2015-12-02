@@ -46,7 +46,8 @@ public class GEOmetadbIngestor
     this.sqliteDatabaseFilename = sqliteDatabaseFilename;
   }
 
-  public List<GEOSubmissionMetadata> extractGEOSubmissionsMetadata(int maximumNumberOfSubmissions) throws GEOIngestorException
+  public List<GEOSubmissionMetadata> extractGEOSubmissionsMetadata(int maximumNumberOfSubmissions)
+      throws GEOIngestorException
   {
     List<GEOSubmissionMetadata> submissions = new ArrayList<>();
 
@@ -75,7 +76,7 @@ public class GEOmetadbIngestor
 
         for (String gsm : geoSamples.keySet()) {
           Sample geoSample = geoSamples.get(gsm);
-          String gpl = geoSample.getPlatform();
+          String gpl = geoSample.getGPL();
 
           if (gpl.isEmpty())
             throw new GEOIngestorException("No platform specified in GEO series " + gsm);
@@ -137,8 +138,8 @@ public class GEOmetadbIngestor
         if (value != null && !value.isEmpty())
           sampleRow.put(columnName, value.trim());
       }
-      if (sampleRow.containsKey(GEOmetadbNames.SAMPLE_TABLE_SERIES_ID_COLUMN_NAME)) {
-        String gsm = sampleRow.get(GEOmetadbNames.SAMPLE_TABLE_SERIES_ID_COLUMN_NAME);
+      if (sampleRow.containsKey(GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME)) {
+        String gsm = sampleRow.get(GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME);
         Sample geoSample = extractGEOSampleFromRow(sampleRow, currentRowNumber);
         geoSamples.put(gsm, geoSample);
       } else
@@ -160,8 +161,8 @@ public class GEOmetadbIngestor
         currentRowNumber);
     String summary = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_SUMMARY_COLUMN_NAME, seriesRow,
         currentRowNumber);
-    String overallDesign = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_OVERALL_DESIGN_COLUMN_NAME,
-        seriesRow, currentRowNumber);
+    Optional<String> overallDesign = getOptionalStringValueFromRow(
+        GEOmetadbNames.SERIES_TABLE_OVERALL_DESIGN_COLUMN_NAME, seriesRow);
     Optional<String> contributor = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTRIBUTOR_COLUMN_NAME,
         seriesRow);
     List<Contributor> contributors = contributor.isPresent() ?
@@ -188,8 +189,8 @@ public class GEOmetadbIngestor
     Optional<String> variable = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_VARIABLE_COLUMN_NAME,
         seriesRow);
     Map<String, Map<String, String>> variables = variable.isPresent() ?
-        Collections.emptyMap() :
-        extractVariables(variable.get());
+        extractVariables(variable.get()) :
+        Collections.emptyMap();
     Optional<String> variableDescription = getOptionalStringValueFromRow(
         GEOmetadbNames.SERIES_TABLE_VARIABLE_DESCRIPTION_COLUMN_NAME, seriesRow);
     Optional<String> supplementaryFile = getOptionalStringValueFromRow(
@@ -197,8 +198,9 @@ public class GEOmetadbIngestor
 
     // TODO Use: type (comma separated), webLink, status, submissionDate, lastUpdateDate, contact,
     // supplementaryFile (comma separated), repeats
-    return new Series(title, Collections.singletonList(summary), Collections.singletonList(overallDesign), contributors,
-        pubmedIDs, variables, Collections.emptyMap());
+    return new Series(title, Collections.singletonList(summary),
+        overallDesign.isPresent() ? Collections.singletonList(overallDesign.get()) : Collections.emptyList(),
+        contributors, pubmedIDs, variables, Collections.emptyMap());
   }
 
   private Sample extractGEOSampleFromRow(Map<String, String> sampleRow, int currentRowNumber)
@@ -246,7 +248,8 @@ public class GEOmetadbIngestor
 
     Optional<String> hybProtocol = getOptionalStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_HYB_PROTOCOL_COLUMN_NAME,
         sampleRow);
-    String description = getStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_DESCRIPTION_COLUMN_NAME, sampleRow);
+    Optional<String> description = getOptionalStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_DESCRIPTION_COLUMN_NAME,
+        sampleRow);
     Optional<String> dataProcessing = getOptionalStringValueFromRow(
         GEOmetadbNames.SAMPLE_TABLE_DATA_PROCESSING_COLUMN_NAME, sampleRow);
     Optional<String> contact = getOptionalStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_CONTACT_COLUMN_NAME,
@@ -263,8 +266,8 @@ public class GEOmetadbIngestor
     perChannelInformation.put(2, channel2SampleInfo);
 
     // TODO Use: status, types, hybProtocol, dataProcessing, supplementaryFile
-    return new Sample(gsm, title, "", description, "", perChannelInformation, Optional.empty(), Collections.emptyList(),
-        Optional.empty(), Optional.empty(), Optional.empty());
+    return new Sample(gsm, title, "", description, gpl, perChannelInformation, Optional.empty(),
+        Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   /**
@@ -295,9 +298,9 @@ public class GEOmetadbIngestor
     String distribution = getRequiredStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_DISTRIBUTION_COLUMN_NAME,
         platformRow);
     String organism = getRequiredStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_ORGANISM_COLUMN_NAME, platformRow);
-    String manufacturer = getRequiredStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_MANUFACTURER_COLUMN_NAME,
-        platformRow);
-    String manufactureProtocol = getRequiredStringValueFromRow(
+    Optional<String> manufacturer = getOptionalStringValueFromRow(
+        GEOmetadbNames.PLATFORM_TABLE_MANUFACTURER_COLUMN_NAME, platformRow);
+    Optional<String> manufactureProtocol = getOptionalStringValueFromRow(
         GEOmetadbNames.PLATFORM_TABLE_MANUFACTURE_PROTOCOL_COLUMN_NAME, platformRow);
     Optional<String> coating = getOptionalStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_COATING_COLUMN_NAME,
         platformRow);
@@ -319,9 +322,10 @@ public class GEOmetadbIngestor
         platformRow);
 
     // TODO Use: status, submissionDate, lastUpdateDate, contact, dataRowCount, supplementaryFile, biocPackage
-    return new Platform(title, distribution, technology, organism, manufacturer,
-        Collections.singletonList(manufactureProtocol), Collections.singletonList(description), catalogNumber, webLink,
-        support, coating, Collections.emptyList(), Collections.emptyList());
+    return new Platform(title, distribution, technology, organism, manufacturer, manufactureProtocol.isPresent() ?
+        Collections.singletonList(manufactureProtocol.get()) :
+        Collections.emptyList(), Collections.singletonList(description), catalogNumber, webLink, support, coating,
+        Collections.emptyList(), Collections.emptyList());
   }
 
   /**

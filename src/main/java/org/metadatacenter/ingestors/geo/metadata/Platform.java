@@ -15,7 +15,7 @@ public class Platform
   private final String distribution;
   private final String technology;
   private final String organism;
-  private final String manufacturer;
+  private final Optional<String> manufacturer;
   private final List<String> manufacturerProtocol;
   private final List<String> description;
   private final Optional<String> catalogNumber;
@@ -25,7 +25,7 @@ public class Platform
   private final List<String> contributor;
   private final List<String> pubmedIDs;
 
-  public Platform(String title, String distribution, String technology, String organism, String manufacturer,
+  public Platform(String title, String distribution, String technology, String organism, Optional<String> manufacturer,
     List<String> manufacturerProtocol, List<String> description, Optional<String> catalogNumber,
     Optional<String> webLink, Optional<String> support, Optional<String> coating, List<String> contributor,
     List<String> pubmedIDs)
@@ -65,7 +65,7 @@ public class Platform
     return organism;
   }
 
-  public String getManufacturer()
+  public Optional<String> getManufacturer()
   {
     return manufacturer;
   }

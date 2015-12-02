@@ -14,11 +14,11 @@ import java.util.Optional;
  */
 public class Sample
 {
-  private final String sampleName;
+  private final String gsm;
   private final String title;
   private final String label;
-  private final String description;
-  private final String platform;
+  private final Optional<String> description;
+  private final String gpl;
   private final Map<Integer, PerChannelSampleInfo> perChannelInformation;
   private final Optional<String> biomaterialProvider;
   private final List<String> rawDataFiles;
@@ -26,15 +26,15 @@ public class Sample
   private final Optional<String> expFile;
   private final Optional<String> chpFile;
 
-  public Sample(String sampleName, String title, String label, String description, String platform,
+  public Sample(String gsm, String title, String label, Optional<String> description, String gpl,
     Map<Integer, PerChannelSampleInfo> perChannelInformation, Optional<String> biomaterialProvider,
     List<String> rawDataFiles, Optional<String> celFile, Optional<String> expFile, Optional<String> chpFile)
   {
-    this.sampleName = sampleName;
+    this.gsm = gsm;
     this.title = title;
     this.label = label;
     this.description = description;
-    this.platform = platform;
+    this.gpl = gpl;
     this.perChannelInformation = Collections.unmodifiableMap(perChannelInformation);
     this.biomaterialProvider = biomaterialProvider;
     this.rawDataFiles = Collections.unmodifiableList(rawDataFiles);
@@ -43,9 +43,9 @@ public class Sample
     this.chpFile = chpFile;
   }
 
-  public String getSampleName()
+  public String getGSM()
   {
-    return sampleName;
+    return gsm;
   }
 
   public String getTitle()
@@ -58,14 +58,14 @@ public class Sample
     return label;
   }
 
-  public String getDescription()
+  public Optional<String> getDescription()
   {
     return description;
   }
 
-  public String getPlatform()
+  public String getGPL()
   {
-    return platform;
+    return gpl;
   }
 
   public Map<Integer, PerChannelSampleInfo> getPerChannelInformation()

@@ -130,8 +130,8 @@ public class GEOSubmissionMetadata2InvestigationConverter
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
     org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
   {
-    StringValueElement name = createStringValueElement(geoSample.getSampleName());
-    StringValueElement type = createStringValueElement(geoSample.getPlatform());
+    StringValueElement name = createStringValueElement(geoSample.getGSM());
+    StringValueElement type = createStringValueElement(geoSample.getGPL());
     Optional<StringValueElement> description = createOptionalStringValueElement(geoSample.getTitle());
     Optional<StringValueElement> source = createOptionalStringValueElement(geoSample.getBiomaterialProvider());
     List<Characteristic> characteristics = convertGEOCharacteristics2Characteristics(geoSample.getCharacteristics());
@@ -143,7 +143,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
 
   private Optional<StudyAssay> extractStudyAssayFromGEOSample(Sample geoSample)
   {
-    return Optional.of(new StudyAssay(createStringValueElement(geoSample.getPlatform())));
+    return Optional.of(new StudyAssay(createStringValueElement(geoSample.getGPL())));
   }
 
   private Optional<StudyAssay> convertGEOPlatform2StudyAssay(Optional<Platform> geoPlatform)
