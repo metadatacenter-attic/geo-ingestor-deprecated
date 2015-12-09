@@ -66,7 +66,7 @@ public class GEOmetadbIngestor
 
       System.out.println("Found " + seriesIDs.size() + " series");
 
-      for (String gse : seriesIDs.subList(0, maximumNumberOfSubmissions - 1)) {
+      for (String gse : seriesIDs.subList(0, maximumNumberOfSubmissions)) {
         PreparedStatement seriesSelectStatement = connection.prepareStatement(SERIES_SELECT);
         seriesSelectStatement.setString(1, gse);
 
@@ -86,6 +86,8 @@ public class GEOmetadbIngestor
 
         PreparedStatement seriesSamplesSelectStatement = connection.prepareStatement(SAMPLES_SELECT);
         seriesSamplesSelectStatement.setString(1, gse);
+
+        System.out.println("Extracting samples for series " + gse);
 
         Map<String, Sample> geoSamplesForSeries = extractGEOSamplesForSeries(seriesSamplesSelectStatement);
         seriesSamplesSelectStatement.close();

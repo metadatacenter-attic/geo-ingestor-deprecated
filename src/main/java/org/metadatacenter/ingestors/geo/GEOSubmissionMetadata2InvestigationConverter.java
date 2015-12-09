@@ -63,16 +63,15 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoSubmissionMetadata.getProtocol());
-    Study study = convertGEOSeries2Study(geoSubmissionMetadata.getSeries(), geoSubmissionMetadata.getSamples(), geoSubmissionMetadata
-        .getPlatform(),
-      studyProtocol);
+    Study study = convertGEOSeries2Study(geoSubmissionMetadata.getSeries(), geoSubmissionMetadata.getSamples(),
+      geoSubmissionMetadata.getPlatforms(), studyProtocol);
 
     return new Investigation(templateID, title, description, identifier, submissionDate, publicReleaseDate,
       Collections.singletonList(study));
 
   }
 
-  private Study convertGEOSeries2Study(Series geoSeries, Map<String, Sample> geoSamples, Optional<Platform> geoPlatform,
+  private Study convertGEOSeries2Study(Series geoSeries, Map<String, Sample> geoSamples, List<Platform> geoPlatforms,
     Optional<StudyProtocol> studyProtocol)
   {
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
@@ -81,15 +80,12 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<URIValueElement> studyDesignType = Optional.empty();
-    Optional<StudyAssay> studyAssay = convertGEOPlatform2StudyAssay(geoPlatform);
-    List<Process> processes = convertGEOSamples2Processes(geoSamples, studyAssay, studyProtocol);
+    List<StudyAssay> studyAssays = convertGEOPlatforms2StudyAssays(geoPlatforms);
+    List<Process> processes = convertGEOSamples2Processes(geoSamples, studyAssays, studyProtocol);
     List<StudyFactor> studyFactors = new ArrayList<>(); // TODO Not clear where these are in GEO.
     Optional<StudyGroupPopulation> studyGroupPopulation = Optional.empty(); // Not recorded in GEO
     List<Publication> publications = convertPubmedIDs2Publications(geoSeries.getPubmedIDs());
     List<Contact> contacts = convertGEOContributors2Contacts(geoSeries.getContributors());
-    List<StudyAssay> studyAssays = studyAssay.isPresent() ?
-      Collections.singletonList(studyAssay.get()) :
-      Collections.emptyList();
     Map<String, Map<String, String>> variables = geoSeries.getVariables(); // TODO Where do these go in our model?
     Map<String, List<String>> repeat = geoSeries.getRepeats(); // TODO Where do these go in our model?
 
@@ -97,19 +93,19 @@ public class GEOSubmissionMetadata2InvestigationConverter
       studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);
   }
 
-  private List<Process> convertGEOSamples2Processes(Map<String, Sample> geoSamples, Optional<StudyAssay> studyAssay,
+  private List<Process> convertGEOSamples2Processes(Map<String, Sample> geoSamples, List<StudyAssay> studyAssays,
     Optional<StudyProtocol> studyProtocol)
   {
     List<Process> processes = new ArrayList<>();
 
     for (String sampleName : geoSamples.keySet()) {
-      Process process = convertGEOSample2Process(geoSamples.get(sampleName), studyAssay, studyProtocol);
+      Process process = convertGEOSample2Process(geoSamples.get(sampleName), studyAssays, studyProtocol);
       processes.add(process);
     }
     return processes;
   }
 
-  private Process convertGEOSample2Process(Sample geoSample, Optional<StudyAssay> studyAssay,
+  private Process convertGEOSample2Process(Sample geoSample, List<StudyAssay> studyAssays,
     Optional<StudyProtocol> studyProtocol)
   {
     StringValueElement type = createStringValueElement("GEOSampleProcess");
@@ -123,8 +119,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
     hasInput.add(sample);
     hasOutput.addAll(dataFiles);
 
-    return new Process(type, studyAssay.isPresent() ? studyAssay : sampleStudyAssay, studyProtocol, hasParameterValue,
-      hasInput, hasOutput);
+    return new Process(type, sampleStudyAssay, studyProtocol, hasParameterValue, hasInput, hasOutput);
   }
 
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
@@ -146,14 +141,23 @@ public class GEOSubmissionMetadata2InvestigationConverter
     return Optional.of(new StudyAssay(createStringValueElement(geoSample.getGPL())));
   }
 
-  private Optional<StudyAssay> convertGEOPlatform2StudyAssay(Optional<Platform> geoPlatform)
+  private List<StudyAssay> convertGEOPlatforms2StudyAssays(List<Platform> geoPlatforms)
   {
-    if (geoPlatform.isPresent())
-      return Optional.of(new StudyAssay(createStringValueElement(geoPlatform.get().getTitle()),
-        createOptionalStringValueElement(Optional.of(geoPlatform.get().getDistribution())),
-        createOptionalStringValueElement(Optional.of(geoPlatform.get().getTechnology()))));
-    else
-      return Optional.empty();
+    List<StudyAssay> studyAssays = new ArrayList<>();
+
+    for (Platform geoPlatform : geoPlatforms) {
+      StudyAssay studyAssay = convertGEOPlatform2StudyAssay(geoPlatform);
+      studyAssays.add(studyAssay);
+    }
+
+    return studyAssays;
+  }
+
+  private StudyAssay convertGEOPlatform2StudyAssay(Platform geoPlatform)
+  {
+    return new StudyAssay(createStringValueElement(geoPlatform.getTitle()),
+      createOptionalStringValueElement(Optional.of(geoPlatform.getDistribution())),
+      createOptionalStringValueElement(Optional.of(geoPlatform.getTechnology())));
   }
 
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Optional<Protocol> geoProtocol)

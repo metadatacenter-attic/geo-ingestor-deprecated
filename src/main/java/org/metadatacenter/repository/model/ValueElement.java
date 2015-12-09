@@ -5,16 +5,16 @@ import java.util.Optional;
 
 public abstract class ValueElement extends MetadataTemplateElement
 {
-  private final String value;
+  private final String _value;
 
-  public ValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
+  public ValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String _value)
   {
     super(jsonLDTypes, jsonLDIdentifier);
-    this.value = value;
+    this._value = _value;
   }
 
   public String getValue()
   {
-    return value;
+    return _value;
   }
 }

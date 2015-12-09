@@ -3,6 +3,7 @@ package org.metadatacenter.ingestors.geo.metadata;
 import org.metadatacenter.ingestors.geo.GEOSubmissionMetadata2InvestigationConverter;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,15 +31,15 @@ public class GEOSubmissionMetadata
   private final Series series;
   private final Map<String, Sample> samples; // sampleID -> Sample
   private final Optional<Protocol> protocol;
-  private final Optional<Platform> platform;
+  private final List<Platform> platforms;
 
   public GEOSubmissionMetadata(Series series, Map<String, Sample> samples, Optional<Protocol> protocol,
-      Optional<Platform> platform)
+    List<Platform> platforms)
   {
     this.series = series;
-    this.samples = samples;
+    this.samples = Collections.unmodifiableMap(samples);
     this.protocol = protocol;
-    this.platform = platform;
+    this.platforms = Collections.unmodifiableList(platforms);
   }
 
   public Series getSeries()
@@ -56,7 +57,7 @@ public class GEOSubmissionMetadata
     return this.protocol;
   }
 
-  public Optional<Platform> getPlatform() { return this.platform; }
+  public List<Platform> getPlatforms() { return this.platforms; }
 
   @Override public String toString()
   {
@@ -64,7 +65,7 @@ public class GEOSubmissionMetadata
       "Series=" + series + "\n\n" +
       "Samples=" + prettyPrintSamples() + "\n\n" +
       "Protocol=" + protocol + "\n\n" +
-      "Platform=" + platform +
+      "Platforms=" + platforms +
       '}';
   }
 
