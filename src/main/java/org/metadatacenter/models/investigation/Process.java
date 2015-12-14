@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class Process extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Process");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "Process");
 
   private final StringValueElement type;
   private final Optional<StudyAssay> hasStudyAssay;
@@ -35,7 +36,7 @@ public class Process extends MetadataTemplateElement
     Optional<StudyProtocol> executeStudyProtocol, List<ParameterValue> parameterValues, List<Input> inputs,
     List<Output> outputs)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.type = type;
     this.hasStudyAssay = hasStudyAssay;
     this.executeStudyProtocol = executeStudyProtocol;

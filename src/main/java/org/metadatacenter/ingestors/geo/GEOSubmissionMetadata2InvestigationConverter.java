@@ -13,6 +13,7 @@ import org.metadatacenter.models.investigation.Contact;
 import org.metadatacenter.models.investigation.DataFile;
 import org.metadatacenter.models.investigation.Input;
 import org.metadatacenter.models.investigation.Investigation;
+import org.metadatacenter.models.investigation.InvestigationNames;
 import org.metadatacenter.models.investigation.Organization;
 import org.metadatacenter.models.investigation.Output;
 import org.metadatacenter.models.investigation.ParameterValue;
@@ -50,13 +51,11 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createString
  */
 public class GEOSubmissionMetadata2InvestigationConverter
 {
-  private static final String INVESTIGATION_TEMPLATE_ID = "Investigation";
-
   public Investigation convertGEOSubmissionMetadata2Investigation(GEOSubmissionMetadata geoSubmissionMetadata)
   {
     Series geoSeries = geoSubmissionMetadata.getSeries();
 
-    String templateID = INVESTIGATION_TEMPLATE_ID;
+    String templateID = InvestigationNames.INVESTIGATION_TEMPLATE_ID;
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
     StringValueElement description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
     StringValueElement identifier = createStringValueElement(geoSeries.getTitle());

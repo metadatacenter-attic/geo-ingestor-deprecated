@@ -14,23 +14,24 @@ public class GEOmetadbInjest
 {
   public static void main(String[] args)
   {
-    if (args.length != 2)
+    if (args.length != 3)
       Usage();
 
     String geometadbFilename = args[0];
     String cedarJSONDirectoryName = args[1];
+    int numberOfSeries = Integer.parseInt(args[2]);
 
     try {
       GEOSubmissionMetadata2InvestigationConverter converter = new GEOSubmissionMetadata2InvestigationConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>();
-      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor.extractGEOSubmissionsMetadata(1);
+      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
+        .extractGEOSubmissionsMetadata(numberOfSeries);
 
-      int submissionNumber = 0;
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
         Investigation investigation = converter.convertGEOSubmissionMetadata2Investigation(geoSubmissionMetadata);
-        investigationJSONSerializer
-            .serialize(investigation, cedarJSONDirectoryName + File.separator + "Investigation_" + submissionNumber++);
+        investigationJSONSerializer.serialize(investigation,
+          cedarJSONDirectoryName + File.separator + "Investigation_" + geoSubmissionMetadata.getSeriesID());
       }
     } catch (GEOIngestorException e) {
       System.err.println(GEOmetadbInjest.class.getName() + ": Error ingesting: " + e.getMessage());
@@ -43,7 +44,8 @@ public class GEOmetadbInjest
 
   private static void Usage()
   {
-    System.err.println("Usage: " + GEOmetadbInjest.class.getName() + " <GEOmetadb Filename> <JSON Directorh Name>");
+    System.err.println(
+      "Usage: " + GEOmetadbInjest.class.getName() + " <GEOmetadb Filename> <JSON Directory Name> <Number of Series>");
     System.exit(-1);
   }
 }

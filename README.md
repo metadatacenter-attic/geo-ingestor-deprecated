@@ -33,11 +33,11 @@ The ./target directory will also contain these JARs.
 
 To run with Maven:
 
-   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instance File>"
+   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Directory> <Number of Series>"
 
 To run using the fat JAR:
 
-   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instance File>
+   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Directory> <Number of Series>
 
 
 

@@ -22,6 +22,8 @@ public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
 
   public void serialize(T metadataTemplate, String jsonFileName) throws IOException
   {
+    System.out.println("Generating JSON file " + jsonFileName);
+
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(jsonFileName), JSON_FILE_ENCODING)) {
       GsonFireBuilder fireBuilder = new GsonFireBuilder();
       fireBuilder.enableExclusionByValue();

@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public class Contact extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Contact");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "Contact");
 
   private final StringValueElement firstName;
   private final StringValueElement middleInitial;
@@ -44,7 +45,7 @@ public class Contact extends MetadataTemplateElement
     Optional<StringValueElement> address, Optional<EmailValueElement> email, Optional<PhoneValueElement> phone,
     Optional<PhoneValueElement> fax, Optional<StringValueElement> role, Optional<Organization> organization)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.firstName = firstName;
     this.middleInitial = middleInitial;
     this.lastName = lastName;
@@ -58,7 +59,7 @@ public class Contact extends MetadataTemplateElement
 
   public Contact(StringValueElement firstName, StringValueElement middleInitial, StringValueElement lastName)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.firstName = firstName;
     this.middleInitial = middleInitial;
     this.lastName = lastName;

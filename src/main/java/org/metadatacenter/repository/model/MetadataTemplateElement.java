@@ -21,28 +21,44 @@ import java.util.UUID;
  */
 public abstract class MetadataTemplateElement
 {
-  @ExcludeByValue(ExcludeJSONLDTypesLogic.class)
-  public final List<String> jsonLDTypes;
+  @ExcludeByValue(ExcludeJSONLDContextLogic.class) public final Optional<JSONLDContext> jsonLDContext;
 
-  @ExcludeByValue(ExcludeJSONLDIdentifierLogic.class)
-  public final Optional<String> jsonLDIdentifier;
+  @ExcludeByValue(ExcludeJSONLDTypesLogic.class) public final List<String> jsonLDTypes;
+
+  @ExcludeByValue(ExcludeJSONLDIdentifierLogic.class) public final Optional<String> jsonLDIdentifier;
+
+  protected MetadataTemplateElement(Optional<JSONLDContext> jsonLDContext, List<String> jsonLDTypes,
+    Optional<String> jsonLDIdentifier)
+  {
+    this.jsonLDContext = jsonLDContext;
+    this.jsonLDTypes = Collections.unmodifiableList(jsonLDTypes);
+    this.jsonLDIdentifier = jsonLDIdentifier;
+  }
 
   protected MetadataTemplateElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier)
   {
+    this.jsonLDContext = Optional.empty();
     this.jsonLDTypes = Collections.unmodifiableList(jsonLDTypes);
     this.jsonLDIdentifier = jsonLDIdentifier;
   }
 
   protected MetadataTemplateElement(List<String> jsonLDTypes)
   {
+    this.jsonLDContext = Optional.empty();
     this.jsonLDTypes = Collections.unmodifiableList(jsonLDTypes);
     this.jsonLDIdentifier = Optional.empty();
   }
 
   protected MetadataTemplateElement()
   {
+    this.jsonLDContext = Optional.empty();
     this.jsonLDTypes = Collections.emptyList();
     this.jsonLDIdentifier = Optional.empty();
+  }
+
+  public Optional<JSONLDContext> getJSONLDContext()
+  {
+    return this.jsonLDContext;
   }
 
   public List<String> getJSONLDTypes()

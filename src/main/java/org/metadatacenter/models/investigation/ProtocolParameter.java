@@ -10,7 +10,7 @@ import java.util.Optional;
 public class ProtocolParameter extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "ProtocolParameter");
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "ProtocolParameter");
 
   private final StringValueElement name;
   private final Optional<StringValueElement> description;
@@ -28,7 +28,7 @@ public class ProtocolParameter extends MetadataTemplateElement
   public ProtocolParameter(StringValueElement name, Optional<StringValueElement> description,
     Optional<ParameterValue> parameterValue)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
     this.parameterValue = parameterValue;
@@ -36,7 +36,7 @@ public class ProtocolParameter extends MetadataTemplateElement
 
   public ProtocolParameter(StringValueElement name)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = Optional.empty();
     this.parameterValue = Optional.empty();

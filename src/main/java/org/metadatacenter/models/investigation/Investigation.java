@@ -11,7 +11,7 @@ import java.util.Optional;
 public class Investigation extends MetadataTemplate
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "Investigation");
+    .singletonList(InvestigationNames.TEMPLATE_URI_BASE + "Investigation");
 
   private final StringValueElement title;
   private final StringValueElement description;
@@ -37,7 +37,7 @@ public class Investigation extends MetadataTemplate
     StringValueElement identifier, Optional<DateValueElement> submissionDate,
     Optional<DateValueElement> publicReleaseDate, List<Study> studies)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE), templateID);
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_INSTANCES_URI_BASE), templateID);
     this.title = title;
     this.description = description;
     this.identifier = identifier;

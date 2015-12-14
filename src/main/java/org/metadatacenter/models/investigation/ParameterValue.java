@@ -10,7 +10,7 @@ import java.util.Optional;
 public class ParameterValue extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "ParameterValue");
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "ParameterValue");
 
   private final StringValueElement value;
   private final Optional<StringValueElement> type;
@@ -30,7 +30,7 @@ public class ParameterValue extends MetadataTemplateElement
   public ParameterValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit,
     Optional<ProtocolParameter> protocolParameter)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = type;
     this.unit = unit;
@@ -39,7 +39,7 @@ public class ParameterValue extends MetadataTemplateElement
 
   public ParameterValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = type;
     this.unit = unit;
@@ -48,7 +48,7 @@ public class ParameterValue extends MetadataTemplateElement
 
   public ParameterValue(StringValueElement value)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = Optional.empty();
     this.unit = Optional.empty();

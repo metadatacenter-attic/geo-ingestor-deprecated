@@ -1,8 +1,10 @@
 package org.metadatacenter.repository.model;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import io.gsonfire.PostProcessor;
 
 import java.util.List;
@@ -21,15 +23,18 @@ import java.util.Optional;
 public class MetadataTemplateElementPostProcessor implements PostProcessor<MetadataTemplateElement>
 {
   @Override public void postDeserialize(MetadataTemplateElement metadataTemplateElement, JsonElement jsonElement,
-      Gson gson)
+    Gson gson)
   {
   }
 
   @Override public void postSerialize(JsonElement jsonElement, MetadataTemplateElement metadataTemplateElement,
-      Gson gson)
+    Gson gson)
   {
     if (jsonElement.isJsonObject()) {
       JsonObject obj = jsonElement.getAsJsonObject();
+
+      if (obj.has("jsonLDContext"))
+        obj.remove("jsonLDContext");
 
       if (obj.has("jsonLDTypes"))
         obj.remove("jsonLDTypes");
@@ -37,8 +42,19 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
       if (obj.has("jsonLDIdentifier"))
         obj.remove("jsonLDIdentifier");
 
+      Optional<JSONLDContext> jsonLDContext = metadataTemplateElement.getJSONLDContext();
       List<String> jsonLDTypes = metadataTemplateElement.getJSONLDTypes();
       Optional<String> jsonLDIdentifier = metadataTemplateElement.getJSONLDIdentifier();
+
+      if (jsonLDContext.isPresent()) {
+        List<JSONLDContextEntry> jsonLDContextEntries = jsonLDContext.get().getJSONLDContextEntries();
+        JsonObject contextObject = new JsonObject();
+        for (int contextValueIndex = 0; contextValueIndex < jsonLDContextEntries.size(); contextValueIndex++) {
+          JSONLDContextEntry jsonLDContextEntry = jsonLDContextEntries.get(contextValueIndex);
+          contextObject.addProperty(jsonLDContextEntry.getPropertyName(), jsonLDContextEntry.getPropertyURI());
+        }
+        obj.add("@Context", contextObject);
+      }
 
       if (jsonLDIdentifier.isPresent())
         obj.addProperty("@id", jsonLDIdentifier.get());
@@ -47,16 +63,12 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
         if (jsonLDTypes.size() == 1)
           obj.addProperty("@type", jsonLDTypes.get(0));
         else {
-          StringBuilder sb = new StringBuilder("[");
-          boolean isFirst = true;
+          JsonArray jsonLDTypesArray = new JsonArray();
           for (int typeValueIndex = 0; typeValueIndex < jsonLDTypes.size(); typeValueIndex++) {
-            if (!isFirst)
-              sb.append(", ");
-            sb.append(jsonLDTypes.get(typeValueIndex));
-            isFirst = false;
+            JsonElement jsonLDType = new JsonPrimitive(jsonLDTypes.get(typeValueIndex));
+            jsonLDTypesArray.add(jsonLDType);
           }
-          sb.append("]");
-          obj.addProperty("@type", sb.toString());
+          obj.add("@type", jsonLDTypesArray);
         }
       }
     }

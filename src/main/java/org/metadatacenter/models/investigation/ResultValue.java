@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class ResultValue extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "ResultValue");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "ResultValue");
 
   private final StringValueElement value;
   private final Optional<StringValueElement> type;
@@ -26,7 +27,7 @@ public class ResultValue extends MetadataTemplateElement
 
   public ResultValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = type;
     this.unit = unit;
@@ -34,7 +35,7 @@ public class ResultValue extends MetadataTemplateElement
 
   public ResultValue(StringValueElement value)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = Optional.empty();
     this.unit = Optional.empty();

@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class Publication extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Publication");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "Publication");
 
   private final Optional<StringValueElement> title;
   private final Optional<StringValueElement> pubmedID;
@@ -32,7 +33,7 @@ public class Publication extends MetadataTemplateElement
   public Publication(Optional<StringValueElement> title, Optional<StringValueElement> pubmedID,
     Optional<StringValueElement> doi, Optional<StringValueElement> status, List<StringValueElement> authorList)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.title = title;
     this.pubmedID = pubmedID;
     this.doi = doi;
@@ -42,7 +43,7 @@ public class Publication extends MetadataTemplateElement
 
   public Publication(StringValueElement pubmedID)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.title = Optional.empty();
     this.pubmedID = Optional.of(pubmedID);
     this.doi = Optional.empty();

@@ -10,7 +10,7 @@ import java.util.Optional;
 public class Organization extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "Organization");
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "Organization");
 
   private final StringValueElement name;
   private final Optional<StringValueElement> department;
@@ -25,7 +25,7 @@ public class Organization extends MetadataTemplateElement
 
   public Organization(StringValueElement name, Optional<StringValueElement> department)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.department = department;
   }

@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class DataFile extends MetadataTemplateElement implements Input, Output
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "DataFile");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "DataFile");
 
   private final StringValueElement name;
   private final Optional<StringValueElement> description;
@@ -24,7 +25,7 @@ public class DataFile extends MetadataTemplateElement implements Input, Output
 
   public DataFile(StringValueElement name, Optional<StringValueElement> description)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
   }

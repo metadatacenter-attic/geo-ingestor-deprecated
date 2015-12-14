@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class FactorValue extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "FactorValue");
+  public static final List<String> ElementURIs = Collections
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "FactorValue");
 
   private final StringValueElement value;
   private final StringValueElement type;
@@ -29,7 +30,7 @@ public class FactorValue extends MetadataTemplateElement
   public FactorValue(StringValueElement value, StringValueElement type, Optional<StringValueElement> unit,
     Optional<StudyFactor> studyFactor)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.type = type;
     this.unit = unit;
     this.value = value;

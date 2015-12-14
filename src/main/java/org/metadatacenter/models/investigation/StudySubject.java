@@ -10,7 +10,7 @@ import java.util.Optional;
 public class StudySubject extends MetadataTemplateElement implements Input
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "StudySubject");
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "StudySubject");
 
   private final StringValueElement name;
   private final StringValueElement type;
@@ -27,7 +27,7 @@ public class StudySubject extends MetadataTemplateElement implements Input
 
   public StudySubject(StringValueElement name, StringValueElement type, List<Characteristic> characteristics)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.type = type;
     this.hasCharacteristic = Collections.unmodifiableList(characteristics);

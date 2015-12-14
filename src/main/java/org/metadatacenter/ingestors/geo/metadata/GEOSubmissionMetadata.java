@@ -42,6 +42,8 @@ public class GEOSubmissionMetadata
     this.platforms = Collections.unmodifiableList(platforms);
   }
 
+  public String getSeriesID() { return this.series.getTitle(); }
+
   public Series getSeries()
   {
     return series;

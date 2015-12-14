@@ -10,7 +10,7 @@ import java.util.Optional;
 public class Characteristic extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.URI_BASE + "Characteristic");
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "Characteristic");
 
   private final StringValueElement name;
   private final Optional<StringValueElement> description;
@@ -30,7 +30,7 @@ public class Characteristic extends MetadataTemplateElement
     Optional<CharacteristicValue> characteristicValue)
 
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
     this.hasCharacteristicValue = characteristicValue;
@@ -39,7 +39,7 @@ public class Characteristic extends MetadataTemplateElement
   public Characteristic(StringValueElement name, Optional<CharacteristicValue> characteristicValue)
 
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = Optional.empty();
     this.hasCharacteristicValue = characteristicValue;

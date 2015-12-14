@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public class StudyTime extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "StudyTime");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "StudyTime");
 
   private final StringValueElement durationValue;
   private final BooleanValueElement isBeforeEvent;
@@ -30,7 +31,7 @@ public class StudyTime extends MetadataTemplateElement
   public StudyTime(StringValueElement durationValue, BooleanValueElement isBeforeEvent, StringValueElement studyEvent,
     StringValueElement units)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.durationValue = durationValue;
     this.isBeforeEvent = isBeforeEvent;
     this.studyEvent = studyEvent;

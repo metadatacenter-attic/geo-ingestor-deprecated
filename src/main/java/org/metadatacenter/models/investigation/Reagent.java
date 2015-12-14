@@ -9,7 +9,8 @@ import java.util.Optional;
 
 public class Reagent extends MetadataTemplateElement implements Input
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.URI_BASE + "Reagent");
+  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+    + "Reagent");
 
   private final StringValueElement name;
   private final Optional<StringValueElement> type;
@@ -26,7 +27,7 @@ public class Reagent extends MetadataTemplateElement implements Input
 
   public Reagent(StringValueElement name, Optional<StringValueElement> type, List<Characteristic> characteristics)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.type = type;
     this.hasCharacteristic = Collections.unmodifiableList(characteristics);
