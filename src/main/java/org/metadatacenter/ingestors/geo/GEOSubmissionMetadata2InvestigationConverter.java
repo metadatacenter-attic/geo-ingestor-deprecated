@@ -86,7 +86,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
     List<Process> processes = convertGEOSamples2Processes(geoSamples, studyAssays, studyProtocols);
     List<StudyFactor> studyFactors = new ArrayList<>(); // TODO Not clear where these are in GEO.
     Optional<StudyGroupPopulation> studyGroupPopulation = Optional.empty(); // Not recorded in GEO
-    List<Publication> publications = convertPubmedIDs2Publications(geoSeries.getPubmedIDs());
+    List<Publication> publications = convertPubmedIDs2Publications(geoSeries.getPubMedIDs());
     List<Contact> contacts = convertGEOContributors2Contacts(geoSeries.getContributors());
     Map<String, Map<String, String>> variables = geoSeries.getVariables(); // TODO Where do these go in our model?
     Map<String, List<String>> repeat = geoSeries.getRepeats(); // TODO Where do these go in our model?
@@ -117,14 +117,14 @@ public class GEOSubmissionMetadata2InvestigationConverter
       Collections.singletonList(sampleStudyAssay.get()) :
       Collections.emptyList();
     org.metadatacenter.models.investigation.Sample sample = extractSampleFromGEOSample(geoSample);
+    List<org.metadatacenter.models.investigation.Sample> samples = Collections.singletonList(sample);
     List<DataFile> dataFiles = extractDataFilesFromGEOSample(geoSample);
-    List<Input> input = new ArrayList<>();
-    List<Output> output = new ArrayList<>();
+    Input input = new Input(Collections.emptyList(), Collections.emptyList(), samples, Collections.emptyList(),
+      Collections.emptyList());
+    Output output = new Output(Collections.emptyList(), dataFiles, Collections.emptyList());
 
-    input.add(sample);
-    output.addAll(dataFiles);
-
-    return new Process(type, sampleStudyAssays, studyProtocols, parameterValue, input, output);
+    return new Process(type, sampleStudyAssays, studyProtocols, parameterValue, Optional.of(input),
+      Optional.of(output));
   }
 
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
@@ -301,13 +301,13 @@ public class GEOSubmissionMetadata2InvestigationConverter
     return dataFiles;
   }
 
-  private List<Publication> convertPubmedIDs2Publications(List<String> pubmedIDs)
+  private List<Publication> convertPubmedIDs2Publications(List<String> pubMedIDs)
   {
     List<Publication> publications = new ArrayList<>();
 
-    for (String pubmedID : pubmedIDs) {
-      StringValueElement pubmedIDValueElement = createStringValueElement(pubmedID);
-      Publication publication = new Publication(pubmedIDValueElement);
+    for (String pubMedID : pubMedIDs) {
+      StringValueElement pubMedIDValueElement = createStringValueElement(pubMedID);
+      Publication publication = new Publication(pubMedIDValueElement);
       publications.add(publication);
     }
     return publications;

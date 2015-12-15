@@ -111,11 +111,11 @@ public class GEOSoftIngestor
     List<String> summary = getMultiValueFieldValues(seriesFields, SERIES_SUMMARY_FIELD_NAME);
     List<String> overallDesign = getMultiValueFieldValues(seriesFields, SERIES_OVERALL_DESIGN_FIELD_NAME);
     List<Contributor> contributors = extractContributors(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
-    List<String> pubmedIDs = getMultiValueFieldValues(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
+    List<String> pubMedIDs = getMultiValueFieldValues(seriesFields, SERIES_PUBMED_ID_FIELD_NAME);
     Map<String, Map<String, String>> variables = new HashMap<>(); // TODO
     Map<String, List<String>> repeat = new HashMap<>(); // TODO
 
-    return new Series(title, summary, overallDesign, contributors, pubmedIDs, variables, repeat);
+    return new Series(title, summary, overallDesign, contributors, pubMedIDs, variables, repeat);
   }
 
   private List<Contributor> extractContributors(Map<String, List<String>> seriesFields,
@@ -280,11 +280,11 @@ public class GEOSoftIngestor
       Optional<String> coating = getOptionalMultiValueFieldValue(platformFields, PLATFORM_COATING_FIELD_NAME,
         PLATFORM_HEADER_NAME);
       List<String> contributor = getMultiValueFieldValues(platformFields, PLATFORM_CONTRIBUTOR_FIELD_NAME);
-      List<String> pubmedID = getMultiValueFieldValues(platformFields, PLATFORM_PUBMED_ID_FIELD_NAME);
+      List<String> pubMedID = getMultiValueFieldValues(platformFields, PLATFORM_PUBMED_ID_FIELD_NAME);
 
       return Optional.of(
         new Platform(title, distribution, technology, organism, manufacturer, manufacturerProtocol, description,
-          catalogNumber, webLink, support, coating, contributor, pubmedID));
+          catalogNumber, webLink, support, coating, contributor, pubMedID));
     } else
       return Optional.empty();
   }

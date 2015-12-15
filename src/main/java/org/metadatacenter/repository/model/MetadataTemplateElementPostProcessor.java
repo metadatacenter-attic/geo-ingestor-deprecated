@@ -7,8 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import io.gsonfire.PostProcessor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * GSON Fire directives in the {@link MetadataTemplateElement} class  exclude the
@@ -19,6 +22,7 @@ import java.util.Optional;
  *
  * @see MetadataTemplateElement
  * @see MetadataTemplateJSONSerializer
+ * @see JSONLDContext
  */
 public class MetadataTemplateElementPostProcessor implements PostProcessor<MetadataTemplateElement>
 {
@@ -32,6 +36,18 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
   {
     if (jsonElement.isJsonObject()) {
       JsonObject obj = jsonElement.getAsJsonObject();
+
+      // Remove empty arrays
+      Set<String> keysToRemove = new HashSet<>();
+      for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+        if (entry.getValue().isJsonArray()) {
+          JsonArray arr = entry.getValue().getAsJsonArray();
+          if (arr.size() == 0)
+            keysToRemove.add(entry.getKey());
+        }
+      }
+      for (String key : keysToRemove)
+        obj.remove(key);
 
       if (obj.has("jsonLDContext"))
         obj.remove("jsonLDContext");

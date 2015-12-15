@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class StudySubject extends MetadataTemplateElement implements Input
+public class StudySubject extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections
     .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "StudySubject");

@@ -208,9 +208,9 @@ public class GEOmetadbIngestor
       GEOmetadbNames.SERIES_TABLE_LAST_UPDATE_DATE_COLUMN_NAME, seriesRow);
     Optional<String> contact = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_CONTACT_COLUMN_NAME,
       seriesRow);
-    Optional<String> pubmedID = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_PUBMED_ID_COLUMN_NAME,
+    Optional<String> pubMedID = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_PUBMED_ID_COLUMN_NAME,
       seriesRow);
-    List<String> pubmedIDs = pubmedID.isPresent() ? Collections.singletonList(pubmedID.get()) : Collections.emptyList();
+    List<String> pubMedIDs = pubMedID.isPresent() ? Collections.singletonList(pubMedID.get()) : Collections.emptyList();
     Optional<String> repeats = getOptionalStringValueFromRow(GEOmetadbNames.SERIES_TABLE_REPEATS_COLUMN_NAME,
       seriesRow);
     Optional<String> repeatsSamples = getOptionalStringValueFromRow(
@@ -229,7 +229,7 @@ public class GEOmetadbIngestor
     // supplementaryFile (comma separated), repeats
     return new Series(title, Collections.singletonList(summary),
       overallDesign.isPresent() ? Collections.singletonList(overallDesign.get()) : Collections.emptyList(),
-      contributors, pubmedIDs, variables, Collections.emptyMap());
+      contributors, pubMedIDs, variables, Collections.emptyMap());
   }
 
   private Sample extractGEOSampleFromRow(Map<String, String> sampleRow, int currentRowNumber)
@@ -337,7 +337,7 @@ public class GEOmetadbIngestor
       GEOmetadbNames.PLATFORM_TABLE_CATALOG_NUMBER_COLUMN_NAME, platformRow);
     Optional<String> support = getOptionalStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_SUPPORT_COLUMN_NAME,
       platformRow);
-    String description = getRequiredStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_DESCRIPTION_COLUMN_NAME,
+    Optional<String> description = getOptionalStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_DESCRIPTION_COLUMN_NAME,
       platformRow);
     Optional<String> webLink = getOptionalStringValueFromRow(GEOmetadbNames.PLATFORM_TABLE_WEB_LINK_COLUMN_NAME,
       platformRow);
@@ -353,8 +353,8 @@ public class GEOmetadbIngestor
     // TODO Use: status, submissionDate, lastUpdateDate, contact, dataRowCount, supplementaryFile, biocPackage
     return new Platform(title, distribution, technology, organism, manufacturer,
       manufactureProtocol.isPresent() ? Collections.singletonList(manufactureProtocol.get()) : Collections.emptyList(),
-      Collections.singletonList(description), catalogNumber, webLink, support, coating, Collections.emptyList(),
-      Collections.emptyList());
+      description.isPresent() ? Collections.singletonList(description.get()) : Collections.emptyList(), catalogNumber,
+      webLink, support, coating, Collections.emptyList(), Collections.emptyList());
   }
 
   /**

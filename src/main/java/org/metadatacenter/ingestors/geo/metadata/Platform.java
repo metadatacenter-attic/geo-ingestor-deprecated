@@ -23,12 +23,12 @@ public class Platform
   private final Optional<String> support;
   private final Optional<String> coating;
   private final List<String> contributor;
-  private final List<String> pubmedIDs;
+  private final List<String> pubMedID;
 
   public Platform(String title, String distribution, String technology, String organism, Optional<String> manufacturer,
     List<String> manufacturerProtocol, List<String> description, Optional<String> catalogNumber,
     Optional<String> webLink, Optional<String> support, Optional<String> coating, List<String> contributor,
-    List<String> pubmedIDs)
+    List<String> pubMedID)
   {
     this.title = title;
     this.distribution = distribution;
@@ -42,7 +42,7 @@ public class Platform
     this.support = support;
     this.coating = coating;
     this.contributor = Collections.unmodifiableList(contributor);
-    this.pubmedIDs = Collections.unmodifiableList(pubmedIDs);
+    this.pubMedID = Collections.unmodifiableList(pubMedID);
   }
 
   public String getTitle()
@@ -105,9 +105,9 @@ public class Platform
     return contributor;
   }
 
-  public List<String> getPubmedIDs()
+  public List<String> getPubMedID()
   {
-    return pubmedIDs;
+    return pubMedID;
   }
 
   @Override public String toString()
@@ -125,7 +125,7 @@ public class Platform
       ", support=" + support +
       ", coating=" + coating +
       ", contributor=" + contributor +
-      ", pubmedIDs=" + pubmedIDs +
+      ", pubMedID=" + pubMedID +
       '}';
   }
 }

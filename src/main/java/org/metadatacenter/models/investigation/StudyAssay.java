@@ -9,8 +9,8 @@ import java.util.Optional;
 
 public class StudyAssay extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
-    + "StudyAssay");
+  public static final List<String> ElementURIs = Collections
+    .singletonList("http://purl.obolibrary.org/obo/BFO_0000055");
 
   private final StringValueElement platform;
   private final Optional<StringValueElement> measurementType;

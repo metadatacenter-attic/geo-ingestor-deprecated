@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class DataFile extends MetadataTemplateElement implements Input, Output
+public class DataFile extends MetadataTemplateElement
 {
   public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
     + "DataFile");
