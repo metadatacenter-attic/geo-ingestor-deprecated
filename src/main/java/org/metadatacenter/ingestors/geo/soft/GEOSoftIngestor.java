@@ -107,6 +107,7 @@ public class GEOSoftIngestor
   private Series extractSeries(Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, List<String>> seriesFields = extractSeriesFields(geoMetadataSheet);
+    String gse = ""; // Metadata spreadsheet does not have GSE identifier
     String title = getRequiredMultiValueFieldValue(seriesFields, SERIES_TITLE_FIELD_NAME, SERIES_HEADER_NAME);
     List<String> summary = getMultiValueFieldValues(seriesFields, SERIES_SUMMARY_FIELD_NAME);
     List<String> overallDesign = getMultiValueFieldValues(seriesFields, SERIES_OVERALL_DESIGN_FIELD_NAME);
@@ -115,7 +116,7 @@ public class GEOSoftIngestor
     Map<String, Map<String, String>> variables = new HashMap<>(); // TODO
     Map<String, List<String>> repeat = new HashMap<>(); // TODO
 
-    return new Series(title, summary, overallDesign, contributors, pubMedIDs, variables, repeat);
+    return new Series(gse, title, summary, overallDesign, contributors, pubMedIDs, variables, repeat);
   }
 
   private List<Contributor> extractContributors(Map<String, List<String>> seriesFields,

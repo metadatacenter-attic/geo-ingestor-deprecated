@@ -189,6 +189,7 @@ public class GEOmetadbIngestor
 
   private Series extractGEOSeriesFromRow(Map<String, String> seriesRow) throws GEOIngestorException
   {
+    String gse = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_GSE_COLUMN_NAME, seriesRow);
     String title = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_TITLE_COLUMN_NAME, seriesRow);
     String summary = getRequiredStringValueFromRow(GEOmetadbNames.SERIES_TABLE_SUMMARY_COLUMN_NAME, seriesRow);
     Optional<String> overallDesign = getOptionalStringValueFromRow(
@@ -227,7 +228,7 @@ public class GEOmetadbIngestor
 
     // TODO Use: type (comma separated), webLink, status, submissionDate, lastUpdateDate, contact,
     // supplementaryFile (comma separated), repeats
-    return new Series(title, Collections.singletonList(summary),
+    return new Series(gse, title, Collections.singletonList(summary),
       overallDesign.isPresent() ? Collections.singletonList(overallDesign.get()) : Collections.emptyList(),
       contributors, pubMedIDs, variables, Collections.emptyMap());
   }

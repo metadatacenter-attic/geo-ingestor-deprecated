@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public class Series
 {
+  private final String gse;
   private final String title;
   private final List<String> summary;
   private final List<String> overallDesign;
@@ -19,9 +20,11 @@ public class Series
   private final Map<String, Map<String, String>> variables; // sample ID -> (variable name -> value)
   private final Map<String, List<String>> repeats; // sample ID -> [repeats type]
 
-  public Series(String title, List<String> summary, List<String> overallDesign, List<Contributor> contributors,
-    List<String> pubMedID, Map<String, Map<String, String>> variables, Map<String, List<String>> repeats)
+  public Series(String gse, String title, List<String> summary, List<String> overallDesign,
+    List<Contributor> contributors, List<String> pubMedID, Map<String, Map<String, String>> variables,
+    Map<String, List<String>> repeats)
   {
+    this.gse = gse;
     this.title = title;
     this.summary = Collections.unmodifiableList(summary);
     this.overallDesign = Collections.unmodifiableList(overallDesign);
@@ -30,6 +33,8 @@ public class Series
     this.variables = Collections.unmodifiableMap(variables);
     this.repeats = Collections.unmodifiableMap(repeats);
   }
+
+  public String getGSE() { return this.gse; }
 
   public String getTitle()
   {
@@ -69,6 +74,7 @@ public class Series
   @Override public String toString()
   {
     return "Series{" +
+      "\n gse='" + gse + '\'' +
       "\n title='" + title + '\'' +
       "\n summary='" + summary + '\'' +
       "\n overallDesign='" + overallDesign + '\'' +

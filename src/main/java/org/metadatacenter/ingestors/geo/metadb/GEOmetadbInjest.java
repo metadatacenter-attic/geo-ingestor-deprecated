@@ -31,7 +31,7 @@ public class GEOmetadbInjest
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
         Investigation investigation = converter.convertGEOSubmissionMetadata2Investigation(geoSubmissionMetadata);
         investigationJSONSerializer.serialize(investigation,
-          cedarJSONDirectoryName + File.separator + "Investigation_" + geoSubmissionMetadata.getSeriesID());
+          cedarJSONDirectoryName + File.separator + "Investigation_" + geoSubmissionMetadata.getGSE());
       }
     } catch (GEOIngestorException e) {
       System.err.println(GEOmetadbInjest.class.getName() + ": Error ingesting: " + e.getMessage());
