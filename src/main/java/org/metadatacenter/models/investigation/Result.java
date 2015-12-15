@@ -14,7 +14,7 @@ public class Result extends MetadataTemplateElement implements Input, Output
 
   private final StringValueElement name;
   private final Optional<StringValueElement> description;
-  private final Optional<ResultValue> hasResultValue;
+  private final Optional<ResultValue> resultValue;
 
   public Result(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     Optional<StringValueElement> description, final Optional<ResultValue> resultValue)
@@ -22,7 +22,7 @@ public class Result extends MetadataTemplateElement implements Input, Output
     super(jsonLDTypes, jsonLDIdentifier);
     this.name = name;
     this.description = description;
-    this.hasResultValue = resultValue;
+    this.resultValue = resultValue;
   }
 
   public Result(StringValueElement name, Optional<StringValueElement> description,
@@ -31,7 +31,7 @@ public class Result extends MetadataTemplateElement implements Input, Output
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
-    this.hasResultValue = resultValue;
+    this.resultValue = resultValue;
   }
 
   public Result(StringValueElement name)
@@ -39,6 +39,6 @@ public class Result extends MetadataTemplateElement implements Input, Output
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = Optional.empty();
-    this.hasResultValue = Optional.empty();
+    this.resultValue = Optional.empty();
   }
 }

@@ -18,7 +18,7 @@ public class Investigation extends MetadataTemplate
   private final StringValueElement identifier;
   private final Optional<DateValueElement> submissionDate;
   private final Optional<DateValueElement> publicReleaseDate;
-  private final List<Study> hasStudy;
+  private final List<Study> study;
 
   public Investigation(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String templateID,
     StringValueElement title, StringValueElement description, StringValueElement identifier,
@@ -30,7 +30,7 @@ public class Investigation extends MetadataTemplate
     this.identifier = identifier;
     this.submissionDate = submissionDate;
     this.publicReleaseDate = publicReleaseDate;
-    this.hasStudy = Collections.unmodifiableList(studies);
+    this.study = Collections.unmodifiableList(studies);
   }
 
   public Investigation(String templateID, StringValueElement title, StringValueElement description,
@@ -43,6 +43,6 @@ public class Investigation extends MetadataTemplate
     this.identifier = identifier;
     this.submissionDate = submissionDate;
     this.publicReleaseDate = publicReleaseDate;
-    this.hasStudy = Collections.unmodifiableList(studies);
+    this.study = Collections.unmodifiableList(studies);
   }
 }

@@ -14,7 +14,7 @@ public class Reagent extends MetadataTemplateElement implements Input
 
   private final StringValueElement name;
   private final Optional<StringValueElement> type;
-  private final List<Characteristic> hasCharacteristic;
+  private final List<Characteristic> characteristic;
 
   public Reagent(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     Optional<StringValueElement> type, List<Characteristic> characteristics)
@@ -22,7 +22,7 @@ public class Reagent extends MetadataTemplateElement implements Input
     super(jsonLDTypes, jsonLDIdentifier);
     this.name = name;
     this.type = type;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
+    this.characteristic = Collections.unmodifiableList(characteristics);
   }
 
   public Reagent(StringValueElement name, Optional<StringValueElement> type, List<Characteristic> characteristics)
@@ -30,6 +30,6 @@ public class Reagent extends MetadataTemplateElement implements Input
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.type = type;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
+    this.characteristic = Collections.unmodifiableList(characteristics);
   }
 }

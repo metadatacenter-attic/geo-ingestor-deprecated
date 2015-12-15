@@ -18,7 +18,7 @@ public class StudyProtocol extends MetadataTemplateElement
   private final Optional<StringValueElement> type;
   private final Optional<URIValueElement> uri;
   private final Optional<StringValueElement> version;
-  private final List<ProtocolParameter> hasProtocolParameter;
+  private final List<ProtocolParameter> protocolParameter;
 
   public StudyProtocol(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     StringValueElement description, Optional<StringValueElement> type, Optional<URIValueElement> uri,
@@ -30,7 +30,7 @@ public class StudyProtocol extends MetadataTemplateElement
     this.type = type;
     this.uri = uri;
     this.version = version;
-    this.hasProtocolParameter = Collections.unmodifiableList(protocolParameters);
+    this.protocolParameter = Collections.unmodifiableList(protocolParameters);
   }
 
   public StudyProtocol(StringValueElement name, StringValueElement description, Optional<StringValueElement> type,
@@ -42,6 +42,6 @@ public class StudyProtocol extends MetadataTemplateElement
     this.type = type;
     this.uri = uri;
     this.version = version;
-    this.hasProtocolParameter = Collections.unmodifiableList(protocolParameters);
+    this.protocolParameter = Collections.unmodifiableList(protocolParameters);
   }
 }

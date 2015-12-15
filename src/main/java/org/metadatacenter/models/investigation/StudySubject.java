@@ -14,22 +14,22 @@ public class StudySubject extends MetadataTemplateElement implements Input
 
   private final StringValueElement name;
   private final StringValueElement type;
-  private final List<Characteristic> hasCharacteristic;
+  private final List<Characteristic> characteristic;
 
   public StudySubject(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
-    StringValueElement type, List<Characteristic> characteristics)
+    StringValueElement type, List<Characteristic> characteristic)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this.name = name;
     this.type = type;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
+    this.characteristic = Collections.unmodifiableList(characteristic);
   }
 
-  public StudySubject(StringValueElement name, StringValueElement type, List<Characteristic> characteristics)
+  public StudySubject(StringValueElement name, StringValueElement type, List<Characteristic> characteristic)
   {
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.type = type;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
+    this.characteristic = Collections.unmodifiableList(characteristic);
   }
 }

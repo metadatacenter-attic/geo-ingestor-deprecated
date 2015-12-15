@@ -15,7 +15,7 @@ public class StudyGroupPopulation extends MetadataTemplateElement
   private final StringValueElement name;
   private final Optional<StringValueElement> type;
   private final Optional<StringValueElement> selectionRule;
-  private final List<StudySubject> hasStudySubject;
+  private final List<StudySubject> studySubject;
 
   public StudyGroupPopulation(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     Optional<StringValueElement> type, Optional<StringValueElement> selectionRule, List<StudySubject> studySubjects)
@@ -24,7 +24,7 @@ public class StudyGroupPopulation extends MetadataTemplateElement
     this.name = name;
     this.type = type;
     this.selectionRule = selectionRule;
-    this.hasStudySubject = Collections.unmodifiableList(studySubjects);
+    this.studySubject = Collections.unmodifiableList(studySubjects);
   }
 
   public StudyGroupPopulation(StringValueElement name, Optional<StringValueElement> type,
@@ -34,6 +34,6 @@ public class StudyGroupPopulation extends MetadataTemplateElement
     this.name = name;
     this.type = type;
     this.selectionRule = selectionRule;
-    this.hasStudySubject = Collections.unmodifiableList(studySubjects);
+    this.studySubject = Collections.unmodifiableList(studySubjects);
   }
 }

@@ -15,7 +15,7 @@ public class FactorValue extends MetadataTemplateElement
   private final StringValueElement value;
   private final StringValueElement type;
   private final Optional<StringValueElement> unit;
-  private final Optional<StudyFactor> hasStudyFactor;
+  private final Optional<StudyFactor> studyFactor;
 
   public FactorValue(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement value,
     StringValueElement type, Optional<StringValueElement> unit, Optional<StudyFactor> studyFactor)
@@ -24,7 +24,7 @@ public class FactorValue extends MetadataTemplateElement
     this.value = value;
     this.type = type;
     this.unit = unit;
-    this.hasStudyFactor = studyFactor;
+    this.studyFactor = studyFactor;
   }
 
   public FactorValue(StringValueElement value, StringValueElement type, Optional<StringValueElement> unit,
@@ -34,6 +34,6 @@ public class FactorValue extends MetadataTemplateElement
     this.type = type;
     this.unit = unit;
     this.value = value;
-    this.hasStudyFactor = studyFactor;
+    this.studyFactor = studyFactor;
   }
 }

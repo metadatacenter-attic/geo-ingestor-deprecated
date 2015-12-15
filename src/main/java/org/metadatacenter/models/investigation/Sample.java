@@ -16,8 +16,8 @@ public class Sample extends MetadataTemplateElement implements Input, Output
   private final StringValueElement type;
   private final Optional<StringValueElement> description;
   private final Optional<StringValueElement> source;
-  private final List<Characteristic> hasCharacteristic;
-  private final Optional<StudyTime> hasStudyTime;
+  private final List<Characteristic> characteristic;
+  private final Optional<StudyTime> studyTime;
 
   public Sample(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     StringValueElement type, Optional<StringValueElement> description, Optional<StringValueElement> source,
@@ -28,8 +28,8 @@ public class Sample extends MetadataTemplateElement implements Input, Output
     this.type = type;
     this.description = description;
     this.source = source;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
-    this.hasStudyTime = studyTime;
+    this.characteristic = Collections.unmodifiableList(characteristics);
+    this.studyTime = studyTime;
   }
 
   public Sample(StringValueElement name, StringValueElement type, Optional<StringValueElement> description,
@@ -40,7 +40,7 @@ public class Sample extends MetadataTemplateElement implements Input, Output
     this.type = type;
     this.description = description;
     this.source = source;
-    this.hasCharacteristic = Collections.unmodifiableList(characteristics);
-    this.hasStudyTime = studyTime;
+    this.characteristic = Collections.unmodifiableList(characteristics);
+    this.studyTime = studyTime;
   }
 }

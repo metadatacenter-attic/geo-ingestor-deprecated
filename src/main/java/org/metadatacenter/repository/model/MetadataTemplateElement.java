@@ -75,4 +75,11 @@ public abstract class MetadataTemplateElement
   {
     return Optional.of(base + UUID.randomUUID().toString());
   }
+
+  protected static Optional<JSONLDContext> createDefaultJSONLDContext()
+  {
+    JSONLDContextEntry jsonLDContextEntry = new JSONLDContextEntry("_value", ContextNames.VALUE);
+
+    return Optional.of(new JSONLDContext(jsonLDContextEntry));
+  }
 }

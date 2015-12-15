@@ -62,8 +62,11 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Optional<DateValueElement> submissionDate = Optional.empty();
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoSubmissionMetadata.getProtocol());
+    List<StudyProtocol> studyProtocols = studyProtocol.isPresent() ?
+      Collections.singletonList(studyProtocol.get()) :
+      Collections.emptyList();
     Study study = convertGEOSeries2Study(geoSubmissionMetadata.getSeries(), geoSubmissionMetadata.getSamples(),
-      geoSubmissionMetadata.getPlatforms(), studyProtocol);
+      geoSubmissionMetadata.getPlatforms(), studyProtocols);
 
     return new Investigation(templateID, title, description, identifier, submissionDate, publicReleaseDate,
       Collections.singletonList(study));
@@ -71,7 +74,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
   }
 
   private Study convertGEOSeries2Study(Series geoSeries, Map<String, Sample> geoSamples, List<Platform> geoPlatforms,
-    Optional<StudyProtocol> studyProtocol)
+    List<StudyProtocol> studyProtocols)
   {
     StringValueElement title = createStringValueElement(geoSeries.getTitle());
     StringValueElement description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
@@ -80,7 +83,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Optional<DateValueElement> publicReleaseDate = Optional.empty();
     Optional<URIValueElement> studyDesignType = Optional.empty();
     List<StudyAssay> studyAssays = convertGEOPlatforms2StudyAssays(geoPlatforms);
-    List<Process> processes = convertGEOSamples2Processes(geoSamples, studyAssays, studyProtocol);
+    List<Process> processes = convertGEOSamples2Processes(geoSamples, studyAssays, studyProtocols);
     List<StudyFactor> studyFactors = new ArrayList<>(); // TODO Not clear where these are in GEO.
     Optional<StudyGroupPopulation> studyGroupPopulation = Optional.empty(); // Not recorded in GEO
     List<Publication> publications = convertPubmedIDs2Publications(geoSeries.getPubmedIDs());
@@ -89,36 +92,39 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Map<String, List<String>> repeat = geoSeries.getRepeats(); // TODO Where do these go in our model?
 
     return new Study(title, description, identifier, submissionDate, publicReleaseDate, studyDesignType, processes,
-      studyProtocol, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);
+      studyProtocols, studyAssays, studyFactors, studyGroupPopulation, publications, contacts);
   }
 
   private List<Process> convertGEOSamples2Processes(Map<String, Sample> geoSamples, List<StudyAssay> studyAssays,
-    Optional<StudyProtocol> studyProtocol)
+    List<StudyProtocol> studyProtocols)
   {
     List<Process> processes = new ArrayList<>();
 
     for (String sampleName : geoSamples.keySet()) {
-      Process process = convertGEOSample2Process(geoSamples.get(sampleName), studyAssays, studyProtocol);
+      Process process = convertGEOSample2Process(geoSamples.get(sampleName), studyAssays, studyProtocols);
       processes.add(process);
     }
     return processes;
   }
 
   private Process convertGEOSample2Process(Sample geoSample, List<StudyAssay> studyAssays,
-    Optional<StudyProtocol> studyProtocol)
+    List<StudyProtocol> studyProtocols)
   {
     StringValueElement type = createStringValueElement("GEOSampleProcess");
-    List<ParameterValue> hasParameterValue = new ArrayList<>(); // Stored via the study protocol
+    List<ParameterValue> parameterValue = new ArrayList<>(); // Stored via the study protocol
     Optional<StudyAssay> sampleStudyAssay = extractStudyAssayFromGEOSample(geoSample);
+    List<StudyAssay> sampleStudyAssays = sampleStudyAssay.isPresent() ?
+      Collections.singletonList(sampleStudyAssay.get()) :
+      Collections.emptyList();
     org.metadatacenter.models.investigation.Sample sample = extractSampleFromGEOSample(geoSample);
     List<DataFile> dataFiles = extractDataFilesFromGEOSample(geoSample);
-    List<Input> hasInput = new ArrayList<>();
-    List<Output> hasOutput = new ArrayList<>();
+    List<Input> input = new ArrayList<>();
+    List<Output> output = new ArrayList<>();
 
-    hasInput.add(sample);
-    hasOutput.addAll(dataFiles);
+    input.add(sample);
+    output.addAll(dataFiles);
 
-    return new Process(type, sampleStudyAssay, studyProtocol, hasParameterValue, hasInput, hasOutput);
+    return new Process(type, sampleStudyAssays, studyProtocols, parameterValue, input, output);
   }
 
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
@@ -129,10 +135,10 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Optional<StringValueElement> description = createOptionalStringValueElement(geoSample.getTitle());
     Optional<StringValueElement> source = createOptionalStringValueElement(geoSample.getBiomaterialProvider());
     List<Characteristic> characteristics = convertGEOCharacteristics2Characteristics(geoSample.getCharacteristics());
-    Optional<StudyTime> hasStudyTime = Optional.empty(); // Not present
+    Optional<StudyTime> studyTime = Optional.empty(); // Not present
 
     return new org.metadatacenter.models.investigation.Sample(name, type, description, source, characteristics,
-      hasStudyTime);
+      studyTime);
   }
 
   private Optional<StudyAssay> extractStudyAssayFromGEOSample(Sample geoSample)

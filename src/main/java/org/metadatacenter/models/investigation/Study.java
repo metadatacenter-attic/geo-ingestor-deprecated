@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public class Study extends MetadataTemplateElement
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
-    + "Study");
+  public static final List<String> ElementURIs = Collections
+    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "Study");
 
   private final StringValueElement title;
   private final StringValueElement description;
@@ -20,18 +20,18 @@ public class Study extends MetadataTemplateElement
   private final Optional<DateValueElement> submissionDate;
   private final Optional<DateValueElement> publicReleaseDate;
   private final Optional<URIValueElement> studyDesignType;
-  private final List<Process> hasProcess;
-  private final Optional<StudyProtocol> hasStudyProtocol;
-  private final List<StudyAssay> hasStudyAssay;
-  private final List<StudyFactor> hasStudyFactor;
-  private final Optional<StudyGroupPopulation> hasStudyGroupPopulation;
-  private final List<Publication> hasPublication;
-  private final List<Contact> hasContact;
+  private final List<Process> process;
+  private final List<StudyProtocol> studyProtocol;
+  private final List<StudyAssay> studyAssay;
+  private final List<StudyFactor> studyFactor;
+  private final Optional<StudyGroupPopulation> studyGroupPopulation;
+  private final List<Publication> publication;
+  private final List<Contact> contact;
 
   public Study(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement title,
     StringValueElement description, StringValueElement identifier, Optional<DateValueElement> submissionDate,
     Optional<DateValueElement> publicReleaseDate, Optional<URIValueElement> studyDesignType, List<Process> processes,
-    Optional<StudyProtocol> studyProtocol, List<StudyAssay> studyAssays, List<StudyFactor> studyFactors,
+    List<StudyProtocol> studyProtocol, List<StudyAssay> studyAssays, List<StudyFactor> studyFactors,
     Optional<StudyGroupPopulation> studyGroupPopulation, List<Publication> publications, List<Contact> contacts)
   {
     super(jsonLDTypes, jsonLDIdentifier);
@@ -41,18 +41,18 @@ public class Study extends MetadataTemplateElement
     this.submissionDate = submissionDate;
     this.publicReleaseDate = publicReleaseDate;
     this.studyDesignType = studyDesignType;
-    this.hasProcess = Collections.unmodifiableList(processes);
-    this.hasStudyProtocol = studyProtocol;
-    this.hasStudyAssay = Collections.unmodifiableList(studyAssays);
-    this.hasStudyFactor = Collections.unmodifiableList(studyFactors);
-    this.hasStudyGroupPopulation = studyGroupPopulation;
-    this.hasPublication = Collections.unmodifiableList(publications);
-    this.hasContact = Collections.unmodifiableList(contacts);
+    this.process = Collections.unmodifiableList(processes);
+    this.studyProtocol = studyProtocol;
+    this.studyAssay = Collections.unmodifiableList(studyAssays);
+    this.studyFactor = Collections.unmodifiableList(studyFactors);
+    this.studyGroupPopulation = studyGroupPopulation;
+    this.publication = Collections.unmodifiableList(publications);
+    this.contact = Collections.unmodifiableList(contacts);
   }
 
   public Study(StringValueElement title, StringValueElement description, StringValueElement identifier,
     Optional<DateValueElement> submissionDate, Optional<DateValueElement> publicReleaseDate,
-    Optional<URIValueElement> studyDesignType, List<Process> processes, Optional<StudyProtocol> studyProtocol,
+    Optional<URIValueElement> studyDesignType, List<Process> processes, List<StudyProtocol> studyProtocol,
     List<StudyAssay> studyAssays, List<StudyFactor> studyFactors, Optional<StudyGroupPopulation> studyGroupPopulation,
     List<Publication> publications, List<Contact> contacts)
   {
@@ -63,12 +63,12 @@ public class Study extends MetadataTemplateElement
     this.submissionDate = submissionDate;
     this.publicReleaseDate = publicReleaseDate;
     this.studyDesignType = studyDesignType;
-    this.hasProcess = Collections.unmodifiableList(processes);
-    this.hasStudyProtocol = studyProtocol;
-    this.hasStudyAssay = Collections.unmodifiableList(studyAssays);
-    this.hasStudyFactor = Collections.unmodifiableList(studyFactors);
-    this.hasStudyGroupPopulation = studyGroupPopulation;
-    this.hasPublication = Collections.unmodifiableList(publications);
-    this.hasContact = Collections.unmodifiableList(contacts);
+    this.process = Collections.unmodifiableList(processes);
+    this.studyProtocol = studyProtocol;
+    this.studyAssay = Collections.unmodifiableList(studyAssays);
+    this.studyFactor = Collections.unmodifiableList(studyFactors);
+    this.studyGroupPopulation = studyGroupPopulation;
+    this.publication = Collections.unmodifiableList(publications);
+    this.contact = Collections.unmodifiableList(contacts);
   }
 }

@@ -14,7 +14,7 @@ public class Characteristic extends MetadataTemplateElement
 
   private final StringValueElement name;
   private final Optional<StringValueElement> description;
-  private final Optional<CharacteristicValue> hasCharacteristicValue;
+  private final Optional<CharacteristicValue> characteristicValue;
 
   public Characteristic(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
     Optional<StringValueElement> description, Optional<CharacteristicValue> characteristicValue)
@@ -23,7 +23,7 @@ public class Characteristic extends MetadataTemplateElement
     super(jsonLDTypes, jsonLDIdentifier);
     this.name = name;
     this.description = description;
-    this.hasCharacteristicValue = characteristicValue;
+    this.characteristicValue = characteristicValue;
   }
 
   public Characteristic(StringValueElement name, Optional<StringValueElement> description,
@@ -33,7 +33,7 @@ public class Characteristic extends MetadataTemplateElement
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
-    this.hasCharacteristicValue = characteristicValue;
+    this.characteristicValue = characteristicValue;
   }
 
   public Characteristic(StringValueElement name, Optional<CharacteristicValue> characteristicValue)
@@ -42,6 +42,6 @@ public class Characteristic extends MetadataTemplateElement
     super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = Optional.empty();
-    this.hasCharacteristicValue = characteristicValue;
+    this.characteristicValue = characteristicValue;
   }
 }

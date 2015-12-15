@@ -9,7 +9,7 @@ public abstract class MetadataTemplate extends MetadataTemplateElement
 
   public MetadataTemplate(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String template_id)
   {
-    super(jsonLDTypes, jsonLDIdentifier);
+    super(createDefaultJSONLDContext(), jsonLDTypes, jsonLDIdentifier);
     this.template_id = template_id;
   }
 

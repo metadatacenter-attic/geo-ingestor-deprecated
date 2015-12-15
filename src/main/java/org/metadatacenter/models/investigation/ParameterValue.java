@@ -15,7 +15,7 @@ public class ParameterValue extends MetadataTemplateElement
   private final StringValueElement value;
   private final Optional<StringValueElement> type;
   private final Optional<StringValueElement> unit;
-  private final Optional<ProtocolParameter> hasProtocolParameter;
+  private final Optional<ProtocolParameter> protocolParameter;
 
   public ParameterValue(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement value,
     Optional<StringValueElement> type, Optional<StringValueElement> unit, Optional<ProtocolParameter> protocolParameter)
@@ -24,7 +24,7 @@ public class ParameterValue extends MetadataTemplateElement
     this.value = value;
     this.type = type;
     this.unit = unit;
-    this.hasProtocolParameter = protocolParameter;
+    this.protocolParameter = protocolParameter;
   }
 
   public ParameterValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit,
@@ -34,7 +34,7 @@ public class ParameterValue extends MetadataTemplateElement
     this.value = value;
     this.type = type;
     this.unit = unit;
-    this.hasProtocolParameter = protocolParameter;
+    this.protocolParameter = protocolParameter;
   }
 
   public ParameterValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit)
@@ -43,7 +43,7 @@ public class ParameterValue extends MetadataTemplateElement
     this.value = value;
     this.type = type;
     this.unit = unit;
-    this.hasProtocolParameter = Optional.empty();
+    this.protocolParameter = Optional.empty();
   }
 
   public ParameterValue(StringValueElement value)
@@ -52,6 +52,6 @@ public class ParameterValue extends MetadataTemplateElement
     this.value = value;
     this.type = Optional.empty();
     this.unit = Optional.empty();
-    this.hasProtocolParameter = Optional.empty();
+    this.protocolParameter = Optional.empty();
   }
 }
