@@ -69,7 +69,7 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
           JSONLDContextEntry jsonLDContextEntry = jsonLDContextEntries.get(contextValueIndex);
           contextObject.addProperty(jsonLDContextEntry.getPropertyName(), jsonLDContextEntry.getPropertyURI());
         }
-        obj.add("@Context", contextObject);
+        obj.add("@context", contextObject);
       }
 
       if (jsonLDIdentifier.isPresent())
