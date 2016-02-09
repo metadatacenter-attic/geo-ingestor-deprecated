@@ -10,13 +10,13 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
- * GSON- and GSON Fire-based JSON serializer for metadata templates.
+ * GSON- and GSON Fire-based JSON serializer for metadata template intances.
  *
- * @see MetadataTemplateElement
+ * @see MetadataTemplateElementInstance
  * @see MetadataTemplateElementPostProcessor
  * @see OptionalTypeAdapter
  */
-public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
+public class MetadataTemplateInstanceJSONSerializer<T extends MetadataTemplateInstance>
 {
   public final static String JSON_FILE_ENCODING = "UTF-8";
 
@@ -28,7 +28,7 @@ public class MetadataTemplateJSONSerializer<T extends MetadataTemplate>
       GsonFireBuilder fireBuilder = new GsonFireBuilder();
       fireBuilder.enableExclusionByValue();
 
-      fireBuilder.registerPostProcessor(MetadataTemplateElement.class, new MetadataTemplateElementPostProcessor());
+      fireBuilder.registerPostProcessor(MetadataTemplateElementInstance.class, new MetadataTemplateElementPostProcessor());
 
       GsonBuilder gsonBuilder = fireBuilder.createGsonBuilder();
 

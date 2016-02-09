@@ -3,11 +3,11 @@ package org.metadatacenter.repository.model;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class ValueElement extends MetadataTemplateElement
+public abstract class TemplateFieldInstance extends MetadataTemplateElementInstance
 {
   private final String _value;
 
-  public ValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String _value)
+  public TemplateFieldInstance(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String _value)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this._value = _value;

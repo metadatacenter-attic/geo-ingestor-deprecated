@@ -1,28 +1,30 @@
 package org.metadatacenter.models.investigation;
 
-import org.metadatacenter.repository.model.MetadataTemplateElement;
-import org.metadatacenter.repository.model.StringValueElement;
-import org.metadatacenter.repository.model.URIValueElement;
+import org.metadatacenter.repository.model.MetadataTemplateElementInstance;
+import org.metadatacenter.repository.model.Namespaces;
+import org.metadatacenter.repository.model.StringTemplateFieldInstance;
+import org.metadatacenter.repository.model.URITemplateFieldInstance;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class StudyProtocol extends MetadataTemplateElement
+public class StudyProtocol extends MetadataTemplateElementInstance
 {
   public static final List<String> ElementURIs = Collections
-    .singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE + "StudyProtocol");
+    .singletonList(Namespaces.TEMPLATE_ELEMENT_URI_BASE + "StudyProtocol");
 
-  private final StringValueElement name;
-  private final StringValueElement description;
-  private final Optional<StringValueElement> type;
-  private final Optional<URIValueElement> uri;
-  private final Optional<StringValueElement> version;
+  private final StringTemplateFieldInstance name;
+  private final StringTemplateFieldInstance description;
+  private final Optional<StringTemplateFieldInstance> type;
+  private final Optional<URITemplateFieldInstance> uri;
+  private final Optional<StringTemplateFieldInstance> version;
   private final List<ProtocolParameter> protocolParameter;
 
-  public StudyProtocol(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement name,
-    StringValueElement description, Optional<StringValueElement> type, Optional<URIValueElement> uri,
-    Optional<StringValueElement> version, List<ProtocolParameter> protocolParameters)
+  public StudyProtocol(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringTemplateFieldInstance name,
+    StringTemplateFieldInstance description, Optional<StringTemplateFieldInstance> type,
+    Optional<URITemplateFieldInstance> uri, Optional<StringTemplateFieldInstance> version,
+    List<ProtocolParameter> protocolParameters)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this.name = name;
@@ -33,10 +35,11 @@ public class StudyProtocol extends MetadataTemplateElement
     this.protocolParameter = Collections.unmodifiableList(protocolParameters);
   }
 
-  public StudyProtocol(StringValueElement name, StringValueElement description, Optional<StringValueElement> type,
-    Optional<URIValueElement> uri, Optional<StringValueElement> version, List<ProtocolParameter> protocolParameters)
+  public StudyProtocol(StringTemplateFieldInstance name, StringTemplateFieldInstance description,
+    Optional<StringTemplateFieldInstance> type, Optional<URITemplateFieldInstance> uri,
+    Optional<StringTemplateFieldInstance> version, List<ProtocolParameter> protocolParameters)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.name = name;
     this.description = description;
     this.type = type;

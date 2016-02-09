@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.metadb;
+package org.metadatacenter.ingestors.geo.formats.geometadb;
 
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.metadata.Contributor;
@@ -30,6 +30,8 @@ import java.util.Set;
  * can be found at http://gbnci.abcc.ncifcrf.gov/geo/. Typically the file is called GEOmetadb.sqlite.
  * </p>
  * A description of GETmetadb tables can be found at http://gbnci.abcc.ncifcrf.gov/geo/geo_help.php.
+ *
+ * This class extracts the metadata in a GEOmetadb database and generate {@link GEOSubmissionMetadata} instances.
  */
 public class GEOmetadbIngestor
 {

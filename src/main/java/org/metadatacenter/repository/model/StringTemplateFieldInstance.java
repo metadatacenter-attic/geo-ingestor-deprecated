@@ -4,16 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class StringValueElement extends ValueElement
+public class StringTemplateFieldInstance extends TemplateFieldInstance
 {
-  public StringValueElement(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
+  public StringTemplateFieldInstance(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String value)
   {
     super(jsonLDTypes, jsonLDIdentifier, value);
   }
 
-  public StringValueElement(String value)
+  public StringTemplateFieldInstance(String value)
   {
     super(Collections.emptyList(), Optional.empty(), value);
   }
-
 }

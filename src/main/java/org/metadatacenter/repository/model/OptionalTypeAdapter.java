@@ -15,7 +15,7 @@ import java.util.Optional;
 
 /**
  *
- * @see MetadataTemplateJSONSerializer
+ * @see MetadataTemplateInstanceJSONSerializer
  */
 public class OptionalTypeAdapter<E> extends TypeAdapter<Optional<E>>
 {

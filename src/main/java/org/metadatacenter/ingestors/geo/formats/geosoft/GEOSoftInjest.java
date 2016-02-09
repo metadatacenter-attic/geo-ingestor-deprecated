@@ -1,10 +1,10 @@
-package org.metadatacenter.ingestors.geo.soft;
+package org.metadatacenter.ingestors.geo.formats.geosoft;
 
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
-import org.metadatacenter.ingestors.geo.GEOSubmissionMetadata2InvestigationConverter;
+import org.metadatacenter.converters.geo.GEOSubmissionMetadata2InvestigationConverter;
 import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.models.investigation.Investigation;
-import org.metadatacenter.repository.model.MetadataTemplateJSONSerializer;
+import org.metadatacenter.repository.model.MetadataTemplateInstanceJSONSerializer;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class GEOSoftInjest
     try {
       GEOSubmissionMetadata2InvestigationConverter converter = new GEOSubmissionMetadata2InvestigationConverter();
       GEOSoftIngestor geoSoftIngestor = new GEOSoftIngestor(geoExcelFilename);
-      MetadataTemplateJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateJSONSerializer<>();
+      MetadataTemplateInstanceJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
       GEOSubmissionMetadata geoSubmissionMetadata = geoSoftIngestor.extractGEOSubmissionMetadata();
       Investigation investigation = converter.convertGEOSubmissionMetadata2Investigation(geoSubmissionMetadata);
 

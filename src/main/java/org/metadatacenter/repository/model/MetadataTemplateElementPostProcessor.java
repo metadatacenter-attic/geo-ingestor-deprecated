@@ -14,24 +14,24 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * GSON Fire directives in the {@link MetadataTemplateElement} class  exclude the
- * {@link MetadataTemplateElement#jsonLDTypes} and {@link MetadataTemplateElement#jsonLDIdentifier} fields from direct
+ * GSON Fire directives in the {@link MetadataTemplateElementInstance} class  exclude the
+ * {@link MetadataTemplateElementInstance#jsonLDTypes} and {@link MetadataTemplateElementInstance#jsonLDIdentifier} fields from direct
  * serialization. Here we serialize them as JSON-LD-conforming <tt>@type</tt> and <tt>@id</tt> fields.
  * </p>
  * Note that the corresponding deserialization logic has not been implemented.
  *
- * @see MetadataTemplateElement
- * @see MetadataTemplateJSONSerializer
+ * @see MetadataTemplateElementInstance
+ * @see MetadataTemplateInstanceJSONSerializer
  * @see JSONLDContext
  */
-public class MetadataTemplateElementPostProcessor implements PostProcessor<MetadataTemplateElement>
+public class MetadataTemplateElementPostProcessor implements PostProcessor<MetadataTemplateElementInstance>
 {
-  @Override public void postDeserialize(MetadataTemplateElement metadataTemplateElement, JsonElement jsonElement,
+  @Override public void postDeserialize(MetadataTemplateElementInstance metadataTemplateElementInstance, JsonElement jsonElement,
     Gson gson)
   {
   }
 
-  @Override public void postSerialize(JsonElement jsonElement, MetadataTemplateElement metadataTemplateElement,
+  @Override public void postSerialize(JsonElement jsonElement, MetadataTemplateElementInstance metadataTemplateElementInstance,
     Gson gson)
   {
     if (jsonElement.isJsonObject()) {
@@ -58,9 +58,9 @@ public class MetadataTemplateElementPostProcessor implements PostProcessor<Metad
       if (obj.has("jsonLDIdentifier"))
         obj.remove("jsonLDIdentifier");
 
-      Optional<JSONLDContext> jsonLDContext = metadataTemplateElement.getJSONLDContext();
-      List<String> jsonLDTypes = metadataTemplateElement.getJSONLDTypes();
-      Optional<String> jsonLDIdentifier = metadataTemplateElement.getJSONLDIdentifier();
+      Optional<JSONLDContext> jsonLDContext = metadataTemplateElementInstance.getJSONLDContext();
+      List<String> jsonLDTypes = metadataTemplateElementInstance.getJSONLDTypes();
+      Optional<String> jsonLDIdentifier = metadataTemplateElementInstance.getJSONLDIdentifier();
 
       if (jsonLDContext.isPresent()) {
         List<JSONLDContextEntry> jsonLDContextEntries = jsonLDContext.get().getJSONLDContextEntries();

@@ -1,23 +1,24 @@
 package org.metadatacenter.models.investigation;
 
-import org.metadatacenter.repository.model.MetadataTemplateElement;
-import org.metadatacenter.repository.model.StringValueElement;
+import org.metadatacenter.repository.model.MetadataTemplateElementInstance;
+import org.metadatacenter.repository.model.Namespaces;
+import org.metadatacenter.repository.model.StringTemplateFieldInstance;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class StudyAssay extends MetadataTemplateElement
+public class StudyAssay extends MetadataTemplateElementInstance
 {
   public static final List<String> ElementURIs = Collections
     .singletonList("http://purl.obolibrary.org/obo/BFO_0000055");
 
-  private final StringValueElement platform;
-  private final Optional<StringValueElement> measurementType;
-  private final Optional<StringValueElement> technology;
+  private final StringTemplateFieldInstance platform;
+  private final Optional<StringTemplateFieldInstance> measurementType;
+  private final Optional<StringTemplateFieldInstance> technology;
 
-  public StudyAssay(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement platform,
-    Optional<StringValueElement> measurementType, Optional<StringValueElement> technology)
+  public StudyAssay(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringTemplateFieldInstance platform,
+    Optional<StringTemplateFieldInstance> measurementType, Optional<StringTemplateFieldInstance> technology)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this.platform = platform;
@@ -25,18 +26,18 @@ public class StudyAssay extends MetadataTemplateElement
     this.technology = technology;
   }
 
-  public StudyAssay(StringValueElement platform, Optional<StringValueElement> measurementType,
-    Optional<StringValueElement> technology)
+  public StudyAssay(StringTemplateFieldInstance platform, Optional<StringTemplateFieldInstance> measurementType,
+    Optional<StringTemplateFieldInstance> technology)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.platform = platform;
     this.measurementType = measurementType;
     this.technology = technology;
   }
 
-  public StudyAssay(StringValueElement platform)
+  public StudyAssay(StringTemplateFieldInstance platform)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.platform = platform;
     this.measurementType = Optional.empty();
     this.technology = Optional.empty();

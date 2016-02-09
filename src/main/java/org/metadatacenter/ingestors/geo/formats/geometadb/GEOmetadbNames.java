@@ -1,4 +1,4 @@
-package org.metadatacenter.ingestors.geo.metadb;
+package org.metadatacenter.ingestors.geo.formats.geometadb;
 
 import java.util.Arrays;
 import java.util.List;

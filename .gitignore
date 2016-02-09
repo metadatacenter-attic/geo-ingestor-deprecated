@@ -1,4 +1,7 @@
 
+# Do not put the GEOmetadb SQLite database into Git
+GEOmetadb.sqllite
+
 # Ignore temporary Emacs files
 *~
 

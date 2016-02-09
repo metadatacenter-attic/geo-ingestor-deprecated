@@ -1,6 +1,7 @@
 package org.metadatacenter.ingestors.geo.metadata;
 
-import org.metadatacenter.ingestors.geo.GEOSubmissionMetadata2InvestigationConverter;
+import org.metadatacenter.converters.geo.GEOSubmissionMetadata2InvestigationConverter;
+import org.metadatacenter.ingestors.geo.formats.geosoft.GEOSoftIngestor;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.Optional;
  * Metadata for a single GEO submission, which will contain a single series and its associated samples,
  * protocol, and platform.
  * </p>
- * A {@link org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor} or a
- * {@link org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor} can
+ * A {@link org.metadatacenter.ingestors.geo.formats.geometadb.GEOmetadbIngestor} or a
+ * {@link GEOSoftIngestor} can
  * be used to read this metadata from GEOmetadb and GEOSoft formats, respectively
  * </p>
  * A {@link GEOSubmissionMetadata2InvestigationConverter} converts this metadata
@@ -22,8 +23,8 @@ import java.util.Optional;
  * @see Sample
  * @see Platform
  * @see Protocol
- * @see org.metadatacenter.ingestors.geo.soft.GEOSoftIngestor
- * @see org.metadatacenter.ingestors.geo.metadb.GEOmetadbIngestor
+ * @see GEOSoftIngestor
+ * @see org.metadatacenter.ingestors.geo.formats.geometadb.GEOmetadbIngestor
  * @see GEOSubmissionMetadata2InvestigationConverter
  */
 public class GEOSubmissionMetadata
@@ -42,16 +43,16 @@ public class GEOSubmissionMetadata
     this.platforms = Collections.unmodifiableList(platforms);
   }
 
-  public String getGSE() { return series.getGSE(); }
+  public String getGSE() { return this.series.getGSE(); }
 
   public Series getSeries()
   {
-    return series;
+    return this.series;
   }
 
   public Map<String, Sample> getSamples()
   {
-    return Collections.unmodifiableMap(samples);
+    return this.samples;
   }
 
   public Optional<Protocol> getProtocol()

@@ -1,23 +1,24 @@
 package org.metadatacenter.models.investigation;
 
-import org.metadatacenter.repository.model.MetadataTemplateElement;
-import org.metadatacenter.repository.model.StringValueElement;
+import org.metadatacenter.repository.model.MetadataTemplateElementInstance;
+import org.metadatacenter.repository.model.Namespaces;
+import org.metadatacenter.repository.model.StringTemplateFieldInstance;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class ResultValue extends MetadataTemplateElement
+public class ResultValue extends MetadataTemplateElementInstance
 {
-  public static final List<String> ElementURIs = Collections.singletonList(InvestigationNames.TEMPLATE_ELEMENT_URI_BASE
+  public static final List<String> ElementURIs = Collections.singletonList(Namespaces.TEMPLATE_ELEMENT_URI_BASE
     + "ResultValue");
 
-  private final StringValueElement value;
-  private final Optional<StringValueElement> type;
-  private final Optional<StringValueElement> unit;
+  private final StringTemplateFieldInstance value;
+  private final Optional<StringTemplateFieldInstance> type;
+  private final Optional<StringTemplateFieldInstance> unit;
 
-  public ResultValue(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringValueElement value,
-    Optional<StringValueElement> type, Optional<StringValueElement> unit)
+  public ResultValue(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, StringTemplateFieldInstance value,
+    Optional<StringTemplateFieldInstance> type, Optional<StringTemplateFieldInstance> unit)
   {
     super(jsonLDTypes, jsonLDIdentifier);
     this.value = value;
@@ -25,17 +26,17 @@ public class ResultValue extends MetadataTemplateElement
     this.unit = unit;
   }
 
-  public ResultValue(StringValueElement value, Optional<StringValueElement> type, Optional<StringValueElement> unit)
+  public ResultValue(StringTemplateFieldInstance value, Optional<StringTemplateFieldInstance> type, Optional<StringTemplateFieldInstance> unit)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = type;
     this.unit = unit;
   }
 
-  public ResultValue(StringValueElement value)
+  public ResultValue(StringTemplateFieldInstance value)
   {
-    super(ElementURIs, generateJSONLDIdentifier(InvestigationNames.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
+    super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_ELEMENT_INSTANCES_URI_BASE));
     this.value = value;
     this.type = Optional.empty();
     this.unit = Optional.empty();
