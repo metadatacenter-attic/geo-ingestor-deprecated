@@ -8,13 +8,14 @@ import org.metadatacenter.models.geoflat.GEOFlatNames;
 import org.metadatacenter.repository.model.DateTemplateFieldInstance;
 import org.metadatacenter.repository.model.StringTemplateFieldInstance;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
 
 /**
- * Take a {@link GEOSubmissionMetadata} object and convert it to a CEDAR {@link GEOFlat} template instance.
+ * Take a {@link GEOSubmissionMetadata} object and convert it to a list of CEDAR {@link GEOFlat} template instances.
  * <p>
  *
  * @see GEOSubmissionMetadata
@@ -22,7 +23,7 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createString
  */
 public class GEOSubmissionMetadata2GEOFlatConverter
 {
-  public GEOFlat convertGEOSubmissionMetadata2GEOFlat(GEOSubmissionMetadata geoSubmissionMetadata)
+  public List<GEOFlat> convertGEOSubmissionMetadata2GEOFlat(GEOSubmissionMetadata geoSubmissionMetadata)
   {
     Series geoSeries = geoSubmissionMetadata.getSeries();
 
@@ -33,7 +34,9 @@ public class GEOSubmissionMetadata2GEOFlatConverter
     Optional<DateTemplateFieldInstance> submissionDate = Optional.empty();
     Optional<DateTemplateFieldInstance> publicReleaseDate = Optional.empty();
 
-    return new GEOFlat(templateID, title, description, identifier, submissionDate, publicReleaseDate);
+    GEOFlat geoFlat = new GEOFlat(templateID, title, description, identifier, submissionDate, publicReleaseDate);
+
+    return Collections.singletonList(geoFlat); // TODO
   }
 
   private String concatenateFieldValues(List<String> fieldValues)

@@ -14,6 +14,7 @@ import java.util.Optional;
  */
 public class Sample
 {
+  private final String gse; // Series from which the sample came
   private final String gsm;
   private final String title;
   private final String label;
@@ -26,10 +27,11 @@ public class Sample
   private final Optional<String> expFile;
   private final Optional<String> chpFile;
 
-  public Sample(String gsm, String title, String label, Optional<String> description, String gpl,
+  public Sample(String gse, String gsm, String title, String label, Optional<String> description, String gpl,
     Map<Integer, PerChannelSampleInfo> perChannelInformation, Optional<String> biomaterialProvider,
     List<String> rawDataFiles, Optional<String> celFile, Optional<String> expFile, Optional<String> chpFile)
   {
+    this.gse = gse;
     this.gsm = gsm;
     this.title = title;
     this.label = label;
@@ -41,6 +43,11 @@ public class Sample
     this.celFile = celFile;
     this.expFile = expFile;
     this.chpFile = chpFile;
+  }
+
+  public String getGSE()
+  {
+    return gse;
   }
 
   public String getGSM()

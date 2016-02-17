@@ -30,7 +30,7 @@ import java.util.Set;
  * can be found at http://gbnci.abcc.ncifcrf.gov/geo/. Typically the file is called GEOmetadb.sqlite.
  * </p>
  * A description of GETmetadb tables can be found at http://gbnci.abcc.ncifcrf.gov/geo/geo_help.php.
- *
+ * <p/>
  * This class extracts the metadata in a GEOmetadb database and generate {@link GEOSubmissionMetadata} instances.
  */
 public class GEOmetadbIngestor
@@ -41,8 +41,8 @@ public class GEOmetadbIngestor
   private static final String SERIES_SELECT =
     "SELECT * FROM " + GEOmetadbNames.SERIES_TABLE_NAME + " WHERE " + GEOmetadbNames.SERIES_TABLE_GSE_COLUMN_NAME
       + " = ?";
-  private static final String SAMPLES_SELECT =
-    "SELECT * FROM " + GEOmetadbNames.SAMPLE_TABLE_NAME + " WHERE series_id = ?";
+  private static final String SAMPLES_SELECT_BASE =
+    "SELECT * FROM " + GEOmetadbNames.SAMPLE_TABLE_NAME + " WHERE series_id IN ";
   private static final String PLATFORM_SELECT =
     "SELECT * FROM " + GEOmetadbNames.PLATFORM_TABLE_NAME + " WHERE gpl = ?";
 
@@ -51,11 +51,13 @@ public class GEOmetadbIngestor
     this.sqliteDatabaseFilename = sqliteDatabaseFilename;
   }
 
-  public List<GEOSubmissionMetadata> extractGEOSubmissionsMetadata(int maximumNumberOfSubmissions)
+  public List<GEOSubmissionMetadata> extractGEOSubmissionsMetadata(int minSeriesIndex, int numberOfSeries)
     throws GEOIngestorException
   {
     List<GEOSubmissionMetadata> submissions = new ArrayList<>();
     Map<String, Platform> geoPlatforms = new HashMap<>(); // gpl -> Platform
+    int seriesSliceStart = minSeriesIndex;
+    int seriesSliceEnd = minSeriesIndex + numberOfSeries;
 
     registerJDBCDriver();
 
@@ -68,7 +70,17 @@ public class GEOmetadbIngestor
 
       System.out.println("Found " + seriesIDs.size() + " series");
 
-      for (String gse : seriesIDs.subList(0, maximumNumberOfSubmissions)) {
+      String samplesForSeriesSelect = createSamplesSelectStatement(seriesIDs.subList(seriesSliceStart, seriesSliceEnd));
+      PreparedStatement samplesForSeriesSelectStatement = connection.prepareStatement(samplesForSeriesSelect);
+
+      System.out.println("Extracting samples for " + numberOfSeries + " series");
+
+      Map<String, Map<String, Sample>> geoSamples = extractGEOSamples(samplesForSeriesSelectStatement);
+      samplesForSeriesSelectStatement.close();
+
+      System.out.println("Extracted samples for " + geoSamples.keySet().size() + " series");
+
+      for (String gse : seriesIDs.subList(seriesSliceStart, seriesSliceEnd)) {
         PreparedStatement seriesSelectStatement = connection.prepareStatement(SERIES_SELECT);
         seriesSelectStatement.setString(1, gse);
 
@@ -86,16 +98,9 @@ public class GEOmetadbIngestor
           throw new GEOIngestorException("Internal error: no column " + GEOmetadbNames.SERIES_TABLE_GSE_COLUMN_NAME +
             " in " + GEOmetadbNames.SERIES_TABLE_NAME);
 
-        PreparedStatement seriesSamplesSelectStatement = connection.prepareStatement(SAMPLES_SELECT);
-        seriesSamplesSelectStatement.setString(1, gse);
+        System.out.println("Processing " + geoSamples.size() + " sample(s) for series " + gse);
 
-        System.out.println("Extracting samples for series " + gse);
-
-        Map<String, Sample> geoSamplesForSeries = extractGEOSamplesForSeries(seriesSamplesSelectStatement);
-        seriesSamplesSelectStatement.close();
-
-        System.out.println("Processing " + geoSamplesForSeries.size() + " samples for series " + gse);
-
+        Map<String, Sample> geoSamplesForSeries = geoSamples.get(gse);
         List<Platform> geoPlatformsForSeries = new ArrayList<>();
         for (String gsm : geoSamplesForSeries.keySet()) {
           Sample geoSample = geoSamplesForSeries.get(gsm);
@@ -109,6 +114,7 @@ public class GEOmetadbIngestor
             geoPlatform = geoPlatforms.get(gpl);
           } else {
             geoPlatform = getPlatform(connection, gse, gpl);
+            geoPlatformsForSeries.add(geoPlatform);
             geoPlatforms.put(gpl, geoPlatform);
           }
         }
@@ -153,15 +159,16 @@ public class GEOmetadbIngestor
   }
 
   /**
-   * @param seriesSamplesSelectStatement
+   * @param samplesSelectStatement
+   * @return gse -> (gsm -> Sample)
    * @throws SQLException
    * @throws GEOIngestorException
    */
-  private Map<String, Sample> extractGEOSamplesForSeries(PreparedStatement seriesSamplesSelectStatement)
+  private Map<String, Map<String, Sample>> extractGEOSamples(PreparedStatement samplesSelectStatement)
     throws SQLException, GEOIngestorException
   {
-    Map<String, Sample> geoSamples = new HashMap<>();
-    ResultSet rs = seriesSamplesSelectStatement.executeQuery();
+    Map<String, Map<String, Sample>> geoSamples = new HashMap<>();
+    ResultSet rs = samplesSelectStatement.executeQuery();
 
     int currentRowNumber = 1;
     while (rs.next()) {
@@ -172,9 +179,16 @@ public class GEOmetadbIngestor
           sampleRow.put(columnName, value.trim());
       }
       if (sampleRow.containsKey(GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME)) {
+        String gse = sampleRow.get(GEOmetadbNames.SAMPLE_TABLE_SERIES_ID_COLUMN_NAME);
         String gsm = sampleRow.get(GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME);
-        Sample geoSample = extractGEOSampleFromRow(sampleRow, currentRowNumber);
-        geoSamples.put(gsm, geoSample);
+        Sample geoSample = extractGEOSampleFromRow(gse, sampleRow, currentRowNumber);
+        if (geoSamples.containsKey(gse)) {
+          geoSamples.get(gse).put(gsm, geoSample);
+        } else {
+          Map<String, Sample> samplesForSeries = new HashMap<>();
+          samplesForSeries.put(gsm, geoSample);
+          geoSamples.put(gse, samplesForSeries);
+        }
       } else {
         throw new GEOIngestorException(
           "Missing value in " + GEOmetadbNames.SAMPLE_TABLE_SERIES_ID_COLUMN_NAME + " column of table "
@@ -184,7 +198,7 @@ public class GEOmetadbIngestor
     }
 
     System.out
-      .println("" + (currentRowNumber - 1) + " row(s) in " + GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME + " table");
+      .println("" + (currentRowNumber - 1) + " row(s) extracted from  " + GEOmetadbNames.SAMPLE_TABLE_NAME + " table");
 
     return geoSamples;
   }
@@ -235,7 +249,7 @@ public class GEOmetadbIngestor
       contributors, pubMedIDs, variables, Collections.emptyMap());
   }
 
-  private Sample extractGEOSampleFromRow(Map<String, String> sampleRow, int currentRowNumber)
+  private Sample extractGEOSampleFromRow(String gse, Map<String, String> sampleRow, int currentRowNumber)
     throws GEOIngestorException
   {
     String gsm = getRequiredStringValueFromRow(GEOmetadbNames.SAMPLE_TABLE_GSM_COLUMN_NAME, sampleRow,
@@ -298,7 +312,7 @@ public class GEOmetadbIngestor
     perChannelInformation.put(2, channel2SampleInfo);
 
     // TODO Use: status, types, hybProtocol, dataProcessing, supplementaryFile
-    return new Sample(gsm, title, "", description, gpl, perChannelInformation, Optional.empty(),
+    return new Sample(gse, gsm, title, "", description, gpl, perChannelInformation, Optional.empty(),
       Collections.emptyList(), Optional.empty(), Optional.empty(), Optional.empty());
   }
 
@@ -502,6 +516,29 @@ public class GEOmetadbIngestor
       }
     }
     return contributors;
+  }
+
+  private String createSamplesSelectStatement(List<String> seriesIDs) throws GEOIngestorException
+  {
+    StringBuilder sb = new StringBuilder(SAMPLES_SELECT_BASE);
+
+    sb.append("(");
+
+    if (seriesIDs.size() > 100)
+      throw new GEOIngestorException("Internal error: too many series selected for buffer;" +
+        "expecting maximum of 100 and got " + seriesIDs.size());
+
+    boolean isFirst = true;
+    for (String seriesID : seriesIDs) {
+      if (!isFirst)
+        sb.append(", ");
+      sb.append("\"" + seriesID + "\"");
+      isFirst = false;
+    }
+
+    sb.append(")");
+
+    return sb.toString();
   }
 
   /**

@@ -91,10 +91,11 @@ public class GEOSoftIngestor
     return extractGEOSubmissionMetadata(geoMetadataSheet);
   }
 
-  private GEOSubmissionMetadata extractGEOSubmissionMetadata(Sheet geoMetadataSheet) throws GEOIngestorException
+  private GEOSubmissionMetadata extractGEOSubmissionMetadata(Sheet geoMetadataSheet)
+    throws GEOIngestorException
   {
     Series series = extractSeries(geoMetadataSheet);
-    Map<String, Sample> samples = extractSamples(geoMetadataSheet);
+    Map<String, Sample> samples = extractSamples(series.getGSE(), geoMetadataSheet);
     Protocol protocol = extractProtocol(geoMetadataSheet);
     Optional<Platform> platform = extractPlatform(geoMetadataSheet);
     List<Platform> platforms = platform.isPresent() ?
@@ -335,7 +336,7 @@ public class GEOSoftIngestor
     return fieldName2Values;
   }
 
-  private Map<String, Sample> extractSamples(Sheet geoMetadataSheet) throws GEOIngestorException
+  private Map<String, Sample> extractSamples(String gse, Sheet geoMetadataSheet) throws GEOIngestorException
   {
     Map<String, Sample> samples = new HashMap<>();
 
@@ -388,7 +389,7 @@ public class GEOSoftIngestor
 
         perChannelInformation.put(0, perChannelSampleInfo);
 
-        Sample sample = new Sample(sampleName, sampleTitle, label, description, platform, perChannelInformation,
+        Sample sample = new Sample(gse, sampleName, sampleTitle, label, description, platform, perChannelInformation,
           biomaterialProvider, rawDataFiles, celFile, expFile, chpFile);
 
         if (samples.containsKey(sampleName))

@@ -17,19 +17,20 @@ public class GEOmetadb2Investigations
 {
   public static void main(String[] args)
   {
-    if (args.length != 3)
+    if (args.length != 4)
       Usage();
 
     String geometadbFilename = args[0];
     String cedarJSONDirectoryName = args[1];
-    int numberOfSeries = Integer.parseInt(args[2]);
+    int minSeriesIndex = Integer.parseInt(args[2]);
+    int numberOfSeries = Integer.parseInt(args[3]);
 
     try {
       GEOSubmissionMetadata2InvestigationConverter converter = new GEOSubmissionMetadata2InvestigationConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
       List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
-        .extractGEOSubmissionsMetadata(numberOfSeries);
+        .extractGEOSubmissionsMetadata(minSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
         Investigation investigation = converter.convertGEOSubmissionMetadata2Investigation(geoSubmissionMetadata);
@@ -48,7 +49,7 @@ public class GEOmetadb2Investigations
   private static void Usage()
   {
     System.err.println("Usage: " + GEOmetadb2Investigations.class.getName()
-      + " <GEOmetadb Filename> <JSON Directory Name> <Number of Series>");
+      + " <GEOmetadb Filename> <JSON Directory Name> <Min Series Index> <Number of Series>");
     System.exit(-1);
   }
 }

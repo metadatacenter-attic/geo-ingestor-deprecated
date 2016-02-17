@@ -17,24 +17,28 @@ public class GEOmetadb2GEOFlat
 {
   public static void main(String[] args)
   {
-    if (args.length != 3)
+    if (args.length != 4)
       Usage();
 
     String geometadbFilename = args[0];
     String cedarJSONDirectoryName = args[1];
-    int numberOfSeries = Integer.parseInt(args[2]);
+    int minSeriesIndex = Integer.parseInt(args[2]);
+    int numberOfSeries = Integer.parseInt(args[3]);
 
     try {
       GEOSubmissionMetadata2GEOFlatConverter converter = new GEOSubmissionMetadata2GEOFlatConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<GEOFlat> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
       List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
-        .extractGEOSubmissionsMetadata(numberOfSeries);
+        .extractGEOSubmissionsMetadata(minSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
-        GEOFlat geoFlat = converter.convertGEOSubmissionMetadata2GEOFlat(geoSubmissionMetadata);
-        geoFlatJSONSerializer
-          .serialize(geoFlat, cedarJSONDirectoryName + File.separator + "GEOFlat_" + geoSubmissionMetadata.getGSE());
+        List<GEOFlat> geoFlatList = converter.convertGEOSubmissionMetadata2GEOFlat(geoSubmissionMetadata);
+        int index = 0;
+        for (GEOFlat geoFlat : geoFlatList) {
+          geoFlatJSONSerializer.serialize(geoFlat,
+            cedarJSONDirectoryName + File.separator + "GEOFlat_" + index + "_ " + geoSubmissionMetadata.getGSE());
+        }
       }
     } catch (GEOIngestorException e) {
       System.err.println(GEOmetadb2Investigations.class.getName() + ": Error ingesting: " + e.getMessage());
@@ -48,7 +52,7 @@ public class GEOmetadb2GEOFlat
   private static void Usage()
   {
     System.err.println("Usage: " + GEOmetadb2Investigations.class.getName()
-      + " <GEOmetadb Filename> <JSON Directory Name> <Number of Series>");
+      + " <GEOmetadb Filename> <JSON Directory Name> <Min Series Index> <Number of Series>");
     System.exit(-1);
   }
 }
