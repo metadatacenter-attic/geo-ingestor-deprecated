@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Convert GEO metadata contained in a GEOmetadb database to instances of a CEDAR GEOFlat template.
  */
-public class GEOmetadb2GEOFlat
+public class GEOmetadb2CEDARGEOFlat
 {
   public static void main(String[] args)
   {
@@ -22,7 +22,7 @@ public class GEOmetadb2GEOFlat
 
     String geometadbFilename = args[0];
     String cedarJSONDirectoryName = args[1];
-    int minSeriesIndex = Integer.parseInt(args[2]);
+    int startSeriesIndex = Integer.parseInt(args[2]);
     int numberOfSeries = Integer.parseInt(args[3]);
 
     try {
@@ -30,14 +30,16 @@ public class GEOmetadb2GEOFlat
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<GEOFlat> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
       List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
-        .extractGEOSubmissionsMetadata(minSeriesIndex, numberOfSeries);
+        .extractGEOSubmissionsMetadata(startSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
         List<GEOFlat> geoFlatList = converter.convertGEOSubmissionMetadata2GEOFlat(geoSubmissionMetadata);
-        int index = 0;
+        int index = 1;
         for (GEOFlat geoFlat : geoFlatList) {
           geoFlatJSONSerializer.serialize(geoFlat,
-            cedarJSONDirectoryName + File.separator + "GEOFlat_" + index + "_ " + geoSubmissionMetadata.getGSE());
+            cedarJSONDirectoryName + File.separator + "GEOFlat_" + index + "_" + geoSubmissionMetadata.getGSE()
+              + ".json");
+          index++;
         }
       }
     } catch (GEOIngestorException e) {
@@ -52,7 +54,7 @@ public class GEOmetadb2GEOFlat
   private static void Usage()
   {
     System.err.println("Usage: " + GEOmetadb2Investigations.class.getName()
-      + " <GEOmetadb Filename> <JSON Directory Name> <Min Series Index> <Number of Series>");
+      + " <GEOmetadb Filename> <JSON Directory Name> <Start Series Index> <Number of Series>");
     System.exit(-1);
   }
 }

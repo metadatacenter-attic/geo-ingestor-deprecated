@@ -31,13 +31,13 @@ The ./target directory will also contain these JARs.
 
 #### Running
 
-To run with Maven:
+To run GEOmetadb2GEOFlat with Maven:
 
-   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Directory> <Number of Series>"
+   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Directory> <Start Series Index> <Number of Series>"
 
 To run using the fat JAR:
 
-   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Directory> <Number of Series>
+   java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Directory> <Start Series Index> <Number of Series>
 
 
 
