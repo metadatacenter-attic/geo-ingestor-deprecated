@@ -3,7 +3,7 @@ package org.metadatacenter.ingestors.geo.formats.geometadb;
 import org.metadatacenter.converters.geo.GEOSubmissionMetadata2GEOFlatConverter;
 import org.metadatacenter.ingestors.geo.GEOIngestorException;
 import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
-import org.metadatacenter.models.geoflat.GEOFlat;
+import org.metadatacenter.models.geoflat.GEOFlatTemplateInstance;
 import org.metadatacenter.repository.model.MetadataTemplateInstanceJSONSerializer;
 
 import java.io.File;
@@ -28,16 +28,17 @@ public class GEOmetadb2CEDARGEOFlat
     try {
       GEOSubmissionMetadata2GEOFlatConverter converter = new GEOSubmissionMetadata2GEOFlatConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
-      MetadataTemplateInstanceJSONSerializer<GEOFlat> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
+      MetadataTemplateInstanceJSONSerializer<GEOFlatTemplateInstance> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
       List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
         .extractGEOSubmissionsMetadata(startSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
-        List<GEOFlat> geoFlatList = converter.convertGEOSubmissionMetadata2GEOFlat(geoSubmissionMetadata);
+        List<GEOFlatTemplateInstance> geoFlatTemplateInstanceList = converter
+          .convertGEOSubmissionMetadata2GEOFlatTemplateInstances(geoSubmissionMetadata);
         int index = 1;
-        for (GEOFlat geoFlat : geoFlatList) {
-          geoFlatJSONSerializer.serialize(geoFlat,
-            cedarJSONDirectoryName + File.separator + "GEOFlat_" + index + "_" + geoSubmissionMetadata.getGSE()
+        for (GEOFlatTemplateInstance geoFlatTemplateInstance : geoFlatTemplateInstanceList) {
+          geoFlatJSONSerializer.serialize(geoFlatTemplateInstance,
+            cedarJSONDirectoryName + File.separator + "GEOFlat_" + geoSubmissionMetadata.getGSE() + "_" + index
               + ".json");
           index++;
         }

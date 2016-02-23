@@ -27,6 +27,7 @@ import org.metadatacenter.models.investigation.StudyGroupPopulation;
 import org.metadatacenter.models.investigation.StudyProtocol;
 import org.metadatacenter.models.investigation.StudyTime;
 import org.metadatacenter.repository.model.DateTemplateFieldInstance;
+import org.metadatacenter.repository.model.RepositoryFactory;
 import org.metadatacenter.repository.model.StringTemplateFieldInstance;
 import org.metadatacenter.repository.model.URITemplateFieldInstance;
 
@@ -36,10 +37,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalEmailValueElement;
-import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalPhoneValueElement;
-import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalStringValueElement;
-import static org.metadatacenter.repository.model.RepositoryFactory.createStringValueElement;
+import static org.metadatacenter.repository.model.RepositoryFactory.createStringTemplateFieldInstance;
+import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalStringTemplateFieldInstance;
+import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalEmailTemplateFieldInstance;
+import static org.metadatacenter.repository.model.RepositoryFactory.createOptionalPhoneTemplateFieldInstance;
 
 /**
  * Take a {@link GEOSubmissionMetadata} object and convert it to a CEDAR {@link Investigation} template instance.
@@ -56,9 +57,10 @@ public class GEOSubmissionMetadata2InvestigationConverter
     Series geoSeries = geoSubmissionMetadata.getSeries();
 
     String templateID = InvestigationNames.INVESTIGATION_TEMPLATE_ID;
-    StringTemplateFieldInstance title = createStringValueElement(geoSeries.getTitle());
-    StringTemplateFieldInstance description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
-    StringTemplateFieldInstance identifier = createStringValueElement(geoSeries.getTitle());
+    StringTemplateFieldInstance title = RepositoryFactory.createStringTemplateFieldInstance(geoSeries.getTitle());
+    StringTemplateFieldInstance description = RepositoryFactory
+      .createStringTemplateFieldInstance(concatenateFieldValues(geoSeries.getSummary()));
+    StringTemplateFieldInstance identifier = RepositoryFactory.createStringTemplateFieldInstance(geoSeries.getTitle());
     Optional<DateTemplateFieldInstance> submissionDate = Optional.empty();
     Optional<DateTemplateFieldInstance> publicReleaseDate = Optional.empty();
     Optional<StudyProtocol> studyProtocol = convertGEOProtocol2StudyProtocol(geoSubmissionMetadata.getProtocol());
@@ -76,9 +78,10 @@ public class GEOSubmissionMetadata2InvestigationConverter
   private Study convertGEOSeries2Study(Series geoSeries, Map<String, Sample> geoSamples, List<Platform> geoPlatforms,
     List<StudyProtocol> studyProtocols)
   {
-    StringTemplateFieldInstance title = createStringValueElement(geoSeries.getTitle());
-    StringTemplateFieldInstance description = createStringValueElement(concatenateFieldValues(geoSeries.getSummary()));
-    StringTemplateFieldInstance identifier = createStringValueElement(geoSeries.getTitle());
+    StringTemplateFieldInstance title = RepositoryFactory.createStringTemplateFieldInstance(geoSeries.getTitle());
+    StringTemplateFieldInstance description = RepositoryFactory
+      .createStringTemplateFieldInstance(concatenateFieldValues(geoSeries.getSummary()));
+    StringTemplateFieldInstance identifier = RepositoryFactory.createStringTemplateFieldInstance(geoSeries.getTitle());
     Optional<DateTemplateFieldInstance> submissionDate = Optional.empty();
     Optional<DateTemplateFieldInstance> publicReleaseDate = Optional.empty();
     Optional<URITemplateFieldInstance> studyDesignType = Optional.empty();
@@ -110,7 +113,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
   private Process convertGEOSample2Process(Sample geoSample, List<StudyAssay> studyAssays,
     List<StudyProtocol> studyProtocols)
   {
-    StringTemplateFieldInstance type = createStringValueElement("GEOSampleProcess");
+    StringTemplateFieldInstance type = RepositoryFactory.createStringTemplateFieldInstance("GEOSampleProcess");
     List<ParameterValue> parameterValue = new ArrayList<>(); // Stored via the study protocol
     Optional<StudyAssay> sampleStudyAssay = extractStudyAssayFromGEOSample(geoSample);
     List<StudyAssay> sampleStudyAssays = sampleStudyAssay.isPresent() ?
@@ -130,10 +133,11 @@ public class GEOSubmissionMetadata2InvestigationConverter
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
     org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
   {
-    StringTemplateFieldInstance name = createStringValueElement(geoSample.getGSM());
-    StringTemplateFieldInstance type = createStringValueElement(geoSample.getGPL());
-    Optional<StringTemplateFieldInstance> description = createOptionalStringValueElement(geoSample.getTitle());
-    Optional<StringTemplateFieldInstance> source = createOptionalStringValueElement(geoSample.getBiomaterialProvider());
+    StringTemplateFieldInstance name = RepositoryFactory.createStringTemplateFieldInstance(geoSample.getGSM());
+    StringTemplateFieldInstance type = RepositoryFactory.createStringTemplateFieldInstance(geoSample.getGPL());
+    Optional<StringTemplateFieldInstance> description = createOptionalStringTemplateFieldInstance(geoSample.getTitle());
+    Optional<StringTemplateFieldInstance> source = RepositoryFactory
+      .createOptionalStringTemplateFieldInstance(geoSample.getBiomaterialProvider());
     List<Characteristic> characteristics = convertGEOCharacteristics2Characteristics(geoSample.getCharacteristics());
     Optional<StudyTime> studyTime = Optional.empty(); // Not present
 
@@ -143,7 +147,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
 
   private Optional<StudyAssay> extractStudyAssayFromGEOSample(Sample geoSample)
   {
-    return Optional.of(new StudyAssay(createStringValueElement(geoSample.getGPL())));
+    return Optional.of(new StudyAssay(RepositoryFactory.createStringTemplateFieldInstance(geoSample.getGPL())));
   }
 
   private List<StudyAssay> convertGEOPlatforms2StudyAssays(List<Platform> geoPlatforms)
@@ -160,19 +164,20 @@ public class GEOSubmissionMetadata2InvestigationConverter
 
   private StudyAssay convertGEOPlatform2StudyAssay(Platform geoPlatform)
   {
-    return new StudyAssay(createStringValueElement(geoPlatform.getTitle()),
-      createOptionalStringValueElement(Optional.of(geoPlatform.getDistribution())),
-      createOptionalStringValueElement(Optional.of(geoPlatform.getTechnology())));
+    return new StudyAssay(createStringTemplateFieldInstance(geoPlatform.getTitle()),
+      createOptionalStringTemplateFieldInstance(Optional.of(geoPlatform.getDistribution())),
+      createOptionalStringTemplateFieldInstance(Optional.of(geoPlatform.getTechnology())));
   }
 
   private Optional<StudyProtocol> convertGEOProtocol2StudyProtocol(Optional<Protocol> geoProtocol)
   {
     if (geoProtocol.isPresent()) {
-      StringTemplateFieldInstance name = createStringValueElement(
+      StringTemplateFieldInstance name = RepositoryFactory.createStringTemplateFieldInstance(
         geoProtocol.get().getLabel().isEmpty() ? "" : concatenateFieldValues(geoProtocol.get().getLabel()));
-      StringTemplateFieldInstance description = createStringValueElement(geoProtocol.get().getValueDefinition().isEmpty() ?
-        "" :
-        concatenateFieldValues(geoProtocol.get().getValueDefinition()));
+      StringTemplateFieldInstance description = RepositoryFactory.createStringTemplateFieldInstance(
+        geoProtocol.get().getValueDefinition().isEmpty() ?
+          "" :
+          concatenateFieldValues(geoProtocol.get().getValueDefinition()));
 
       Optional<StringTemplateFieldInstance> type = Optional.empty();
       Optional<URITemplateFieldInstance> uri = Optional.empty();
@@ -227,9 +232,9 @@ public class GEOSubmissionMetadata2InvestigationConverter
     for (String geoCharacteristicName : geoCharacteristics.keySet()) {
       String geoCharacteristicValue = geoCharacteristics.get(geoCharacteristicName);
       CharacteristicValue characteristicValue = new CharacteristicValue(
-        createStringValueElement(geoCharacteristicValue));
-      Characteristic characteristic = new Characteristic(createStringValueElement(geoCharacteristicName),
-        Optional.of(characteristicValue));
+        RepositoryFactory.createStringTemplateFieldInstance(geoCharacteristicValue));
+      Characteristic characteristic = new Characteristic(
+        RepositoryFactory.createStringTemplateFieldInstance(geoCharacteristicName), Optional.of(characteristicValue));
 
       characteristics.add(characteristic);
     }
@@ -245,11 +250,12 @@ public class GEOSubmissionMetadata2InvestigationConverter
   private ProtocolParameter createProtocolParameter(String parameterName, Optional<String> parameterDescription,
     String value, Optional<String> type, Optional<String> unit)
   {
-    ParameterValue parameterValue = new ParameterValue(createStringValueElement(value),
-      createOptionalStringValueElement(type), createOptionalStringValueElement(unit));
+    ParameterValue parameterValue = new ParameterValue(RepositoryFactory.createStringTemplateFieldInstance(value),
+      createOptionalStringTemplateFieldInstance(type),
+      createOptionalStringTemplateFieldInstance(unit));
 
-    return new ProtocolParameter(createStringValueElement(parameterName),
-      createOptionalStringValueElement(parameterDescription), Optional.of(parameterValue));
+    return new ProtocolParameter(RepositoryFactory.createStringTemplateFieldInstance(parameterName),
+      createOptionalStringTemplateFieldInstance(parameterDescription), Optional.of(parameterValue));
   }
 
   private List<Contact> convertGEOContributors2Contacts(List<Contributor> geoContributors)
@@ -257,14 +263,16 @@ public class GEOSubmissionMetadata2InvestigationConverter
     List<Contact> contacts = new ArrayList<>();
 
     for (Contributor geoContributor : geoContributors) {
-      Organization organization = new Organization(createStringValueElement(geoContributor.getInstitute()),
-        createOptionalStringValueElement(geoContributor.getDepartment()));
-      Contact contact = new Contact(createStringValueElement(""), createStringValueElement(""),
-        createStringValueElement(geoContributor.getName()),
-        createOptionalStringValueElement(geoContributor.getAddress()),
-        createOptionalEmailValueElement(geoContributor.getEmail()),
-        createOptionalPhoneValueElement(geoContributor.getPhone()),
-        createOptionalPhoneValueElement(geoContributor.getFax()), Optional.empty(), Optional.of(organization));
+      Organization organization = new Organization(
+        createStringTemplateFieldInstance(geoContributor.getInstitute()),
+        createOptionalStringTemplateFieldInstance(geoContributor.getDepartment()));
+      Contact contact = new Contact(RepositoryFactory.createStringTemplateFieldInstance(""),
+        createStringTemplateFieldInstance(""),
+        createStringTemplateFieldInstance(geoContributor.getName()),
+        createOptionalStringTemplateFieldInstance(geoContributor.getAddress()),
+        createOptionalEmailTemplateFieldInstance(geoContributor.getEmail()),
+        createOptionalPhoneTemplateFieldInstance(geoContributor.getPhone()),
+        createOptionalPhoneTemplateFieldInstance(geoContributor.getFax()), Optional.empty(), Optional.of(organization));
 
       contacts.add(contact);
     }
@@ -276,25 +284,28 @@ public class GEOSubmissionMetadata2InvestigationConverter
     List<DataFile> dataFiles = new ArrayList<>();
 
     for (String rawDataFile : geoSample.getRawDataFiles()) {
-      DataFile dataFile = new DataFile(createStringValueElement(rawDataFile),
+      DataFile dataFile = new DataFile(RepositoryFactory.createStringTemplateFieldInstance(rawDataFile),
         Optional.of(new StringTemplateFieldInstance(GEOSoftNames.RAW_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getCelFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getCelFile().get()),
+      DataFile dataFile = new DataFile(
+        RepositoryFactory.createStringTemplateFieldInstance(geoSample.getCelFile().get()),
         Optional.of(new StringTemplateFieldInstance(GEOSoftNames.CEL_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getExpFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getExpFile().get()),
+      DataFile dataFile = new DataFile(
+        RepositoryFactory.createStringTemplateFieldInstance(geoSample.getExpFile().get()),
         Optional.of(new StringTemplateFieldInstance(GEOSoftNames.EXP_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
 
     if (geoSample.getChpFile().isPresent()) {
-      DataFile dataFile = new DataFile(createStringValueElement(geoSample.getChpFile().get()),
+      DataFile dataFile = new DataFile(
+        RepositoryFactory.createStringTemplateFieldInstance(geoSample.getChpFile().get()),
         Optional.of(new StringTemplateFieldInstance(GEOSoftNames.CHP_FILE_TYPE_NAME)));
       dataFiles.add(dataFile);
     }
@@ -306,7 +317,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
     List<Publication> publications = new ArrayList<>();
 
     for (String pubMedID : pubMedIDs) {
-      StringTemplateFieldInstance pubMedIDValueElement = createStringValueElement(pubMedID);
+      StringTemplateFieldInstance pubMedIDValueElement = RepositoryFactory.createStringTemplateFieldInstance(pubMedID);
       Publication publication = new Publication(pubMedIDValueElement);
       publications.add(publication);
     }

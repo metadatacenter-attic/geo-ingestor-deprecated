@@ -529,7 +529,7 @@ public class GEOmetadbIngestor
 
     sb.append("(");
 
-    if (seriesIDs.size() > 100)
+    if (seriesIDs.size() > 100) // TODOO Fairly arbitrary limit for the moment
       throw new GEOIngestorException("Internal error: too many series selected for slice;" +
         " expecting maximum of 100 and got " + seriesIDs.size());
 
