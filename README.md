@@ -1,8 +1,8 @@
-GEO INGESTOR
+GEO Ingestor
 ============
 
 Custom utility for converting the metadata in [GEOmedatdb](http://gbnci.abcc.ncifcrf.gov/geo/) 
-to instances in the CEDAR Investigation Model.
+to instances of the CEDAR Investigation Model.
 
 #### Building Prerequisites
 
@@ -31,13 +31,16 @@ The ./target directory will also contain these JARs.
 
 #### Running
 
-To run GEOmetadb2GEOFlat with Maven:
-
-   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Directory> <Start Series Index> <Number of Series>"
-
 To run using the fat JAR:
 
+```
    java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Directory> <Start Series Index> <Number of Series>
+```
 
+To run ```GEOmetadb2GEOFlat``` with Maven:
+
+```
+   mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Directory> <Start Series Index> <Number of Series>"
+```
 
 
