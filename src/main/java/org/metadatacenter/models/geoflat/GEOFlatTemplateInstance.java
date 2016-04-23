@@ -24,6 +24,10 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
   private final StringTemplateFieldInstance sampleLabel;
   private final Optional<StringTemplateFieldInstance> sampleDescription;
   private final Optional<StringTemplateFieldInstance> biomaterialProvider;
+  private final Optional<StringTemplateFieldInstance> disease;
+  private final Optional<StringTemplateFieldInstance> tissue;
+  private final Optional<StringTemplateFieldInstance> sex;
+  private final Optional<StringTemplateFieldInstance> age;
 
   public GEOFlatTemplateInstance(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String templateID,
     StringTemplateFieldInstance gse, StringTemplateFieldInstance seriesTitle,
@@ -31,7 +35,11 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     Optional<DateTemplateFieldInstance> publicReleaseDate, StringTemplateFieldInstance gsm,
     StringTemplateFieldInstance platform, StringTemplateFieldInstance sampleTitle,
     StringTemplateFieldInstance sampleLabel, Optional<StringTemplateFieldInstance> sampleDescription,
-    Optional<StringTemplateFieldInstance> biomaterialProvider)
+    Optional<StringTemplateFieldInstance> biomaterialProvider,
+    Optional<StringTemplateFieldInstance> disease,
+    Optional<StringTemplateFieldInstance> tissue,
+    Optional<StringTemplateFieldInstance> sex,
+    Optional<StringTemplateFieldInstance> age)
   {
     super(jsonLDTypes, jsonLDIdentifier, templateID);
     this.gse = gse;
@@ -45,6 +53,10 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     this.sampleLabel = sampleLabel;
     this.sampleDescription = sampleDescription;
     this.biomaterialProvider = biomaterialProvider;
+    this.disease = disease;
+    this.tissue = tissue;
+    this.sex = sex;
+    this.age = age;
   }
 
   public GEOFlatTemplateInstance(String templateID, StringTemplateFieldInstance gse,
@@ -52,7 +64,11 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     Optional<DateTemplateFieldInstance> submissionDate, Optional<DateTemplateFieldInstance> publicReleaseDate,
     StringTemplateFieldInstance gsm, StringTemplateFieldInstance platform, StringTemplateFieldInstance sampleTitle,
     StringTemplateFieldInstance sampleLabel, Optional<StringTemplateFieldInstance> sampleDescription,
-    Optional<StringTemplateFieldInstance> biomaterialProvider)
+    Optional<StringTemplateFieldInstance> biomaterialProvider,
+    Optional<StringTemplateFieldInstance> disease,
+    Optional<StringTemplateFieldInstance> tissue,
+    Optional<StringTemplateFieldInstance> sex,
+    Optional<StringTemplateFieldInstance> age)
   {
     super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_INSTANCES_URI_BASE), templateID);
     this.gse = gse;
@@ -66,5 +82,9 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     this.sampleLabel = sampleLabel;
     this.sampleDescription = sampleDescription;
     this.biomaterialProvider = biomaterialProvider;
+    this.disease = disease;
+    this.tissue = tissue;
+    this.sex = sex;
+    this.age = age;
   }
 }

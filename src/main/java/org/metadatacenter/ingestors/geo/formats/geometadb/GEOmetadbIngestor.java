@@ -455,15 +455,15 @@ public class GEOmetadbIngestor
   }
 
   /**
-   * @param characteristicsString String of form: characteristic_name1: value1; characteristic_name2: value2; ...
+   * @param rawCharacteristics String of form: characteristic_name1: value1; characteristic_name2: value2; ...
    * @return (characteristic name -> characteristic value)
    */
-  private Map<String, String> extractCharacteristics(Optional<String> characteristicsString)
+  private Map<String, String> extractCharacteristics(Optional<String> rawCharacteristics)
   {
     Map<String, String> characteristics = new HashMap<>();
 
-    if (characteristicsString.isPresent()) {
-      for (String characteristicString : Arrays.stream(characteristicsString.get().split(";")).map(String::trim)
+    if (rawCharacteristics.isPresent()) {
+      for (String characteristicString : Arrays.stream(rawCharacteristics.get().split(";")).map(String::trim)
         .filter(s -> !s.isEmpty()).toArray(String[]::new)) {
         String characteristicAndValue[] = characteristicString.split(":");
         if (characteristicAndValue.length == 2) {
@@ -481,7 +481,7 @@ public class GEOmetadbIngestor
 
   /**
    * @param contributorsString
-   * @return
+   * @return A list of contributors extracted from the string
    */
   private List<Contributor> extractContributors(String contributorsString)
   {
@@ -529,9 +529,9 @@ public class GEOmetadbIngestor
 
     sb.append("(");
 
-    if (seriesIDs.size() > 100) // TODOO Fairly arbitrary limit for the moment
+    if (seriesIDs.size() > 1000) // TODOO Fairly arbitrary limit for the moment
       throw new GEOIngestorException("Internal error: too many series selected for slice;" +
-        " expecting maximum of 100 and got " + seriesIDs.size());
+        " expecting maximum of 1000 and got " + seriesIDs.size());
 
     boolean isFirst = true;
     for (String seriesID : seriesIDs) {

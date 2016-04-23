@@ -12,13 +12,16 @@ import org.metadatacenter.repository.model.RepositoryFactory;
 import org.metadatacenter.repository.model.StringTemplateFieldInstance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.metadatacenter.repository.model.RepositoryFactory.createStringTemplateFieldInstance;
 
 /**
- * Take a {@link GEOSubmissionMetadata} object and convert it to a list of CEDAR {@link GEOFlatTemplateInstance} template instances.
+ * Take a {@link GEOSubmissionMetadata} object and convert it to a list of CEDAR {@link GEOFlatTemplateInstance}
+ * template instances.
  * <p/>
  *
  * @see GEOSubmissionMetadata
@@ -42,17 +45,6 @@ public class GEOSubmissionMetadata2GEOFlatConverter
     Optional<DateTemplateFieldInstance> submissionDate = Optional.empty();
     Optional<DateTemplateFieldInstance> publicReleaseDate = Optional.empty();
 
-    // protocol
-    //    List<String> growth;
-    //    List<String> treatment;
-    //    List<String> extract;
-    //    List<String> label;
-    //    List<String> hyb;
-    //    List<String> scan;
-    //    List<String> dataProcessing;
-    //    List<String> valueDefinition;
-    //    Map<String, List<String>> userDefinedFields;
-
     for (Sample geoSample : geoSubmissionMetadata.getSamples().values()) {
       StringTemplateFieldInstance gsm = createStringTemplateFieldInstance(geoSample.getGSM());
       StringTemplateFieldInstance platform = createStringTemplateFieldInstance(geoSample.getGPL());
@@ -63,13 +55,73 @@ public class GEOSubmissionMetadata2GEOFlatConverter
       Optional<StringTemplateFieldInstance> biomaterialProvider = RepositoryFactory
         .createOptionalStringTemplateFieldInstance(geoSample.getBiomaterialProvider());
 
+      Map<String, String> characteristics = geoSample.getPerChannelInformation().containsKey(1) ?
+        geoSample.getPerChannelInformation().get(1).getCharacteristics() :
+        Collections.emptyMap();
+
+      if (characteristics.isEmpty())
+        continue;
+
+      Optional<String> diseaseValue = extractDiseaseFromCharacteristics(characteristics);
+
+      if (!diseaseValue.isPresent())
+        continue;
+
+      System.err.println("CHAR" + characteristics);
+
+      Optional<StringTemplateFieldInstance> disease = RepositoryFactory
+        .createOptionalStringTemplateFieldInstance(diseaseValue);
+      Optional<StringTemplateFieldInstance> tissue = RepositoryFactory
+        .createOptionalStringTemplateFieldInstance(extractTissueFromCharacteristics(characteristics));
+      Optional<StringTemplateFieldInstance> sex = RepositoryFactory
+        .createOptionalStringTemplateFieldInstance(extractSexFromCharacteristics(characteristics));
+      Optional<StringTemplateFieldInstance> age = RepositoryFactory
+        .createOptionalStringTemplateFieldInstance(extractAgeFromCharacteristics(characteristics));
+
       GEOFlatTemplateInstance geoFlatTemplateInstanceTemplateInstance = new GEOFlatTemplateInstance(templateID, gse,
         seriesTitle, seriesDescription, submissionDate, publicReleaseDate, gsm, platform, sampleTitle, sampleLabel,
-        sampleDescription, biomaterialProvider);
+        sampleDescription, biomaterialProvider, disease, tissue, sex, age);
       geoFlatTemplateInstanceTemplateInstances.add(geoFlatTemplateInstanceTemplateInstance);
     }
 
     return geoFlatTemplateInstanceTemplateInstances;
+  }
+
+  private Optional<String> extractDiseaseFromCharacteristics(Map<String, String> characteristics)
+  {
+    for (String characteristicName : characteristics.keySet()) {
+      if (characteristicName.equalsIgnoreCase("disease") || characteristicName.equalsIgnoreCase("diagnosis")
+        || characteristicName.equalsIgnoreCase("disease state"))
+        return Optional.of(characteristics.get(characteristicName));
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> extractTissueFromCharacteristics(Map<String, String> characteristics)
+  {
+    for (String characteristicName : characteristics.keySet()) {
+      if (characteristicName.equalsIgnoreCase("tissue"))
+        return Optional.of(characteristics.get(characteristicName));
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> extractSexFromCharacteristics(Map<String, String> characteristics)
+  {
+    for (String characteristicName : characteristics.keySet()) {
+      if (characteristicName.equalsIgnoreCase("sex") || characteristicName.equalsIgnoreCase("gender"))
+        return Optional.of(characteristics.get(characteristicName));
+    }
+    return Optional.empty();
+  }
+
+  private Optional<String> extractAgeFromCharacteristics(Map<String, String> characteristics)
+  {
+    for (String characteristicName : characteristics.keySet()) {
+      if (characteristicName.equalsIgnoreCase("age"))
+        return Optional.of(characteristics.get(characteristicName));
+    }
+    return Optional.empty();
   }
 
   private String concatenateFieldValues(List<String> fieldValues)
