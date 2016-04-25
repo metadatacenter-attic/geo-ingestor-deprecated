@@ -29,17 +29,23 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
   private final Optional<StringTemplateFieldInstance> sex;
   private final Optional<StringTemplateFieldInstance> age;
 
+  private final Optional<StringTemplateFieldInstance> growthProtocol;
+  private final Optional<StringTemplateFieldInstance> extractProtocol;
+  private final Optional<StringTemplateFieldInstance> labelProtocol;
+  private final Optional<StringTemplateFieldInstance> hybridizationProtocol;
+  private final Optional<StringTemplateFieldInstance> scanProtocol;
+
   public GEOFlatTemplateInstance(List<String> jsonLDTypes, Optional<String> jsonLDIdentifier, String templateID,
     StringTemplateFieldInstance gse, StringTemplateFieldInstance seriesTitle,
     StringTemplateFieldInstance seriesDescription, Optional<DateTemplateFieldInstance> submissionDate,
     Optional<DateTemplateFieldInstance> publicReleaseDate, StringTemplateFieldInstance gsm,
     StringTemplateFieldInstance platform, StringTemplateFieldInstance sampleTitle,
     StringTemplateFieldInstance sampleLabel, Optional<StringTemplateFieldInstance> sampleDescription,
-    Optional<StringTemplateFieldInstance> biomaterialProvider,
-    Optional<StringTemplateFieldInstance> disease,
-    Optional<StringTemplateFieldInstance> tissue,
-    Optional<StringTemplateFieldInstance> sex,
-    Optional<StringTemplateFieldInstance> age)
+    Optional<StringTemplateFieldInstance> biomaterialProvider, Optional<StringTemplateFieldInstance> disease,
+    Optional<StringTemplateFieldInstance> tissue, Optional<StringTemplateFieldInstance> sex,
+    Optional<StringTemplateFieldInstance> age, Optional<StringTemplateFieldInstance> growthProtocol,
+    Optional<StringTemplateFieldInstance> extractProtocol, Optional<StringTemplateFieldInstance> labelProtocol,
+    Optional<StringTemplateFieldInstance> hybridizationProtocol, Optional<StringTemplateFieldInstance> scanProtocol)
   {
     super(jsonLDTypes, jsonLDIdentifier, templateID);
     this.gse = gse;
@@ -57,6 +63,11 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     this.tissue = tissue;
     this.sex = sex;
     this.age = age;
+    this.growthProtocol = growthProtocol;
+    this.extractProtocol = extractProtocol;
+    this.labelProtocol = labelProtocol;
+    this.hybridizationProtocol = hybridizationProtocol;
+    this.scanProtocol = scanProtocol;
   }
 
   public GEOFlatTemplateInstance(String templateID, StringTemplateFieldInstance gse,
@@ -64,11 +75,11 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     Optional<DateTemplateFieldInstance> submissionDate, Optional<DateTemplateFieldInstance> publicReleaseDate,
     StringTemplateFieldInstance gsm, StringTemplateFieldInstance platform, StringTemplateFieldInstance sampleTitle,
     StringTemplateFieldInstance sampleLabel, Optional<StringTemplateFieldInstance> sampleDescription,
-    Optional<StringTemplateFieldInstance> biomaterialProvider,
-    Optional<StringTemplateFieldInstance> disease,
-    Optional<StringTemplateFieldInstance> tissue,
-    Optional<StringTemplateFieldInstance> sex,
-    Optional<StringTemplateFieldInstance> age)
+    Optional<StringTemplateFieldInstance> biomaterialProvider, Optional<StringTemplateFieldInstance> disease,
+    Optional<StringTemplateFieldInstance> tissue, Optional<StringTemplateFieldInstance> sex,
+    Optional<StringTemplateFieldInstance> age, Optional<StringTemplateFieldInstance> growthProtocol,
+    Optional<StringTemplateFieldInstance> extractProtocol, Optional<StringTemplateFieldInstance> labelProtocol,
+    Optional<StringTemplateFieldInstance> hybridizationProtocol, Optional<StringTemplateFieldInstance> scanProtocol)
   {
     super(ElementURIs, generateJSONLDIdentifier(Namespaces.TEMPLATE_INSTANCES_URI_BASE), templateID);
     this.gse = gse;
@@ -86,5 +97,10 @@ public class GEOFlatTemplateInstance extends MetadataTemplateInstance
     this.tissue = tissue;
     this.sex = sex;
     this.age = age;
+    this.growthProtocol = growthProtocol;
+    this.extractProtocol = extractProtocol;
+    this.labelProtocol = labelProtocol;
+    this.hybridizationProtocol = hybridizationProtocol;
+    this.scanProtocol = scanProtocol;
   }
 }

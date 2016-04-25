@@ -6,59 +6,59 @@ import java.util.Map;
 
 public class Protocol
 {
-  private final List<String> growth;
-  private final List<String> treatment;
-  private final List<String> extract;
-  private final List<String> label;
-  private final List<String> hyb;
-  private final List<String> scan;
+  private final List<String> growthProtocols;
+  private final List<String> treatmentProtocols;
+  private final List<String> extractProtocols;
+  private final List<String> labelProtocols;
+  private final List<String> hybridizationProtocol;
+  private final List<String> scanProtocols;
   private final List<String> dataProcessing;
   private final List<String> valueDefinition;
   private final Map<String, List<String>> userDefinedFields;
 
-  public Protocol(List<String> growth, List<String> treatment, List<String> extract, List<String> label,
-    List<String> hyb, List<String> scan, List<String> dataProcessing, List<String> valueDefinition,
-    Map<String, List<String>> userDefinedFields)
+  public Protocol(List<String> growthProtocols, List<String> treatmentProtocols, List<String> extractionProtocol,
+    List<String> labelProtocols, List<String> hybridizationProtocol, List<String> scanProtocols,
+    List<String> dataProcessing, List<String> valueDefinition, Map<String, List<String>> userDefinedFields)
   {
-    this.growth = Collections.unmodifiableList(growth);
-    this.treatment = Collections.unmodifiableList(treatment);
-    this.extract = Collections.unmodifiableList(extract);
-    this.label = Collections.unmodifiableList(label);
-    this.hyb = Collections.unmodifiableList(hyb);
-    this.scan = Collections.unmodifiableList(scan);
+    this.growthProtocols = Collections.unmodifiableList(growthProtocols);
+    this.treatmentProtocols = Collections.unmodifiableList(treatmentProtocols);
+    this.extractProtocols = Collections.unmodifiableList(extractionProtocol);
+    this.labelProtocols = Collections.unmodifiableList(labelProtocols);
+    this.hybridizationProtocol = Collections.unmodifiableList(hybridizationProtocol);
+    this.scanProtocols = Collections.unmodifiableList(scanProtocols);
     this.dataProcessing = Collections.unmodifiableList(dataProcessing);
     this.valueDefinition = Collections.unmodifiableList(valueDefinition);
     this.userDefinedFields = Collections.unmodifiableMap(userDefinedFields);
   }
 
-  public List<String> getGrowth()
+  public List<String> getGrowthProtocols()
   {
-    return growth;
+    return growthProtocols;
   }
 
-  public List<String> getTreatment()
+  public List<String> getTreatmentProtocols()
   {
-    return treatment;
+    return treatmentProtocols;
   }
 
-  public List<String> getExtract()
+  public List<String> getExtractProtocols()
   {
-    return extract;
+    return extractProtocols;
   }
 
-  public List<String> getLabel()
+  public List<String> getLabelProtocol()
   {
-    return label;
+    return labelProtocols;
   }
 
-  public List<String> getHyb()
+  public List<String> getHybridizationProtocol()
   {
-    return hyb;
+    return hybridizationProtocol;
   }
 
-  public List<String> getScan()
+  public List<String> getScanProtocols()
   {
-    return scan;
+    return scanProtocols;
   }
 
   public List<String> getDataProcessing()
@@ -79,12 +79,12 @@ public class Protocol
   @Override public String toString()
   {
     return "Protocol{" +
-      "\n growth=" + growth +
-      "\n treatment=" + treatment +
-      "\n extract='" + extract + '\'' +
-      "\n label='" + label + '\'' +
-      "\n hyb='" + hyb + '\'' +
-      "\n scan='" + scan + '\'' +
+      "\n growthProtocols=" + growthProtocols +
+      "\n treatmentProtocols=" + treatmentProtocols +
+      "\n extractProtocols='" + extractProtocols + '\'' +
+      "\n labelProtocols='" + labelProtocols + '\'' +
+      "\n hybridizationProtocol='" + hybridizationProtocol + '\'' +
+      "\n scanProtocols='" + scanProtocols + '\'' +
       "\n dataProcessing='" + dataProcessing + '\'' +
       "\n valueDefinition='" + valueDefinition + '\'' +
       '}';

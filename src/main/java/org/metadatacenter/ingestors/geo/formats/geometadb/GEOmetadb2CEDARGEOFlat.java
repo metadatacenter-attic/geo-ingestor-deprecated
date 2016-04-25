@@ -25,10 +25,16 @@ public class GEOmetadb2CEDARGEOFlat
     int startSeriesIndex = Integer.parseInt(args[2]);
     int numberOfSeries = Integer.parseInt(args[3]);
 
+    if (numberOfSeries > GEOmetadbNames.MAX_SERIES_PER_SLICE) {
+      System.err.println("No more than " + GEOmetadbNames.MAX_SERIES_PER_SLICE + " series per slice allowed");
+      System.exit(-1);
+    }
+
     try {
       GEOSubmissionMetadata2GEOFlatConverter converter = new GEOSubmissionMetadata2GEOFlatConverter();
       GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<GEOFlatTemplateInstance> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
+
       List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
         .extractGEOSubmissionsMetadata(startSeriesIndex, numberOfSeries);
 

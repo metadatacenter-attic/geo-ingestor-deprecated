@@ -139,4 +139,6 @@ public class GEOmetadbNames
       ZIP_POSTAL_CODE_CONTACT_ATTRIBUTE, COUNTRY_CONTACT_ATTRIBUTE, WEB_LINK_CONTACT_ATTRIBUTE };
 
   public final static List<String> ContactFieldNames = Arrays.asList(CONTACT_FIELD_NAMES);
+
+  public static final int MAX_SERIES_PER_SLICE = 1000;
 }

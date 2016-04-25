@@ -37,8 +37,7 @@ To run using the fat JAR:
    java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Output Directory> <Start Series Index> <Number of Series>
 ```
 
-A class called ```GEOmetadb2GEOFlat``` produces a simmplified flat CEDAR templates that can be used
-for indexing purposes.
+A class called ```GEOmetadb2GEOFlat``` produces a simmplified flat CEDAR templates that can be used for indexing purposes.
 
 To run ```GEOmetadb2GEOFlat``` with Maven:
 

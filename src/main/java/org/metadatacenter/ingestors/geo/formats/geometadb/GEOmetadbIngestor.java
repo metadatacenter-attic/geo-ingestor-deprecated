@@ -529,9 +529,9 @@ public class GEOmetadbIngestor
 
     sb.append("(");
 
-    if (seriesIDs.size() > 1000) // TODOO Fairly arbitrary limit for the moment
+    if (seriesIDs.size() > GEOmetadbNames.MAX_SERIES_PER_SLICE)
       throw new GEOIngestorException("Internal error: too many series selected for slice;" +
-        " expecting maximum of 1000 and got " + seriesIDs.size());
+        " expecting maximum of " + GEOmetadbNames.MAX_SERIES_PER_SLICE + " and got " + seriesIDs.size());
 
     boolean isFirst = true;
     for (String seriesID : seriesIDs) {
