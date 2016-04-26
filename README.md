@@ -37,7 +37,7 @@ To run using the fat JAR:
    java -jar ./target/geo-ingestor-${version}-jar-with-dependencies.jar <GEOmetadb Database File> <CEDAR JSON Instances Output Directory> <Start Series Index> <Number of Series>
 ```
 
-A class called ```GEOmetadb2GEOFlat``` produces a simmplified flat CEDAR templates that can be used for indexing purposes.
+A class called ```GEOmetadb2GEOFlat``` produces a simplified flat CEDAR templates that can be used for indexing purposes.
 
 To run ```GEOmetadb2GEOFlat``` with Maven:
 
@@ -45,4 +45,12 @@ To run ```GEOmetadb2GEOFlat``` with Maven:
    mvn exec:java -Dexec.args="<GEOmetadb Database File> <CEDAR JSON Instances Output Directory> <Start Series Index> <Number of Series>"
 ```
 
+A small script to process 60,000 series could look as follows:
 
+
+```
+for ((i=0;i<=60000;i=i+1000));  
+do 
+mvn exec:java -Dexec.args="GEOmetadb.sqlite /tmp/geoo $i 1000"; 
+done
+```
