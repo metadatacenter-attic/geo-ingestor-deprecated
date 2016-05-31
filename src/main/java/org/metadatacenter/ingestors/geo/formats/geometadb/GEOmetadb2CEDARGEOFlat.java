@@ -1,9 +1,11 @@
 package org.metadatacenter.ingestors.geo.formats.geometadb;
 
 import org.metadatacenter.converters.geo.GEOSubmissionMetadata2GEOFlatConverter;
-import org.metadatacenter.ingestors.geo.GEOIngestorException;
-import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.models.geoflat.GEOFlatTemplateInstance;
+import org.metadatacenter.readers.geo.GEOReaderException;
+import org.metadatacenter.readers.geo.formats.geometadb.GEOmetadbNames;
+import org.metadatacenter.readers.geo.formats.geometadb.GEOmetadbReader;
+import org.metadatacenter.readers.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.repository.model.MetadataTemplateInstanceJSONSerializer;
 
 import java.io.File;
@@ -32,10 +34,10 @@ public class GEOmetadb2CEDARGEOFlat
 
     try {
       GEOSubmissionMetadata2GEOFlatConverter converter = new GEOSubmissionMetadata2GEOFlatConverter();
-      GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
+      GEOmetadbReader geometadbReader = new GEOmetadbReader(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<GEOFlatTemplateInstance> geoFlatJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
 
-      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
+      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbReader
         .extractGEOSubmissionsMetadata(startSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
@@ -49,8 +51,8 @@ public class GEOmetadb2CEDARGEOFlat
           index++;
         }
       }
-    } catch (GEOIngestorException e) {
-      System.err.println(GEOmetadb2Investigations.class.getName() + ": Error ingesting: " + e.getMessage());
+    } catch (GEOReaderException e) {
+      System.err.println(GEOmetadb2Investigations.class.getName() + ": Error reading: " + e.getMessage());
       System.exit(-1);
     } catch (IOException e) {
       System.err.println(GEOmetadb2Investigations.class.getName() + ": IO error ingesting: " + e.getMessage());

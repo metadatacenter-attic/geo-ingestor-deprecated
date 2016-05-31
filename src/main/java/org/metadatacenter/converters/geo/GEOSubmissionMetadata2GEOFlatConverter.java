@@ -1,10 +1,10 @@
 package org.metadatacenter.converters.geo;
 
-import org.metadatacenter.ingestors.geo.formats.geosoft.GEOSoftNames;
-import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
-import org.metadatacenter.ingestors.geo.metadata.Protocol;
-import org.metadatacenter.ingestors.geo.metadata.Sample;
-import org.metadatacenter.ingestors.geo.metadata.Series;
+import org.metadatacenter.readers.geo.formats.geosoft.GEOSoftNames;
+import org.metadatacenter.readers.geo.metadata.GEOSubmissionMetadata;
+import org.metadatacenter.readers.geo.metadata.Protocol;
+import org.metadatacenter.readers.geo.metadata.Sample;
+import org.metadatacenter.readers.geo.metadata.Series;
 import org.metadatacenter.models.geoflat.GEOFlatNames;
 import org.metadatacenter.models.geoflat.GEOFlatTemplateInstance;
 import org.metadatacenter.repository.model.DateTemplateFieldInstance;
@@ -22,7 +22,6 @@ import static org.metadatacenter.repository.model.RepositoryFactory.createString
 /**
  * Take a {@link GEOSubmissionMetadata} object and convert it to a list of CEDAR {@link GEOFlatTemplateInstance}
  * template instances.
- * <p/>
  *
  * @see GEOSubmissionMetadata
  * @see GEOFlatTemplateInstance
@@ -90,6 +89,8 @@ public class GEOSubmissionMetadata2GEOFlatConverter
       if (characteristics.isEmpty())
         continue; // TEMPORARY: Skip samples with no characteristics.
 
+      System.err.println("CHARACTERISTICS " + characteristics);
+
       Optional<String> diseaseValue = extractDiseaseFromCharacteristics(characteristics);
       Optional<String> tissueValue = extractTissueFromCharacteristics(characteristics);
       String sexValue = extractSexFromCharacteristics(characteristics);
@@ -97,8 +98,6 @@ public class GEOSubmissionMetadata2GEOFlatConverter
 
       if (!diseaseValue.isPresent() || !tissueValue.isPresent())
         continue; // TEMPORARY: Skip samples with no disease or tissue characteristics.
-
-      System.err.println("CHAR " + characteristics);
 
       Optional<StringTemplateFieldInstance> diseaseField = RepositoryFactory
         .createOptionalStringTemplateFieldInstance(diseaseValue);
@@ -135,8 +134,8 @@ public class GEOSubmissionMetadata2GEOFlatConverter
   private Optional<String> extractDiseaseFromCharacteristics(Map<String, String> characteristics)
   {
     for (String characteristicName : characteristics.keySet()) {
-      if (characteristicName.equalsIgnoreCase("disease") || characteristicName.equalsIgnoreCase("diagnosis")
-        || characteristicName.equalsIgnoreCase("disease state"))
+      if (characteristicName.equalsIgnoreCase("disease") || characteristicName.equalsIgnoreCase("diagnosis") ||
+        characteristicName.equalsIgnoreCase("condition") || characteristicName.equalsIgnoreCase("disease state"))
         return Optional.of(characteristics.get(characteristicName));
     }
     return Optional.empty();

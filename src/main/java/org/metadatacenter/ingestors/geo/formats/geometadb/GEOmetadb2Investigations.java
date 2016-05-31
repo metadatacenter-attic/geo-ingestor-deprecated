@@ -1,9 +1,10 @@
 package org.metadatacenter.ingestors.geo.formats.geometadb;
 
 import org.metadatacenter.converters.geo.GEOSubmissionMetadata2InvestigationConverter;
-import org.metadatacenter.ingestors.geo.GEOIngestorException;
-import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.models.investigation.Investigation;
+import org.metadatacenter.readers.geo.GEOReaderException;
+import org.metadatacenter.readers.geo.formats.geometadb.GEOmetadbReader;
+import org.metadatacenter.readers.geo.metadata.GEOSubmissionMetadata;
 import org.metadatacenter.repository.model.MetadataTemplateInstanceJSONSerializer;
 
 import java.io.File;
@@ -27,9 +28,9 @@ public class GEOmetadb2Investigations
 
     try {
       GEOSubmissionMetadata2InvestigationConverter converter = new GEOSubmissionMetadata2InvestigationConverter();
-      GEOmetadbIngestor geometadbIngestor = new GEOmetadbIngestor(geometadbFilename);
+      GEOmetadbReader geometadbReader = new GEOmetadbReader(geometadbFilename);
       MetadataTemplateInstanceJSONSerializer<Investigation> investigationJSONSerializer = new MetadataTemplateInstanceJSONSerializer<>();
-      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbIngestor
+      List<GEOSubmissionMetadata> geoSubmissionsMetadata = geometadbReader
         .extractGEOSubmissionsMetadata(minSeriesIndex, numberOfSeries);
 
       for (GEOSubmissionMetadata geoSubmissionMetadata : geoSubmissionsMetadata) {
@@ -37,8 +38,8 @@ public class GEOmetadb2Investigations
         investigationJSONSerializer.serialize(investigation,
           cedarJSONDirectoryName + File.separator + "Investigation_" + geoSubmissionMetadata.getGSE());
       }
-    } catch (GEOIngestorException e) {
-      System.err.println(GEOmetadb2Investigations.class.getName() + ": Error ingesting: " + e.getMessage());
+    } catch (GEOReaderException e) {
+      System.err.println(GEOmetadb2Investigations.class.getName() + ": Error reading: " + e.getMessage());
       System.exit(-1);
     } catch (IOException e) {
       System.err.println(GEOmetadb2Investigations.class.getName() + ": IO error ingesting: " + e.getMessage());

@@ -1,12 +1,12 @@
 package org.metadatacenter.converters.geo;
 
-import org.metadatacenter.ingestors.geo.formats.geosoft.GEOSoftNames;
-import org.metadatacenter.ingestors.geo.metadata.Contributor;
-import org.metadatacenter.ingestors.geo.metadata.GEOSubmissionMetadata;
-import org.metadatacenter.ingestors.geo.metadata.Platform;
-import org.metadatacenter.ingestors.geo.metadata.Protocol;
-import org.metadatacenter.ingestors.geo.metadata.Sample;
-import org.metadatacenter.ingestors.geo.metadata.Series;
+import org.metadatacenter.readers.geo.formats.geosoft.GEOSoftNames;
+import org.metadatacenter.readers.geo.metadata.Contributor;
+import org.metadatacenter.readers.geo.metadata.GEOSubmissionMetadata;
+import org.metadatacenter.readers.geo.metadata.Platform;
+import org.metadatacenter.readers.geo.metadata.Protocol;
+import org.metadatacenter.readers.geo.metadata.Sample;
+import org.metadatacenter.readers.geo.metadata.Series;
 import org.metadatacenter.models.investigation.Characteristic;
 import org.metadatacenter.models.investigation.CharacteristicValue;
 import org.metadatacenter.models.investigation.Contact;
@@ -131,7 +131,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
   }
 
   private org.metadatacenter.models.investigation.Sample extractSampleFromGEOSample(
-    org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
+    org.metadatacenter.readers.geo.metadata.Sample geoSample)
   {
     StringTemplateFieldInstance name = RepositoryFactory.createStringTemplateFieldInstance(geoSample.getGSM());
     StringTemplateFieldInstance type = RepositoryFactory.createStringTemplateFieldInstance(geoSample.getGPL());
@@ -279,7 +279,7 @@ public class GEOSubmissionMetadata2InvestigationConverter
     return contacts;
   }
 
-  private List<DataFile> extractDataFilesFromGEOSample(org.metadatacenter.ingestors.geo.metadata.Sample geoSample)
+  private List<DataFile> extractDataFilesFromGEOSample(org.metadatacenter.readers.geo.metadata.Sample geoSample)
   {
     List<DataFile> dataFiles = new ArrayList<>();
 

@@ -4,7 +4,7 @@ GEO Ingestor
 Custom utility for converting the metadata in [GEOmedatdb](http://gbnci.abcc.ncifcrf.gov/geo/) 
 to instances of the CEDAR Investigation Model.
 
-#### Building
+#### Building from Source
 
 To build this library you must have the following items installed:
 
