@@ -1,6 +1,9 @@
 GEO Ingestor
 ============
 
+DEPRECATED. Uses a very cumbersome approach to generating instances of CEDAR templates. See the cedar-archetype-instance-writer
+repo for a better approach to generating CEDAR instances.  Also see the geo-reader-exp repo for generic GEO metadata reading code.
+
 Custom utility for converting the metadata in [GEOmedatdb](http://gbnci.abcc.ncifcrf.gov/geo/) 
 to instances of the CEDAR Investigation Model.
 
